@@ -189,7 +189,78 @@ function generateCircle(x,y,rad){
     return list;
   }
 
+  function generateCone(baseRadius, height, sectorCount, stackCount) {
+    const PI = Math.acos(-1.0);
+    let sectorStep = 2 * PI / sectorCount;
+    let unitCircleVertices = [];
 
+    // Build unit circle vertices on XY plane
+    for (let i = 0; i <= sectorCount; ++i) {
+        let sectorAngle = i * sectorStep;
+        unitCircleVertices.push(Math.cos(sectorAngle)); // x
+        unitCircleVertices.push(Math.sin(sectorAngle)); // y
+        unitCircleVertices.push(0);                    // z
+    }
+
+    // Initialize arrays for vertices, normals, texture coordinates, and indices
+    let vertices = [];
+    let indices = []; //faces
+
+    // Build side vertices
+    for (let i = 0; i <= stackCount; ++i) {
+        let z = -(height * 0.5) + i / stackCount * height;
+        let radius = baseRadius * (1 - i / stackCount);
+        let t = 1 - i / stackCount;
+
+        for (let j = 0, k = 0; j <= sectorCount; ++j, k += 3) {
+            let x = unitCircleVertices[k];
+            let y = unitCircleVertices[k + 1];
+            vertices.push(x * radius, y * radius, z);
+            vertices.push(0,1,1) //warna cone
+            vertices.push(j / sectorCount, t);
+        }
+    }
+
+    // Remember where the base vertices start
+    let baseVertexIndex = vertices.length / 8; // soal e vertice push sekali push ada 8 data
+
+    // Build base vertices
+    let z = -height * 0.5;
+    vertices.push(0, 0, z);
+    vertices.push(1,0,1);
+    vertices.push(0.5, 0.5);
+    for (let i = 0, j = 0; i < sectorCount; ++i, j += 3) {
+        let x = unitCircleVertices[j];
+        let y = unitCircleVertices[j + 1];
+        vertices.push(x * baseRadius, y * baseRadius, z);
+        vertices.push(1,0,0)
+        vertices.push(-x * 0.5 + 0.5, -y * 0.5 + 0.5);
+    }
+
+    // Build indices for side
+    for (let i = 0; i < stackCount; ++i) {
+        let k1 = i * (sectorCount + 1);
+        let k2 = k1 + sectorCount + 1;
+        for (let j = 0; j < sectorCount; ++j, ++k1, ++k2) {
+            indices.push(k1, k1 + 1, k2);
+            indices.push(k2, k1 + 1, k2 + 1);
+        }
+    }
+
+    // Remember where the base indices start
+    let baseIndex = indices.length;
+
+    // Build indices for base
+    for (let i = 0, k = baseVertexIndex + 1; i < sectorCount; ++i, ++k) {
+        if (i < sectorCount - 1)
+            indices.push(baseVertexIndex, k + 1, k);
+        else
+            indices.push(baseVertexIndex, baseVertexIndex + 1, k);
+    }
+
+    // Return the generated data
+    return {"vertices": vertices, "faces": indices };
+}
   class MyObject{
     canvas = null;
     vertex = [];
@@ -499,6 +570,7 @@ function generateCircle(x,y,rad){
       var MODEL_MATRIX2 = LIBS.get_I4();
       var MODEL_MATRIX3 = LIBS.get_I4();
       var MODEL_MATRIX4 = LIBS.get_I4();
+      var MODEL_MATRIX5 = LIBS.get_I4();
 
 
       LIBS.translateZ(VIEW_MATRIX,-10);
@@ -507,13 +579,16 @@ function generateCircle(x,y,rad){
       var object = new MyObject(cube, cube_faces, shader_vertex_source, shader_fragment_source);
       var sphere = generateSphere(2,2,2,50,50);
       var donut = generateTorus(1,0.3,72,24)
-      var tabung = generateCylinder(0.3,0.5,50)
+      var tabung = generateCylinder(0.5,1,50) // kalo base radius 0 jadi cone
+      var cone = generateCone(1,1,3,40) // kalo sector count 3 jaditetra hedron, kalao 4 jadi square pyramid
       var obj3 = new MyObject(donut['vertices'],donut['faces'],shader_vertex_source,shader_fragment_source)
       var obj4 = new MyObject(tabung['vertices'],tabung['faces'],shader_vertex_source,shader_fragment_source)
+      var obj5 = new MyObject(cone['vertices'],cone['faces'],shader_vertex_source,shader_fragment_source)
       var object2 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source);
       object.childs.push(object2)
       object.childs.push(obj3)
       object.childs.push(obj4)
+      object.childs.push(obj5)
       object.setup();
 
       /*========================= DRAWING ========================= */
@@ -546,6 +621,7 @@ function generateCircle(x,y,rad){
           MODEL_MATRIX2 = LIBS.get_I4();
           MODEL_MATRIX3 = LIBS.get_I4();
           MODEL_MATRIX4 = LIBS.get_I4();
+          MODEL_MATRIX5 = LIBS.get_I4();
           // LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
 
           LIBS.rotateY(MODEL_MATRIX, THETA); //puter objek kanan kiri
@@ -564,6 +640,10 @@ function generateCircle(x,y,rad){
           LIBS.translateX(MODEL_MATRIX4,-6);
           LIBS.rotateY(MODEL_MATRIX4, -THETA);
           LIBS.rotateX(MODEL_MATRIX4, -ALPHA);
+
+          LIBS.translateY(MODEL_MATRIX5,-3);
+          LIBS.rotateY(MODEL_MATRIX5, -THETA);
+          LIBS.rotateX(MODEL_MATRIX5, -ALPHA);
         //   LIBS.setPosition(MODEL_MATRIX2,-pos_x,-pos_y,-pos_z);
           // var temp = LIBS.get_I4();
           // LIBS.rotateY(temp,ALPHA);
@@ -580,8 +660,12 @@ function generateCircle(x,y,rad){
 
           obj3.MODEL_MATRIX = MODEL_MATRIX3;
           obj3.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+
           obj4.MODEL_MATRIX = MODEL_MATRIX4;
           obj4.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+
+          obj5.MODEL_MATRIX = MODEL_MATRIX5;
+          obj5.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
 
           window.requestAnimationFrame(animate);

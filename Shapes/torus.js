@@ -151,3 +151,81 @@ function generateTorus(majorRadius, minorRadius, sectorCount, sideCount) { //gen
   
    return { "vertices": vertices, "faces": indices };
   }
+
+  // untuk buat cone
+  // nb : sector count = basenya
+  //      kalau sector count 3 = tetrahedron
+  //      kalau sector count 4 = pyramid segi4
+  //  dll      
+  function generateCone(baseRadius, height, sectorCount, stackCount) {
+    const PI = Math.acos(-1.0);
+    let sectorStep = 2 * PI / sectorCount;
+    let unitCircleVertices = [];
+
+    // Build unit circle vertices on XY plane
+    for (let i = 0; i <= sectorCount; ++i) {
+        let sectorAngle = i * sectorStep;
+        unitCircleVertices.push(Math.cos(sectorAngle)); // x
+        unitCircleVertices.push(Math.sin(sectorAngle)); // y
+        unitCircleVertices.push(0);                    // z
+    }
+
+    // Initialize arrays for vertices, normals, texture coordinates, and indices
+    let vertices = [];
+    let indices = []; //faces
+
+    // Build side vertices
+    for (let i = 0; i <= stackCount; ++i) {
+        let z = -(height * 0.5) + i / stackCount * height;
+        let radius = baseRadius * (1 - i / stackCount);
+        let t = 1 - i / stackCount;
+
+        for (let j = 0, k = 0; j <= sectorCount; ++j, k += 3) {
+            let x = unitCircleVertices[k];
+            let y = unitCircleVertices[k + 1];
+            vertices.push(x * radius, y * radius, z);
+            vertices.push(0,1,1) //warna cone
+            vertices.push(j / sectorCount, t);
+        }
+    }
+
+    // Remember where the base vertices start
+    let baseVertexIndex = vertices.length / 8; // soal e vertice push sekali push ada 8 data
+
+    // Build base vertices
+    let z = -height * 0.5;
+    vertices.push(0, 0, z);
+    vertices.push(1,0,1);
+    vertices.push(0.5, 0.5);
+    for (let i = 0, j = 0; i < sectorCount; ++i, j += 3) {
+        let x = unitCircleVertices[j];
+        let y = unitCircleVertices[j + 1];
+        vertices.push(x * baseRadius, y * baseRadius, z);
+        vertices.push(1,0,0)
+        vertices.push(-x * 0.5 + 0.5, -y * 0.5 + 0.5);
+    }
+
+    // Build indices for side
+    for (let i = 0; i < stackCount; ++i) {
+        let k1 = i * (sectorCount + 1);
+        let k2 = k1 + sectorCount + 1;
+        for (let j = 0; j < sectorCount; ++j, ++k1, ++k2) {
+            indices.push(k1, k1 + 1, k2);
+            indices.push(k2, k1 + 1, k2 + 1);
+        }
+    }
+
+    // Remember where the base indices start
+    let baseIndex = indices.length;
+
+    // Build indices for base
+    for (let i = 0, k = baseVertexIndex + 1; i < sectorCount; ++i, ++k) {
+        if (i < sectorCount - 1)
+            indices.push(baseVertexIndex, k + 1, k);
+        else
+            indices.push(baseVertexIndex, baseVertexIndex + 1, k);
+    }
+
+    // Return the generated data
+    return {"vertices": vertices, "faces": indices };
+} 
