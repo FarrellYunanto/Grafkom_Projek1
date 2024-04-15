@@ -1,5 +1,43 @@
 var GL;
+function generateTorus(majorRadius, minorRadius, sectorCount, sideCount) {
+  var vertices = [];
+  var faces = [];
+  sectorAngle, sideAngle;
+  var sectorStep = 2 * Math.PI / sectorCount;
+  var sideStep = 2 * Math.PI / sideCount;
 
+  for (var i = 0; i <= sideCount; ++i) {
+    var sideAngle = Math.PI - i * sideStep;
+    var xy = minorRadius * Math.cos(sideAngle);
+    var z = minorRadius * Math.sin(sideAngle);
+
+    for (var j = 0; j <= sectorCount; ++j) {
+      var sectorAngle = j * sectorStep;
+
+      var x = xy * Math.cos(sectorAngle);
+      var y = xy * Math.sin(sectorAngle);
+      
+      x += majorRadius * Math.cos(sectorAngle);   // (R + r * cos(u)) * cos(v)
+      y += majorRadius * Math.sin(sectorAngle);   // (R + r * cos(u)) * sin(v)
+
+      s = j / sectorCount;
+      t = i / sideCount;
+
+      vertices.push(x, y, z,1,0,1, s, t);
+    }
+  }
+
+  for (var i = 0; i < sideCount; ++i) {
+    var k1 = i * (sectorCount + 1);
+    var k2 = k1 + sectorCount + 1;
+
+    for (var j = 0; j < sectorCount; ++j, ++k1, ++k2) {
+      faces.push(k1, k2, k1 + 1, k1 + 1, k2, k2 + 1);
+    }
+  }
+
+  return { "vertices": vertices, "faces": faces };
+}
 function generateSphere(xrad, yrad, zrad, stack, step){
   var vertices = [];
   var faces = [];
@@ -352,6 +390,7 @@ function generateCircle(x,y,rad){
       var VIEW_MATRIX = LIBS.get_I4();
       var MODEL_MATRIX = LIBS.get_I4();
       var MODEL_MATRIX2 = LIBS.get_I4();
+      var MODEL_MATRIX3 = LIBS.get_I4();
 
 
       LIBS.translateZ(VIEW_MATRIX,-10);
@@ -359,8 +398,11 @@ function generateCircle(x,y,rad){
 
       var object = new MyObject(cube, cube_faces, shader_vertex_source, shader_fragment_source);
       var sphere = generateSphere(2,2,2,50,50);
+      var donut = generateTorus(2,1,72,24)
+      var obj3 = new MyObject(donut['vertices'],donut['faces'],shader_vertex_source,shader_fragment_source)
       var object2 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source);
       object.childs.push(object2)
+      object.childs.push(obj3)
       object.setup();
 
       /*========================= DRAWING ========================= */
@@ -391,6 +433,7 @@ function generateCircle(x,y,rad){
           
           MODEL_MATRIX = LIBS.get_I4(); //ngambil matrix normalnya biar bisa di transform
           MODEL_MATRIX2 = LIBS.get_I4();
+          MODEL_MATRIX3 = LIBS.get_I4();
           // LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
 
           LIBS.rotateY(MODEL_MATRIX, THETA); //puter objek kanan kiri
@@ -400,6 +443,11 @@ function generateCircle(x,y,rad){
           LIBS.translateX(MODEL_MATRIX2,4);
           LIBS.rotateY(MODEL_MATRIX2, -THETA);
           LIBS.rotateX(MODEL_MATRIX2, -ALPHA);
+
+
+          LIBS.translateX(MODEL_MATRIX3,-4);
+          LIBS.rotateY(MODEL_MATRIX3, -THETA);
+          LIBS.rotateX(MODEL_MATRIX3, -ALPHA);
         //   LIBS.setPosition(MODEL_MATRIX2,-pos_x,-pos_y,-pos_z);
           // var temp = LIBS.get_I4();
           // LIBS.rotateY(temp,ALPHA);
@@ -413,6 +461,9 @@ function generateCircle(x,y,rad){
 
           object2.MODEL_MATRIX = MODEL_MATRIX2;
           object2.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+          obj3.MODEL_MATRIX = MODEL_MATRIX3;
+          obj3.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
 
           window.requestAnimationFrame(animate);
