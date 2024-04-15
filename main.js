@@ -38,6 +38,113 @@ function generateTorus(majorRadius, minorRadius, sectorCount, sideCount) {
 
   return { "vertices": vertices, "faces": faces };
 }
+function generateCylinder(radius, height, sectorCount){
+  const PI = Math.PI;
+  let sectorStep = 2 * PI / sectorCount;
+  let sectorAngle;  // Radian
+
+  let unitCircleVertices = [];
+  for (let i = 0; i <= sectorCount; ++i) {
+      sectorAngle = i * sectorStep;
+      unitCircleVertices.push(Math.cos(sectorAngle)); // x
+      unitCircleVertices.push(Math.sin(sectorAngle)); // y
+      unitCircleVertices.push(0);                    // z
+  }
+  let vertices = [];
+  // Put side vertices to arrays
+  for (let i = 0; i < 2; ++i) {
+    let h = -height / 2.0 + i * height;           // z value; -h/2 to h/2
+    let t = 1.0 - i;                              // vertical tex coord; 1 to 0
+
+    for (let j = 0, k = 0; j <= sectorCount; ++j, k += 3) {
+        let ux = unitCircleVertices[k];
+        let uy = unitCircleVertices[k + 1];
+        let uz = unitCircleVertices[k + 2]; // g dipake soal e buat garis normal
+        // Position vector
+        vertices.push(ux * radius);             // vx
+        vertices.push(uy * radius);             // vy
+        vertices.push(h);                       // vz
+        // Texture coordinate
+        vertices.push(1,1,0) // warna tabung
+        vertices.push(j/sectorCount,t)
+    }
+}
+ // The starting index for the base/top surface
+ let baseCenterIndex = vertices.length / 8;
+ let topCenterIndex = baseCenterIndex + sectorCount + 1; // Include center vertex
+
+ // Put base and top vertices to arrays
+ for (let i = 0; i < 2; ++i) {
+     let h = -height / 2.0 + i * height;           // z value; -h/2 to h/2
+     let nz = -1 + i * 2;                           // z value of normal; -1 to 1
+
+     // Center point
+     vertices.push(0,0,h); 
+     vertices.push(1,1,0) // warna center
+     vertices.push(0.5,0.5)
+     
+
+     for (let j = 0, k = 0; j < sectorCount; ++j, k += 3) {
+         let ux = unitCircleVertices[k];
+         let uy = unitCircleVertices[k + 1];
+         // Position vector
+         vertices.push(ux * radius);             // vx
+         vertices.push(uy * radius);             // vy
+         vertices.push(h);                       // vz
+          vertices.push(1,1,0) // warna lingkaran atas bawah
+         // Texture coordinate
+         vertices.push(-ux * 0.5 + 0.5);        // s
+         vertices.push(-uy * 0.5 + 0.5);        // t
+     }
+
+ }
+
+ let indices = []; // sama kayak faces
+    let k1 = 0;                         // 1st vertex index at base
+    let k2 = sectorCount + 1;           // 1st vertex index at top
+
+    // Indices for the side surface
+    for (let i = 0; i < sectorCount; ++i, ++k1, ++k2) {
+        // 2 triangles per sector
+        // k1 => k1+1 => k2
+        indices.push(k1);
+        indices.push(k1 + 1);
+        indices.push(k2);
+
+        // k2 => k1+1 => k2+1
+        indices.push(k2);
+        indices.push(k1 + 1);
+        indices.push(k2 + 1);
+    }
+
+    // Indices for the base surface
+    for (let i = 0, k = baseCenterIndex + 1; i < sectorCount; ++i, ++k) {
+        if (i < sectorCount - 1) {
+            indices.push(baseCenterIndex);
+            indices.push(k + 1);
+            indices.push(k);
+        } else { // Last triangle
+            indices.push(baseCenterIndex);
+            indices.push(baseCenterIndex + 1);
+            indices.push(k);
+        }
+    }
+
+    // Indices for the top surface
+    for (let i = 0, k = topCenterIndex + 1; i < sectorCount; ++i, ++k) {
+        if (i < sectorCount - 1) {
+            indices.push(topCenterIndex);
+            indices.push(k);
+            indices.push(k + 1);
+        } else { // Last triangle
+            indices.push(topCenterIndex);
+            indices.push(k);
+            indices.push(topCenterIndex + 1);
+        }
+    }
+
+ return { "vertices": vertices, "faces": indices };
+}
 function generateSphere(xrad, yrad, zrad, stack, step){
   var vertices = [];
   var faces = [];
@@ -391,6 +498,7 @@ function generateCircle(x,y,rad){
       var MODEL_MATRIX = LIBS.get_I4();
       var MODEL_MATRIX2 = LIBS.get_I4();
       var MODEL_MATRIX3 = LIBS.get_I4();
+      var MODEL_MATRIX4 = LIBS.get_I4();
 
 
       LIBS.translateZ(VIEW_MATRIX,-10);
@@ -398,11 +506,14 @@ function generateCircle(x,y,rad){
 
       var object = new MyObject(cube, cube_faces, shader_vertex_source, shader_fragment_source);
       var sphere = generateSphere(2,2,2,50,50);
-      var donut = generateTorus(2,1,72,24)
+      var donut = generateTorus(1,0.3,72,24)
+      var tabung = generateCylinder(0.3,0.5,50)
       var obj3 = new MyObject(donut['vertices'],donut['faces'],shader_vertex_source,shader_fragment_source)
+      var obj4 = new MyObject(tabung['vertices'],tabung['faces'],shader_vertex_source,shader_fragment_source)
       var object2 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source);
       object.childs.push(object2)
       object.childs.push(obj3)
+      object.childs.push(obj4)
       object.setup();
 
       /*========================= DRAWING ========================= */
@@ -434,6 +545,7 @@ function generateCircle(x,y,rad){
           MODEL_MATRIX = LIBS.get_I4(); //ngambil matrix normalnya biar bisa di transform
           MODEL_MATRIX2 = LIBS.get_I4();
           MODEL_MATRIX3 = LIBS.get_I4();
+          MODEL_MATRIX4 = LIBS.get_I4();
           // LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
 
           LIBS.rotateY(MODEL_MATRIX, THETA); //puter objek kanan kiri
@@ -448,6 +560,10 @@ function generateCircle(x,y,rad){
           LIBS.translateX(MODEL_MATRIX3,-4);
           LIBS.rotateY(MODEL_MATRIX3, -THETA);
           LIBS.rotateX(MODEL_MATRIX3, -ALPHA);
+
+          LIBS.translateX(MODEL_MATRIX4,-6);
+          LIBS.rotateY(MODEL_MATRIX4, -THETA);
+          LIBS.rotateX(MODEL_MATRIX4, -ALPHA);
         //   LIBS.setPosition(MODEL_MATRIX2,-pos_x,-pos_y,-pos_z);
           // var temp = LIBS.get_I4();
           // LIBS.rotateY(temp,ALPHA);
@@ -464,6 +580,8 @@ function generateCircle(x,y,rad){
 
           obj3.MODEL_MATRIX = MODEL_MATRIX3;
           obj3.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+          obj4.MODEL_MATRIX = MODEL_MATRIX4;
+          obj4.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
 
           window.requestAnimationFrame(animate);
