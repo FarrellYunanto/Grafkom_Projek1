@@ -106,7 +106,7 @@ function generateCircle(x,y,rad){
     this._VMatrix = GL.getUniformLocation(this.SHADER_PROGRAM,"VMatrix"); //View
     this._MMatrix = GL.getUniformLocation(this.SHADER_PROGRAM,"MMatrix"); //Model
     this._greyScality = GL.getUniformLocation(this.SHADER_PROGRAM, "greyScality");//GreyScality
-    // this._sampler = GL.getUniformLocation(this.SHADER_PROGRAM, "sampler"); //buat kalo mau pake texture
+    this._sampler = GL.getUniformLocation(this.SHADER_PROGRAM, "sampler");
 
 
     GL.enableVertexAttribArray(this._color);
@@ -121,7 +121,7 @@ function generateCircle(x,y,rad){
 
     this.TRIANGLE_VERTEX = GL.createBuffer();
     this.TRIANGLE_FACES = GL.createBuffer();
-    // this.texture = LIBS.load_texture("resource/semen.jpg"); //buat kalo mau pake texture
+    this.texture = LIBS.load_texture("resource/semen.jpg");
     }
 
 
@@ -142,7 +142,7 @@ function generateCircle(x,y,rad){
     }
 
 
-    render(VIEW_MATRIX, PROJECTION_MATRIX, TYPE){
+    render(VIEW_MATRIX, PROJECTION_MATRIX){
           GL.useProgram(this.SHADER_PROGRAM);  
           GL.activeTexture(GL.TEXTURE0);
           GL.bindTexture(GL.TEXTURE_2D, this.texture);
@@ -160,11 +160,7 @@ function generateCircle(x,y,rad){
           GL.uniform1f(this._greyScality, 1);
           GL.uniform1i(this._sampler,0);
  
-          if(TYPE == 1){
-            GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          } else if (TYPE == 2) {
-            GL.drawElements(GL.TRIANGLE_FAN, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          }
+          GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
          
           this.childs.forEach(child => {
             child.render(VIEW_MATRIX,PROJECTION_MATRIX)
@@ -182,18 +178,22 @@ function generateCircle(x,y,rad){
       CANVAS.width = window.innerWidth;
       CANVAS.height = window.innerHeight;
 
-      //Movement
+
       var drag = false;
       var dX =0;
       var dY=0;
 
+
       var X_prev = 0;
       var Y_prev=0;
+
 
       var THETA = 0;
       var ALPHA = 0;
 
+
       var FRICTION= 0.95;
+
 
       var mouseDown = function(e){
         drag = true;
@@ -215,69 +215,86 @@ function generateCircle(x,y,rad){
         X_prev = e.pageX;
         Y_prev = e.pageY;
 
+
         THETA += dX * 2*Math.PI / CANVAS.width;
         ALPHA += dY * 2*Math.PI / CANVAS.height;
       }
+
 
       var keyDown = function(e){
         e.preventDefault();
         console.log(e);
       }
 
+
       CANVAS.addEventListener("mousedown", mouseDown, false);
       CANVAS.addEventListener("mouseup", mouseUp, false);
       CANVAS.addEventListener("mouseout", mouseUp,false);
       CANVAS.addEventListener("mousemove", mouseMove, false);
       CANVAS.addEventListener("keydown", keyDown);
-
+ 
+ 
+     
       try{
-        GL = CANVAS.getContext("webgl", {antialias: true});
-    }catch(e){
-        alert("WebGL context cannot be initialized");
-        return false;
-    }
+          GL = CANVAS.getContext("webgl", {antialias: true});
+      }catch(e){
+          alert("WebGL context cannot be initialized");
+          return false;
+      }
+      //shaders
+      var shader_vertex_source=`
+      attribute vec3 position;
+      attribute vec3 color;
+      attribute vec2 uv;
 
-    //shaders
-    var shader_vertex_source=`
-    attribute vec3 position;
-    attribute vec3 color;
-    attribute vec2 uv;
-
-    uniform mat4 PMatrix;
-    uniform mat4 VMatrix;
-    uniform mat4 MMatrix;
-   
-    varying vec3 vColor;
-    varying vec2 vUV;
-    void main(void) {
-    gl_Position = PMatrix*VMatrix*MMatrix*vec4(position, 1.);
-    vColor = color;
-    vUV = uv;
-
-
-    gl_PointSize=20.0;
-    }`;
-
-    var shader_fragment_source =`
-    precision mediump float;
-    varying vec3 vColor;
-    varying vec2 vUV;
-    // uniform vec3 color;
+      uniform mat4 PMatrix;
+      uniform mat4 VMatrix;
+      uniform mat4 MMatrix;
+     
+      varying vec3 vColor;
+      varying vec2 vUV;
+      void main(void) {
+      gl_Position = PMatrix*VMatrix*MMatrix*vec4(position, 1.);
+      vColor = color;
+      vUV = uv;
 
 
-    uniform float greyScality;
-    //uniform sampler2D sampler; //buat kalo mau pake texture
+      gl_PointSize=20.0;
+      }`;
+      var shader_fragment_source =`
+      precision mediump float;
+      varying vec3 vColor;
+      varying vec2 vUV;
+      // uniform vec3 color;
 
 
-    void main(void) {
-    float greyScaleValue = (vColor.r + vColor.g + vColor.b)/3.;
-    vec3 greyScaleColor = vec3(greyScaleValue, greyScaleValue, greyScaleValue);
-    vec3 color = mix(greyScaleColor, vColor, greyScality);
-    gl_FragColor = vec4(color, 1.);
-    //gl_FragColor = texture2D(sampler,vUV); //buat kalo mau pake texture
-    }`;
+      uniform float greyScality;
+      uniform sampler2D sampler;
 
-    //Coordinates
+
+      void main(void) {
+      float greyScaleValue = (vColor.r + vColor.g + vColor.b)/3.;
+      vec3 greyScaleColor = vec3(greyScaleValue, greyScaleValue, greyScaleValue);
+      vec3 color = mix(greyScaleColor, vColor, greyScality);
+      gl_FragColor = vec4(color, 1.);
+      gl_FragColor = texture2D(sampler,vUV);
+      }`;
+     
+ 
+ 
+      /*========================= THE TRIANGLE ========================= */
+    POINTS:
+    // var triangle_vertex = [
+    //   -1, -1, // first corner (ind 0) : -> bottom left of the viewport
+    //  1,0,0,
+    //   1, -1, // (ind 1) bottom right of the viewport
+    //   0,1,0,
+    //   0, 1,  // (ind 2) top right of the viewport
+    //   0,0,1,
+    // ];
+ 
+
+
     var cube = [
       //belakang
       -1,-1,-1,   1,1,0, 0,0,
@@ -347,6 +364,7 @@ function generateCircle(x,y,rad){
         20,22,23
       ];
 
+
       //matrix
       var PROJECTION_MATRIX = LIBS.get_projection(40, CANVAS.width/CANVAS.height, 1,100);
       var VIEW_MATRIX = LIBS.get_I4();
@@ -358,21 +376,27 @@ function generateCircle(x,y,rad){
 
 
       var object = new MyObject(cube, cube_faces, shader_vertex_source, shader_fragment_source);
-      var sphere = generateSphere(0.5,1,0.5,50,50);
+     
+      var sphere = generateSphere(2,2,2,6,10);
       var object2 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source);
       object.childs.push(object2)
       object.setup();
 
+
       /*========================= DRAWING ========================= */
       GL.clearColor(0.0, 0.0, 0.0, 0.0);
+
+
       GL.enable(GL.DEPTH_TEST);
       GL.depthFunc(GL.LEQUAL);
-
+ 
       var time_prev = 0;
       var animate = function(time) {
           GL.viewport(0, 0, CANVAS.width, CANVAS.height);
           GL.clear(GL.COLOR_BUFFER_BIT | GL.D_BUFFER_BIT);
+          var dt = time-time_prev;
           time_prev=time;
+
 
           if(!drag){
             dX*=FRICTION;
@@ -382,43 +406,45 @@ function generateCircle(x,y,rad){
             THETA += dX *2*Math.PI/CANVAS.width;
             ALPHA += dY * 2*Math.PI/CANVAS.height;
           }
-          
-          //ngukur pergerakan
+
+
           var radius = 2;
-          var pos_x = radius * THETA;
-          var pos_y = -radius * ALPHA;
-          var pos_z = 0;
-          
-          MODEL_MATRIX = LIBS.get_I4(); //ngambil matrix normalnya biar bisa di transform
+          var pos_x = radius * Math.cos(ALPHA)*Math.sin(THETA);
+          var pos_y = radius * Math.sin(ALPHA);
+          var pos_z = radius * Math.cos(ALPHA)*Math.cos(THETA);
+
+
+          MODEL_MATRIX = LIBS.get_I4();
+          LIBS.translateX(MODEL_MATRIX,-4);
+
+          LIBS.rotateY(MODEL_MATRIX, THETA);
+          LIBS.rotateX(MODEL_MATRIX, ALPHA);
+        //   LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z);
+
+
           MODEL_MATRIX2 = LIBS.get_I4();
-          // LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
-
-          LIBS.rotateY(MODEL_MATRIX, THETA); //puter objek kanan kiri
-          LIBS.rotateX(MODEL_MATRIX, ALPHA); // puter objek atas bawah
-
-
-          LIBS.translateX(MODEL_MATRIX2,1);
-          LIBS.translateY(MODEL_MATRIX2,-1);
-          LIBS.rotateY(MODEL_MATRIX2, THETA);
-          LIBS.rotateX(MODEL_MATRIX2, ALPHA);
+          LIBS.translateX(MODEL_MATRIX2,4);
+          LIBS.rotateY(MODEL_MATRIX2, -THETA);
+          LIBS.rotateX(MODEL_MATRIX2, -ALPHA);
         //   LIBS.setPosition(MODEL_MATRIX2,-pos_x,-pos_y,-pos_z);
-          // var temp = LIBS.get_I4();
-          // LIBS.rotateY(temp,ALPHA);
-          // LIBS.rotateX(temp,THETA);
+          var temp = LIBS.get_I4();
+          LIBS.rotateY(temp,ALPHA);
+          LIBS.rotateX(temp,THETA);
          
-          // MODEL_MATRIX2= LIBS.multiply(MODEL_MATRIX2,temp)
+          MODEL_MATRIX2= LIBS.multiply(MODEL_MATRIX2,temp)
 
           object.MODEL_MATRIX=MODEL_MATRIX;
-          object.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+          object.render(VIEW_MATRIX, PROJECTION_MATRIX);
 
 
           object2.MODEL_MATRIX = MODEL_MATRIX2;
-          object2.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+        //   object2.render(VIEW_MATRIX, PROJECTION_MATRIX);
 
 
           window.requestAnimationFrame(animate);
       };
+ 
+ 
       animate(0);
-      
   }
   window.addEventListener('load',main);
