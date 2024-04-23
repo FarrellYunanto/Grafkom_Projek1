@@ -482,7 +482,7 @@ function generateCircle(x,y,rad){
 
 
     uniform float greyScality;
-    // uniform sampler2D sampler; // buat kalo mau pake texture
+    //uniform sampler2D sampler; //buat kalo mau pake texture
 
 
     void main(void) {
@@ -490,7 +490,7 @@ function generateCircle(x,y,rad){
     vec3 greyScaleColor = vec3(greyScaleValue, greyScaleValue, greyScaleValue);
     vec3 color = mix(greyScaleColor, vColor, greyScality);
     gl_FragColor = vec4(color, 1.);
-    // gl_FragColor = texture2D(sampler,vUV); buat kalo mau pake texture
+    //gl_FragColor = texture2D(sampler,vUV); //buat kalo mau pake texture
     }`;
 
     //Coordinates
