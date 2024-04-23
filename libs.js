@@ -175,6 +175,13 @@ var LIBS = {
       },
       setPosition: function(m,x,y,z){
         m[12]=x; m[13]=y; m[14]=z;
-      }
+      },
 
+      transformPoint: function(matrix, point) {
+        var transformedPoint = [];
+        transformedPoint[0] = matrix[0] * point[0] + matrix[4] * point[1] + matrix[8] * point[2] + matrix[12];
+        transformedPoint[1] = matrix[1] * point[0] + matrix[5] * point[1] + matrix[9] * point[2] + matrix[13];
+        transformedPoint[2] = matrix[2] * point[0] + matrix[6] * point[1] + matrix[10] * point[2] + matrix[14];
+        return transformedPoint;
+    },
   };
