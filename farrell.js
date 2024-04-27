@@ -636,6 +636,7 @@ function generateCircle(x,y,rad){
       var animate = function(time) {
           GL.viewport(0, 0, CANVAS.width, CANVAS.height);
           GL.clear(GL.COLOR_BUFFER_BIT | GL.D_BUFFER_BIT);
+          var dt = time-time_prev;
           time_prev=time;
 
           if(!drag){
@@ -667,7 +668,7 @@ function generateCircle(x,y,rad){
 
           var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [1, 0, 0]);
           LIBS.setPosition(MODEL_MATRIX2,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
-
+          LIBS.rotateX()
         //    LIBS.setPosition(MODEL_MATRIX2,pos_x,pos_y,pos_z);
           // var temp = LIBS.get_I4();
           // LIBS.rotateY(temp,ALPHA);
