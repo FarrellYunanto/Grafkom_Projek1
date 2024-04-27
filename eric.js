@@ -35,7 +35,7 @@ function generateHalfSphere(xrad, yrad, zrad, stack, step){
 }
 
 
-function generateTorus(majorRadius, minorRadius, sectorCount, sideCount) {
+function generateTorus(majorRadius, minorRadius, sectorCount, sideCount,r,g,b) {
   var vertices = [];
   var faces = [];
   sectorAngle, sideAngle;
@@ -59,7 +59,7 @@ function generateTorus(majorRadius, minorRadius, sectorCount, sideCount) {
       s = j / sectorCount;
       t = i / sideCount;
 
-      vertices.push(x, y, z,1,0,1, s, t);
+      vertices.push(x, y, z,r,g,b, s, t);
     }
   }
 
@@ -74,7 +74,70 @@ function generateTorus(majorRadius, minorRadius, sectorCount, sideCount) {
 
   return { "vertices": vertices, "faces": faces };
 }
-function generateCylinder(radius, height, sectorCount){
+
+function generateWing(length, width, depth,r,g,b) {
+  var vertices = [
+      // Vertices sayap pesawat
+      // Atas
+      -length / 2, 0,      0, r, g, b, 0, 0,  // V0
+       length / 2, 0,      0, r, g, b, 1, 0,  // V1
+       length / 2, 0, -depth, r, g, b, 1, 1,  // V2
+      -length / 2, 0, -depth, r, g, b, 0, 1,  // V3
+
+      // Bawah
+      -length / 2, -width,      0, r, g, b, 0, 0,  // V4
+       length / 2, -width,      0, r, g, b, 1, 0,  // V5
+       length / 2, -width, -depth, r, g, b, 1, 1,  // V6
+      -length / 2, -width, -depth, r, g, b, 0, 1   // V7
+  ];
+
+  var faces = [
+      // Atas
+      0, 1, 2, 0, 2, 3,
+      // Bawah
+      4, 5, 6, 4, 6, 7,
+      // Samping
+      0, 1, 5, 0, 5, 4,
+      1, 2, 6, 1, 6, 5,
+      2, 3, 7, 2, 7, 6,
+      3, 0, 4, 3, 4, 7
+  ];
+
+  return { "vertices": vertices, "faces": faces };
+}
+
+function generate3DTrapesium(lengthTop, lengthBottom, height, depth, r, g, b) {
+  var vertices = [
+      // Vertices trapesium
+      // Atas
+      -lengthTop / 2,     height / 2, 0, r, g, b, 1, 1, // V0
+       lengthTop / 2,     height / 2, 0, r, g, b, 1, 0, // V1
+       lengthBottom / 2, -height / 2, 0, r, g, b, 0, 0, // V2
+      -lengthBottom / 2, -height / 2, 0, r, g, b, 1, 1, // V3
+
+      // Bawah
+      -lengthTop / 2,     height / 2, -depth, r, g, b, 1, 0, // V4
+       lengthTop / 2,     height / 2, -depth, r, g, b, 0, 1, // V5
+       lengthBottom / 2, -height / 2, -depth, r, g, b, 1, 1, // V6
+      -lengthBottom / 2, -height / 2, -depth, r, g, b, 0, 0 // V7
+  ];
+
+  var faces = [
+      // Atas
+      0, 1, 2, 0, 2, 3,
+      // Bawah
+      4, 5, 6, 4, 6, 7,
+      // Samping
+      0, 1, 5, 0, 5, 4,
+      1, 2, 6, 1, 6, 5,
+      2, 3, 7, 2, 7, 6,
+      3, 0, 4, 3, 4, 7   
+  ];
+
+  return { "vertices": vertices, "faces": faces };
+}
+
+function generateCylinder(radius, height, sectorCount,r,g,b){
   const PI = Math.PI;
   let sectorStep = 2 * PI / sectorCount;
   let sectorAngle;  // Radian
@@ -101,7 +164,7 @@ function generateCylinder(radius, height, sectorCount){
         vertices.push(uy * radius);             // vy
         vertices.push(h);                       // vz
         // Texture coordinate
-        vertices.push(1,1,0) // warna tabung
+        vertices.push(r,g,b) // warna tabung
         vertices.push(j/sectorCount,t)
     }
 }
@@ -116,7 +179,7 @@ function generateCylinder(radius, height, sectorCount){
 
      // Center point
      vertices.push(0,0,h); 
-     vertices.push(1,1,0) // warna center
+     vertices.push(r,g,b) // warna center
      vertices.push(0.5,0.5)
      
 
@@ -127,7 +190,7 @@ function generateCylinder(radius, height, sectorCount){
          vertices.push(ux * radius);             // vx
          vertices.push(uy * radius);             // vy
          vertices.push(h);                       // vz
-          vertices.push(1,1,0) // warna lingkaran atas bawah
+          vertices.push(r,g,b) // warna lingkaran atas bawah
          // Texture coordinate
          vertices.push(-ux * 0.5 + 0.5);        // s
          vertices.push(-uy * 0.5 + 0.5);        // t
@@ -181,7 +244,7 @@ function generateCylinder(radius, height, sectorCount){
 
  return { "vertices": vertices, "faces": indices };
 }
-function generateSphere(xrad, yrad, zrad, stack, step){
+function generateSphere(xrad, yrad, zrad, stack, step,r,g,b){
   var vertices = [];
   var faces = [];
 
@@ -197,7 +260,7 @@ function generateSphere(xrad, yrad, zrad, stack, step){
       v = i*1.0/stack;
       u = j*1.0/step;
 
-      vertices.push(x,y,z,1,1,1,v,u);
+      vertices.push(x,y,z,r,g,b,v,u);
     }
   }
 
@@ -225,7 +288,7 @@ function generateCircle(x,y,rad){
     return list;
   }
 
-  function generateCone(baseRadius, height, sectorCount, stackCount) {
+  function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
     const PI = Math.acos(-1.0);
     let sectorStep = 2 * PI / sectorCount;
     let unitCircleVertices = [];
@@ -252,7 +315,7 @@ function generateCircle(x,y,rad){
             let x = unitCircleVertices[k];
             let y = unitCircleVertices[k + 1];
             vertices.push(x * radius, y * radius, z);
-            vertices.push(0,1,1) //warna cone
+            vertices.push(r,g,b) //warna cone
             vertices.push(j / sectorCount, t);
         }
     }
@@ -263,7 +326,7 @@ function generateCircle(x,y,rad){
     // Build base vertices
     let z = -height * 0.5;
     vertices.push(0, 0, z);
-    vertices.push(1,0,1);
+    vertices.push(r,g,b);//warna cone
     vertices.push(0.5, 0.5);
     for (let i = 0, j = 0; i < sectorCount; ++i, j += 3) {
         let x = unitCircleVertices[j];
@@ -425,7 +488,39 @@ function generateCircle(x,y,rad){
           GL.flush();
     }
   }
- 
+ function rotateXGlobal(obj,rotation){
+  obj.forEach(child => {
+    LIBS.rotateX(child,rotation)
+  });
+ }
+ function rotateYGlobal(obj,rotation){
+  obj.forEach(child => {
+    LIBS.rotateY(child,rotation)
+  });
+ }
+ function rotateZGlobal(obj,rotation){
+  obj.forEach(child => {
+    LIBS.rotateZ(child,rotation)
+  });
+ }
+
+ function translateX(obj,translation){
+  obj.forEach(child => {
+    LIBS.translateX(child,rotation)
+  });
+ }
+
+ function translateYGlobal(obj,translation){
+  obj.forEach(child => {
+    LIBS.translateY(child,rotation)
+  });
+ }
+
+ function translateZGlobal(obj,translation){
+  obj.forEach(child => {
+    LIBS.translateZ(child,rotation)
+  });
+ }
  
   function main(){
       var CANVAS = document.getElementById("myCanvas");
@@ -607,22 +702,36 @@ function generateCircle(x,y,rad){
       var MODEL_MATRIX3 = LIBS.get_I4();
       var MODEL_MATRIX4 = LIBS.get_I4();
       var MODEL_MATRIX5 = LIBS.get_I4();
+      var MODEL_MATRIX6 = LIBS.get_I4();
+      var MODEL_MATRIX7 = LIBS.get_I4();
 
 
-      LIBS.translateZ(VIEW_MATRIX,-10);
+      LIBS.translateZ(VIEW_MATRIX,-25);
 
       //badan pesawat
-      var badanPesawat = generateCylinder(0.75,5,100)
+      var badanPesawat = generateCylinder(0.75,5,100,1,0,1)
       var object = new MyObject(badanPesawat['vertices'], badanPesawat['faces'], shader_vertex_source, shader_fragment_source);
       
       // mancung pesawat
-      var mancungPesawat = generateHalfSphere(1,2,0,100,100)
+      var mancungPesawat = generateSphere(0.75,0.7,1,100,100,1,1,0)
       var objMancungPesawat = new MyObject(mancungPesawat['vertices'],mancungPesawat['faces'],shader_vertex_source,shader_fragment_source)
       
       // bokong pesawat
-      var tailMancungPesawat = generateCone(0.75,2,100,100)
+      var tailMancungPesawat = generateCone(0.75,2,100,100,0,1,1)
       var objTailPesawat = new MyObject(tailMancungPesawat['vertices'], tailMancungPesawat['faces'], shader_vertex_source, shader_fragment_source);
       
+      var sayap = generateWing(-2,0.2,3,1,1,0);
+      var objSayap = new MyObject(sayap['vertices'],sayap['faces'], shader_vertex_source, shader_fragment_source);
+      
+      var sayap2 = generateWing(-2,0.2,3,1,1,0);
+      var objSayap2 = new MyObject(sayap2['vertices'],sayap2['faces'], shader_vertex_source, shader_fragment_source);
+      
+
+      var pucuk = generateCone(0.5,4,4,100,1,1,0);
+      var objPucuk = new MyObject(pucuk['vertices'],pucuk['faces'], shader_vertex_source, shader_fragment_source);
+      
+      var testTrapesium = generate3DTrapesium(5,2,1,1,0,1,0)
+      var objTrapesium = new MyObject(testTrapesium['vertices'],testTrapesium['faces'], shader_vertex_source, shader_fragment_source)
       var donut = generateTorus(1,0.3,72,24)
       var tabung = generateCylinder(0.5,1,50) // kalo base radius 0 jadi cone
       var tri = generateCone(1,1,3,40) // kalo sector count 3 jaditetra hedron, kalao 4 jadi square pyramid
@@ -633,8 +742,10 @@ function generateCircle(x,y,rad){
       var obj5 = new MyObject(cone['vertices'],cone['faces'],shader_vertex_source,shader_fragment_source)
       object.childs.push(objTailPesawat)
       object.childs.push(objMancungPesawat)
-      object.childs.push(obj4)
-      object.childs.push(obj5)
+      object.childs.push(objSayap)
+      object.childs.push(objSayap2)
+      object.childs.push(objPucuk)
+      object.childs.push(objTrapesium)
       object.setup();
 
       /*========================= DRAWING ========================= */
@@ -643,11 +754,31 @@ function generateCircle(x,y,rad){
       GL.depthFunc(GL.LEQUAL);
 
       var time_prev = 0;
+      var i = 0;
+      var j = 0;
+      var k = 0;
+      var x = 0;
+      var y = 0.01;
+      var z = 0.01;
+
+      var xrot = 0;
+      var zrot = 0;
+      var xcount = 0.01;
+      var zcount = 0.01;
       var animate = function(time) {
+
+        i += x;
+        j += y;
+        k += z;
+
+        zrot +=zcount;
+        xrot += xcount;
+        var dt =  time - time_prev;
+        time_prev=time;
           GL.viewport(0, 0, CANVAS.width, CANVAS.height);
           GL.clear(GL.COLOR_BUFFER_BIT | GL.D_BUFFER_BIT);
-          time_prev=time;
-
+          
+          now = time/1000;
           if(!drag){
             dX*=FRICTION;
             dY*=FRICTION;
@@ -656,11 +787,11 @@ function generateCircle(x,y,rad){
             THETA += dX *2*Math.PI/CANVAS.width;
             ALPHA += dY * 2*Math.PI/CANVAS.height;
           }
-          
+          console.log(now)
           //ngukur pergerakan
           var radius = 2;
-          var pos_x = -radius * THETA;
-          var pos_y = -radius * ALPHA;
+          var pos_x = radius * now/1000;
+          var pos_y = -radius * now/1000;
           var pos_z = 0;
           //badan pesawat
           MODEL_MATRIX = LIBS.get_I4();
@@ -670,20 +801,119 @@ function generateCircle(x,y,rad){
           MODEL_MATRIX3 = LIBS.get_I4();
           MODEL_MATRIX4 = LIBS.get_I4();
           MODEL_MATRIX5 = LIBS.get_I4();
+          MODEL_MATRIX6 = LIBS.get_I4();
+          MODEL_MATRIX7 = LIBS.get_I4();
           // LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
-
+          // LIBS.rotateX(MODEL_MATRIX,10)
+          
           LIBS.rotateY(MODEL_MATRIX, THETA); //puter objek kanan kiri
           LIBS.rotateX(MODEL_MATRIX, ALPHA); // puter objek atas bawah
           
 
-          
+          LIBS.rotateY(MODEL_MATRIX2,-9.425)
           LIBS.rotateY(MODEL_MATRIX2, THETA);
           LIBS.rotateX(MODEL_MATRIX2, ALPHA);
           
-          // LIBS.translateX(MODEL_MATRIX3,-4);
-          // LIBS.rotateY(MODEL_MATRIX3, -THETA);
-          // LIBS.rotateX(MODEL_MATRIX3, -ALPHA);
+ 
+          LIBS.rotateY(MODEL_MATRIX3, THETA);
+          LIBS.rotateX(MODEL_MATRIX3, ALPHA);
+ 
+          LIBS.rotateY(MODEL_MATRIX4,-21)
+          LIBS.rotateY(MODEL_MATRIX4, THETA);
+          LIBS.rotateX(MODEL_MATRIX4, ALPHA);
 
+          LIBS.rotateY(MODEL_MATRIX5,21)
+          LIBS.rotateY(MODEL_MATRIX5, THETA);
+          LIBS.rotateX(MODEL_MATRIX5, ALPHA);
+
+          LIBS.rotateX(MODEL_MATRIX6,LIBS.degToRad(90))
+          LIBS.rotateY(MODEL_MATRIX6, THETA);
+          LIBS.rotateX(MODEL_MATRIX6, ALPHA);
+          
+          
+          LIBS.rotateX(MODEL_MATRIX7,90)
+          LIBS.translateX(MODEL_MATRIX7,-5)
+          LIBS.rotateY(MODEL_MATRIX7, THETA);
+          LIBS.rotateX(MODEL_MATRIX7, ALPHA);
+
+          var obj = [MODEL_MATRIX, MODEL_MATRIX2,MODEL_MATRIX3,MODEL_MATRIX4,MODEL_MATRIX5,MODEL_MATRIX6]
+
+
+
+          rotateYGlobal(obj,LIBS.degToRad(90))
+          // rotateYGlobal(obj,LIBS.degToRad(yrot))
+          rotateZGlobal(obj,LIBS.degToRad(zrot))
+          if(i > 2.0){
+            console.log("HIt")
+            x = -0.01;
+          }
+          else if (i < -2){
+            x = 0.01;
+          }
+          if(j > 1){
+            console.log("HIt")
+            y = -0.01;
+          }
+          else if (j < -1){
+            y = 0.01;
+          }
+          if(zrot > 1){
+            console.log("HIt")
+            zcount = -0.01;
+            
+          }
+          else if (zrot < -1){
+            zcount = 0.01;
+            
+          }
+          console.log(i)
+          console.log(j)
+          if(now > 5 && now < 7){
+            x = -0.01;
+          }
+          else if (now  >7 && now < 10){
+            x = 0.01;
+          }
+          else if (now  >10 && now < 13){
+            xcount  = 0.01;
+          }
+          else if (now  >13 && now < 15){
+            xcount = -0.01;
+          }
+          else{
+            x = -0.01;
+            xcount = 0;
+            if (i < 0){
+              x = 0;
+              zcount = 0;
+              time = 0;
+              time_prev = 0;
+            }
+          }
+          // rotateYGlobal(obj,LIBS.degToRad(90*-j*2))
+          // rotateXGlobal(obj,LIBS.degToRad(yrot*10))
+          // rotateZGlobal(obj,i/2)
+          // LIBS.translateX(MODEL_MATRIX,i* 10)
+          LIBS.translateY(MODEL_MATRIX,j*10)
+          LIBS.translateX(MODEL_MATRIX,i*10)
+          rotateZGlobal(obj,LIBS.degToRad(zrot))
+          rotateXGlobal(obj,xrot*10)
+         s  
+          // LIBS.rotateX(MODEL_MATRIX,i)
+          // LIBS.rotateX(MODEL_MATRIX2,i)
+          // LIBS.rotateX(MODEL_MATRIX3,i)
+          // LIBS.rotateX(MODEL_MATRIX4,i)
+          // LIBS.rotateX(MODEL_MATRIX5,i)
+          // LIBS.rotateX(MODEL_MATRIX6,i)
+
+          // LIBS.rotateY(MODEL_MATRIX,i)
+          // LIBS.rotateY(MODEL_MATRIX2,i)
+          // LIBS.rotateY(MODEL_MATRIX3,i)
+          // LIBS.rotateY(MODEL_MATRIX4,i)
+          // LIBS.rotateY(MODEL_MATRIX5,i)
+          // LIBS.rotateY(MODEL_MATRIX6,i)
+          // LIBS.translateX(MODEL_MATRIX,time/-1000)
+          // LIBS.rotateY(MODEL_MATRIX,LIBS.degToRad(180*dt/100))
           // LIBS.translateX(MODEL_MATRIX4,-6);
           // LIBS.rotateY(MODEL_MATRIX4, -THETA);
           // LIBS.rotateX(MODEL_MATRIX4, -ALPHA);
@@ -693,17 +923,23 @@ function generateCircle(x,y,rad){
           // LIBS.rotateX(MODEL_MATRIX5, -ALPHA);
 
           var transformedBadanPesawat = LIBS.transformPoint(MODEL_MATRIX, [0, 0, 0]);
-          LIBS.setPosition(MODEL_MATRIX2,transformedBadanPesawat[0], transformedBadanPesawat[1], transformedBadanPesawat[2]);
-            
-          var transformedMancungPesawat = LIBS.transformPoint(MODEL_MATRIX, [0, 0, -3]);
+          LIBS.setPosition(MODEL_MATRIX,transformedBadanPesawat[0], transformedBadanPesawat[1], transformedBadanPesawat[2]);
+          
+          var transformedMancungPesawat = LIBS.transformPoint(MODEL_MATRIX, [0, 0, -3.5]);
           LIBS.setPosition(MODEL_MATRIX2,transformedMancungPesawat[0], transformedMancungPesawat[1], transformedMancungPesawat[2]);
 
-          // var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [0, 1, 0]);
-          // LIBS.setPosition(MODEL_MATRIX3,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+          var transformedHidungPesawat = LIBS.transformPoint(MODEL_MATRIX, [0, 0, 2.5]);
+          LIBS.setPosition(MODEL_MATRIX3,transformedHidungPesawat[0], transformedHidungPesawat[1], transformedHidungPesawat[2]);
           
-          // var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [-1, 0, 0]);
-          // LIBS.setPosition(MODEL_MATRIX4,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+
+          var transformedSayap = LIBS.transformPoint(MODEL_MATRIX, [-2, -0.25, -1]);
+          LIBS.setPosition(MODEL_MATRIX4,transformedSayap[0], transformedSayap[1], transformedSayap[2]);
+
+          var transformedSayap2 = LIBS.transformPoint(MODEL_MATRIX, [2, -0.25, -1]);
+          LIBS.setPosition(MODEL_MATRIX5,transformedSayap2[0], transformedSayap2[1], transformedSayap2[2]);
           
+          var transformedPucuk = LIBS.transformPoint(MODEL_MATRIX, [0, -0.8, -1.5]);
+          LIBS.setPosition(MODEL_MATRIX6,transformedPucuk[0], transformedPucuk[1], transformedPucuk[2]);
           // var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [1, -1, 0]);
           // LIBS.setPosition(MODEL_MATRIX5,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
           
@@ -722,8 +958,21 @@ function generateCircle(x,y,rad){
           objTailPesawat.MODEL_MATRIX = MODEL_MATRIX2;
           objTailPesawat.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
-          // objMancungPesawat.MODEL_MATRIX = MODEL_MATRIX3;
-          // objMancungPesawat.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+          objMancungPesawat.MODEL_MATRIX = MODEL_MATRIX3;
+          objMancungPesawat.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+
+          objSayap.MODEL_MATRIX = MODEL_MATRIX4;
+          objSayap.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+
+          objSayap2.MODEL_MATRIX = MODEL_MATRIX5;
+          objSayap2.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+
+          objPucuk.MODEL_MATRIX = MODEL_MATRIX6;
+          objPucuk.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+
+          objTrapesium.MODEL_MATRIX = MODEL_MATRIX7;
+          objTrapesium.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
           // obj4.MODEL_MATRIX = MODEL_MATRIX4;
           // obj4.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
