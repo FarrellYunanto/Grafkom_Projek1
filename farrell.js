@@ -352,7 +352,7 @@ function generateCircle(x,y,rad){
     MODEL_MATRIX = LIBS.get_I4();
 
 
-    constructor(vertex, faces, source_shader_vertex, source_shader_fragment){
+    constructor(vertex, faces, source_shader_vertex, source_shader_fragment, texture){
       this.vertex = vertex;
       this.faces = faces;
 
@@ -404,7 +404,8 @@ function generateCircle(x,y,rad){
 
     this.TRIANGLE_VERTEX = GL.createBuffer();
     this.TRIANGLE_FACES = GL.createBuffer();
-    this.texture = LIBS.load_texture("resource/beton.jpeg"); //buat kalo mau pake texture
+    // this.texture = LIBS.load_texture("resource/beton.jpeg"); //buat kalo mau pake texture
+    this.texture = LIBS.load_texture(texture); //buat kalo mau pake texture
     }
 
 
@@ -575,6 +576,23 @@ function generateCircle(x,y,rad){
     gl_FragColor = texture2D(sampler,vUV); //buat kalo mau pake texture
     }`;
 
+    var shader_fragment_source_nt =`
+    precision mediump float;
+    varying vec3 vColor;
+    varying vec2 vUV;
+    // uniform vec3 color;
+
+
+    uniform float greyScality;
+
+
+    void main(void) {
+    float greyScaleValue = (vColor.r + vColor.g + vColor.b)/3.;
+    vec3 greyScaleColor = vec3(greyScaleValue, greyScaleValue, greyScaleValue);
+    vec3 color = mix(greyScaleColor, vColor, greyScality);
+    gl_FragColor = vec4(color, 1.);
+    }`;
+    
     //Coordinates
     var cube = [
       //belakang
@@ -654,46 +672,46 @@ function generateCircle(x,y,rad){
       LIBS.translateZ(VIEW_MATRIX,-15);
 
       //Body
-      var object = new MyObject(cube, cube_faces, shader_vertex_source, shader_fragment_source);
+      var object = new MyObject(cube, cube_faces, shader_vertex_source, shader_fragment_source, "resource/dwood.jpg");
       
       //paha kiri
       var sphere = generateHalfSphere(0.7,0.9,0.7,50,50);
-      var object2 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source);
+      var object2 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source, "resource/dwood.jpg");
 
       //paha kanan
-      var object3 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source);
+      var object3 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source, "resource/dwood.jpg");
 
       //betis kanan
       var cylinder = generateCylinder(0.5,2,50);
-      var object4 = new MyObject(cylinder['vertices'], cylinder['faces'], shader_vertex_source, shader_fragment_source);
+      var object4 = new MyObject(cylinder['vertices'], cylinder['faces'], shader_vertex_source, shader_fragment_source, "resource/lwood.jpg");
 
       //betis kiri
-      var object5 = new MyObject(cylinder['vertices'], cylinder['faces'], shader_vertex_source, shader_fragment_source);
+      var object5 = new MyObject(cylinder['vertices'], cylinder['faces'], shader_vertex_source, shader_fragment_source, "resource/lwood.jpg");
 
       //duri 1
       var cone = generateCone(0.6, 0.6,25,25);
-      var object6 = new MyObject(cone['vertices'], cone['faces'], shader_vertex_source, shader_fragment_source);
+      var object6 = new MyObject(cone['vertices'], cone['faces'], shader_vertex_source, shader_fragment_source, "resource/lwood.jpg");
       //duri 2
       var cone = generateCone(0.6, 0.6,25,25);
-      var object7 = new MyObject(cone['vertices'], cone['faces'], shader_vertex_source, shader_fragment_source);
+      var object7 = new MyObject(cone['vertices'], cone['faces'], shader_vertex_source, shader_fragment_source, "resource/lwood.jpg");
       //duri 3
       var cone = generateCone(0.6, 0.6,25,25);
-      var object8  = new MyObject(cone['vertices'], cone['faces'], shader_vertex_source, shader_fragment_source);
+      var object8  = new MyObject(cone['vertices'], cone['faces'], shader_vertex_source, shader_fragment_source, "resource/lwood.jpg");
 
       //mata kanan
       var sphere = generateSphere(0.3,0.3,0.3,50,50);
-      var object9  = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source);
+      var object9  = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source_nt, "resource/lwood.jpg");
 
       //mata kiri
       var sphere = generateSphere(0.3,0.3,0.3,50,50);
-      var object10 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source);
+      var object10 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source_nt, "resource/lwood.jpg");
 
       //kaki kanan
       var trapesium = generate3DTrapesium(1,2,1,1);
-      var object11 = new MyObject(trapesium['vertices'], trapesium['faces'], shader_vertex_source, shader_fragment_source);
+      var object11 = new MyObject(trapesium['vertices'], trapesium['faces'], shader_vertex_source, shader_fragment_source, "resource/dwood.jpg");
 
       //kaki kiri
-      var object12 = new MyObject(trapesium['vertices'], trapesium['faces'], shader_vertex_source, shader_fragment_source);
+      var object12 = new MyObject(trapesium['vertices'], trapesium['faces'], shader_vertex_source, shader_fragment_source, "resource/dwood.jpg");
 
 
 
