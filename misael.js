@@ -438,6 +438,23 @@ function generateCircle(x,y,rad){
           GL.flush();
     }
   }
+
+    //FUNCTION ROTATE ALL OBJECT seanak anak e 
+    function rotateXGlobal(obj,rotation){
+        obj.forEach(child => {
+            LIBS.rotateX(child,rotation)
+        });
+        }
+        function rotateYGlobal(obj,rotation){
+        obj.forEach(child => {
+            LIBS.rotateY(child,rotation)
+        });
+        }
+        function rotateZGlobal(obj,rotation){
+        obj.forEach(child => {
+            LIBS.rotateZ(child,rotation)
+        });
+        }
  
  
   function main(){
@@ -633,29 +650,18 @@ function generateCircle(x,y,rad){
       object.childs.push(object4)
       object.setup();
 
-      //FUNCTION ROTATE ALL OBJECT seanak anak e 
-      function rotateXGlobal(obj,rotation){
-        obj.forEach(child => {
-          LIBS.rotateX(child,rotation)
-        });
-       }
-       function rotateYGlobal(obj,rotation){
-        obj.forEach(child => {
-          LIBS.rotateY(child,rotation)
-        });
-       }
-       function rotateZGlobal(obj,rotation){
-        obj.forEach(child => {
-          LIBS.rotateZ(child,rotation)
-        });
-       }
-
       /*========================= DRAWING ========================= */
       GL.clearColor(0.0, 0.0, 0.0, 0.0);
       GL.enable(GL.DEPTH_TEST);
       GL.depthFunc(GL.LEQUAL);
 
       var prev_time = 0;
+      var i = 0;
+      var j = 0;
+      var k = 0;
+      var x = 0.01;
+      var y = 0.01;
+      var z = 0.01;
       var animate = function(time) {
         GL.viewport(0, 0, CANVAS.width, CANVAS.height);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.D_BUFFER_BIT);
@@ -667,13 +673,6 @@ function generateCircle(x,y,rad){
         // LIBS.rotateY(VIEW_MATRIX, LIBS.degToRad(90*dt/400));
         // // LIBS.translateY(VIEW_MATRIX, LIBS.degToRad(90*dt/400))
      
-        var i = 0;
-        var j = 0;
-        var k = 0;
-        var x = 0.01;
-        var y = 0.01;
-        var z = 0.01;
-  
           i += x;
           j += y;
           k += z;  
@@ -704,13 +703,15 @@ function generateCircle(x,y,rad){
         LIBS.rotateY(MODEL_MATRIX, 1.2);
         LIBS.rotateX(MODEL_MATRIX, ALPHA); // puter objek atas bawah
         LIBS.rotateY(MODEL_MATRIX, THETA); //puter objek kanan kiri
-        
+        var transformPosCube = LIBS.transformPoint(MODEL_MATRIX,[0,0,0]);
+        LIBS.setPosition(MODEL_MATRIX, transformPosCube[0], transformPosCube[1], transformPosCube[2]);
+       
         //body donut
         LIBS.rotateX(MODEL_MATRIX2, -4.7);
         LIBS.rotateY(MODEL_MATRIX2, 1.2);
         LIBS.rotateX(MODEL_MATRIX2, ALPHA);
         LIBS.rotateY(MODEL_MATRIX2, THETA);
-        var transformPosDonut = LIBS.transformPoint(MODEL_MATRIX2,[0,0,1]);
+        var transformPosDonut = LIBS.transformPoint(MODEL_MATRIX,[0,0,1]);
         LIBS.setPosition(MODEL_MATRIX2, transformPosDonut[0], transformPosDonut[1], transformPosDonut[2]);
         
         //body donut2
@@ -718,7 +719,7 @@ function generateCircle(x,y,rad){
         LIBS.rotateY(MODEL_MATRIX3, 1.2);
         LIBS.rotateX(MODEL_MATRIX3, ALPHA);
         LIBS.rotateY(MODEL_MATRIX3, THETA);
-        var transformPosDonut_2= LIBS.transformPoint(MODEL_MATRIX3,[0,0,1.8]);
+        var transformPosDonut_2= LIBS.transformPoint(MODEL_MATRIX,[0,0,1.8]);
         LIBS.setPosition(MODEL_MATRIX3, transformPosDonut_2[0], transformPosDonut_2[1], transformPosDonut_2[2]);
         
         //body donut3
@@ -726,8 +727,12 @@ function generateCircle(x,y,rad){
         LIBS.rotateY(MODEL_MATRIX4, 1.2);
         LIBS.rotateX(MODEL_MATRIX4, ALPHA);
         LIBS.rotateY(MODEL_MATRIX4, THETA);
-        var transformPosDonut_3= LIBS.transformPoint(MODEL_MATRIX4,[0,0,2.3]);
+        var transformPosDonut_3= LIBS.transformPoint(MODEL_MATRIX,[0,0,2.3]);
         LIBS.setPosition(MODEL_MATRIX4, transformPosDonut_3[0], transformPosDonut_3[1], transformPosDonut_3[2]);
+
+        // var UFO = [MODEL_MATRIX, MODEL_MATRIX2, MODEL_MATRIX3, MODEL_MATRIX4];
+        // rotateYGlobal(UFO, i); 
+        // rotateXGlobal(UFO, i); 
         
         //RENDER
         object.MODEL_MATRIX=MODEL_MATRIX;
