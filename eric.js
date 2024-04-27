@@ -105,6 +105,41 @@ function generateWing(length, width, depth,r,g,b) {
 
   return { "vertices": vertices, "faces": faces };
 }
+function generateRectangle3DGeometry(length, width, height,r,g,b) {
+  var vertices = [
+      // Sisi atas
+      -length / 2, height / 2, -width / 2, r,g,b, 1,0, // Titik 0
+      length / 2, height / 2, -width / 2,  r,g,b, 0,1, // Titik 1
+      length / 2, height / 2, width / 2,   r,g,b, 1,1, // Titik 2
+      -length / 2, height / 2, width / 2,  r,g,b, 0,0, // Titik 3
+      // Sisi bawah
+      -length / 2, -height / 2, -width / 2, r,g,b, 0,1,// Titik 4
+      length / 2, -height / 2, -width / 2,  r,g,b, 1,0,// Titik 5
+      length / 2, -height / 2, width / 2,   r,g,b, 0,0,// Titik 6
+      -length / 2, -height / 2, width / 2,   r,g,b, 1,1// Titik 7
+  ];
+
+  // Definisikan indeks untuk dua segitiga yang membentuk persegi panjang
+  var indices = [
+      // Atas
+      0, 1, 2,
+      0, 2, 3,
+      // Bawah
+      4, 5, 6,
+      4, 6, 7,
+      // Samping
+      0, 4, 1,
+      1, 4, 5,
+      1, 5, 2,
+      2, 5, 6,
+      2, 6, 3,
+      3, 6, 7,
+      3, 7, 0,
+      0, 7, 4
+  ];
+
+  return { "vertices": vertices, "faces": indices };
+}
 
 function generate3DTrapesium(lengthTop, lengthBottom, height, depth, r, g, b) {
   var vertices = [
@@ -704,6 +739,8 @@ function generateCircle(x,y,rad){
       var MODEL_MATRIX5 = LIBS.get_I4();
       var MODEL_MATRIX6 = LIBS.get_I4();
       var MODEL_MATRIX7 = LIBS.get_I4();
+      var MODEL_MATRIX_OBSTACLE = LIBS.get_I4();
+      var MODEL_MATRIX_LANTAI = LIBS.get_I4();
 
 
       LIBS.translateZ(VIEW_MATRIX,-25);
@@ -727,16 +764,23 @@ function generateCircle(x,y,rad){
       var objSayap2 = new MyObject(sayap2['vertices'],sayap2['faces'], shader_vertex_source, shader_fragment_source);
       
 
-      var pucuk = generateCone(0.5,4,4,100,1,1,0);
+      var pucuk = generateCone(0.5,2,4,100,1,1,0);
       var objPucuk = new MyObject(pucuk['vertices'],pucuk['faces'], shader_vertex_source, shader_fragment_source);
       
+      var obs = generateSphere(0.5,0.5,0.5,100,100,1,1,0);
+      var objObs = new MyObject(obs['vertices'],obs['faces'],shader_vertex_source, shader_fragment_source)
+
+      var lantai = generateRectangle3DGeometry(2,200,200,0,1,0);
+      var objLantai = new MyObject(lantai['vertices'],lantai['faces'],shader_vertex_source, shader_fragment_source)
+
+
       var testTrapesium = generate3DTrapesium(5,2,1,1,0,1,0)
       var objTrapesium = new MyObject(testTrapesium['vertices'],testTrapesium['faces'], shader_vertex_source, shader_fragment_source)
       var donut = generateTorus(1,0.3,72,24)
       var tabung = generateCylinder(0.5,1,50) // kalo base radius 0 jadi cone
       var tri = generateCone(1,1,3,40) // kalo sector count 3 jaditetra hedron, kalao 4 jadi square pyramid
       var cone = generateCone(1,1,3,40) // kalo sector count 3 jaditetra hedron, kalao 4 jadi square pyramid
-      var sphere = generateSphere(2,2,2,50,50);
+      var sphere = generateSphere(0.5,0.5,0.5,50,50);
       
       var obj4 = new MyObject(tabung['vertices'],tabung['faces'],shader_vertex_source,shader_fragment_source)
       var obj5 = new MyObject(cone['vertices'],cone['faces'],shader_vertex_source,shader_fragment_source)
@@ -746,6 +790,9 @@ function generateCircle(x,y,rad){
       object.childs.push(objSayap2)
       object.childs.push(objPucuk)
       object.childs.push(objTrapesium)
+      object.childs.push(objObs)
+      objLantai.setup()
+      // objObs.setup();
       object.setup();
 
       /*========================= DRAWING ========================= */
@@ -758,19 +805,28 @@ function generateCircle(x,y,rad){
       var j = 0;
       var k = 0;
       var x = 0;
+      var temp = 0;
       var y = 0.01;
       var z = 0.01;
+      var t_obj = 0;
 
+      var t_obs = 0;
       var xrot = 0;
       var zrot = 0;
       var xcount = 0.01;
       var zcount = 0.01;
-      var animate = function(time) {
+      var ycount = 0.01;
+      var temp_count = 0.01;
 
+
+
+      var animate = function(time) {
+        temp += temp_count;
         i += x;
         j += y;
         k += z;
 
+        t_obj += t_obs;
         zrot +=zcount;
         xrot += xcount;
         var dt =  time - time_prev;
@@ -787,7 +843,7 @@ function generateCircle(x,y,rad){
             THETA += dX *2*Math.PI/CANVAS.width;
             ALPHA += dY * 2*Math.PI/CANVAS.height;
           }
-          console.log(now)
+          console.log(temp)
           //ngukur pergerakan
           var radius = 2;
           var pos_x = radius * now/1000;
@@ -803,6 +859,8 @@ function generateCircle(x,y,rad){
           MODEL_MATRIX5 = LIBS.get_I4();
           MODEL_MATRIX6 = LIBS.get_I4();
           MODEL_MATRIX7 = LIBS.get_I4();
+          MODEL_MATRIX_OBSTACLE = LIBS.get_I4();
+          MODEL_MATRIX_LANTAI = LIBS.get_I4();
           // LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
           // LIBS.rotateX(MODEL_MATRIX,10)
           
@@ -826,7 +884,7 @@ function generateCircle(x,y,rad){
           LIBS.rotateY(MODEL_MATRIX5, THETA);
           LIBS.rotateX(MODEL_MATRIX5, ALPHA);
 
-          LIBS.rotateX(MODEL_MATRIX6,LIBS.degToRad(90))
+          LIBS.rotateX(MODEL_MATRIX6,LIBS.degToRad(215))
           LIBS.rotateY(MODEL_MATRIX6, THETA);
           LIBS.rotateX(MODEL_MATRIX6, ALPHA);
           
@@ -835,6 +893,17 @@ function generateCircle(x,y,rad){
           LIBS.translateX(MODEL_MATRIX7,-5)
           LIBS.rotateY(MODEL_MATRIX7, THETA);
           LIBS.rotateX(MODEL_MATRIX7, ALPHA);
+
+          LIBS.translateX(MODEL_MATRIX_OBSTACLE,30)
+          LIBS.rotateY(MODEL_MATRIX_OBSTACLE, THETA);
+          LIBS.rotateX(MODEL_MATRIX_OBSTACLE, ALPHA);
+
+          LIBS.translateY(MODEL_MATRIX_LANTAI,-10)
+          LIBS.rotateX(MODEL_MATRIX_LANTAI,LIBS.degToRad(90))
+          LIBS.rotateZ(MODEL_MATRIX_LANTAI,LIBS.degToRad(90))
+          LIBS.rotateY(MODEL_MATRIX_LANTAI, THETA);
+          LIBS.rotateX(MODEL_MATRIX_LANTAI, ALPHA);
+
 
           var obj = [MODEL_MATRIX, MODEL_MATRIX2,MODEL_MATRIX3,MODEL_MATRIX4,MODEL_MATRIX5,MODEL_MATRIX6]
 
@@ -854,6 +923,7 @@ function generateCircle(x,y,rad){
             console.log("HIt")
             y = -0.01;
           }
+
           else if (j < -1){
             y = 0.01;
           }
@@ -866,8 +936,8 @@ function generateCircle(x,y,rad){
             zcount = 0.01;
             
           }
-          console.log(i)
-          console.log(j)
+          // console.log(i)
+          // console.log(j)
           if(now > 5 && now < 7){
             x = -0.01;
           }
@@ -880,15 +950,45 @@ function generateCircle(x,y,rad){
           else if (now  >13 && now < 15){
             xcount = -0.01;
           }
+          else if (now  >15 && now < 19){
+            ycount  = 0.01;
+
+            xcount = 0;
+          }
+          else if (now  >19 && now < 22){
+            ycount = -0.01;
+          }
+          else if (now  >22 && now < 25){
+            z = 0.01
+          }
+          else if (now  >25 && now < 33){
+            z = -0.01;
+          }
           else{
             x = -0.01;
             xcount = 0;
+            ycount = 0;
+            z = 0;
             if (i < 0){
               x = 0;
+              xcount = 0;
+              ycount = 0;
+              z = 0;
               zcount = 0;
               time = 0;
               time_prev = 0;
             }
+          }
+
+        
+          if (now > 20){
+            console.log("HIT!10")
+              t_obs = -0.01;
+              console.log(t_obj)
+          }
+         
+          if (t_obj< -30){
+            t_obs = 0;
           }
           // rotateYGlobal(obj,LIBS.degToRad(90*-j*2))
           // rotateXGlobal(obj,LIBS.degToRad(yrot*10))
@@ -896,9 +996,12 @@ function generateCircle(x,y,rad){
           // LIBS.translateX(MODEL_MATRIX,i* 10)
           LIBS.translateY(MODEL_MATRIX,j*10)
           LIBS.translateX(MODEL_MATRIX,i*10)
+          LIBS.translateZ(MODEL_MATRIX,k*5)
           rotateZGlobal(obj,LIBS.degToRad(zrot))
           rotateXGlobal(obj,xrot*10)
-         s  
+          // if(now > 30 ){
+          //   object = null;
+          // }
           // LIBS.rotateX(MODEL_MATRIX,i)
           // LIBS.rotateX(MODEL_MATRIX2,i)
           // LIBS.rotateX(MODEL_MATRIX3,i)
@@ -921,7 +1024,7 @@ function generateCircle(x,y,rad){
           // LIBS.translateY(MODEL_MATRIX5,-3);
           // LIBS.rotateY(MODEL_MATRIX5, -THETA);
           // LIBS.rotateX(MODEL_MATRIX5, -ALPHA);
-
+          LIBS.translateY(MODEL_MATRIX_OBSTACLE,t_obj*10)
           var transformedBadanPesawat = LIBS.transformPoint(MODEL_MATRIX, [0, 0, 0]);
           LIBS.setPosition(MODEL_MATRIX,transformedBadanPesawat[0], transformedBadanPesawat[1], transformedBadanPesawat[2]);
           
@@ -938,12 +1041,17 @@ function generateCircle(x,y,rad){
           var transformedSayap2 = LIBS.transformPoint(MODEL_MATRIX, [2, -0.25, -1]);
           LIBS.setPosition(MODEL_MATRIX5,transformedSayap2[0], transformedSayap2[1], transformedSayap2[2]);
           
-          var transformedPucuk = LIBS.transformPoint(MODEL_MATRIX, [0, -0.8, -1.5]);
+          var transformedPucuk = LIBS.transformPoint(MODEL_MATRIX, [0, 0.8, -1.8]);
           LIBS.setPosition(MODEL_MATRIX6,transformedPucuk[0], transformedPucuk[1], transformedPucuk[2]);
+
+          var transformedObs = LIBS.transformPoint(MODEL_MATRIX, [0, 0, 0]);
+          LIBS.setPosition(MODEL_MATRIX_OBSTACLE,transformedObs[0], transformedObs[1], transformedObs[2]);
           // var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [1, -1, 0]);
           // LIBS.setPosition(MODEL_MATRIX5,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
           
-        
+          
+          LIBS.translateX(MODEL_MATRIX_OBSTACLE,t_obj*10)
+
         //   LIBS.setPosition(MODEL_MATRIX2,-pos_x,-pos_y,-pos_z);
           // var temp = LIBS.get_I4();
           // LIBS.rotateY(temp,ALPHA);
@@ -971,9 +1079,15 @@ function generateCircle(x,y,rad){
           objPucuk.MODEL_MATRIX = MODEL_MATRIX6;
           objPucuk.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
-          objTrapesium.MODEL_MATRIX = MODEL_MATRIX7;
-          objTrapesium.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+          // objTrapesium.MODEL_MATRIX = MODEL_MATRIX7;
+          // objTrapesium.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
+          objObs.MODEL_MATRIX = MODEL_MATRIX_OBSTACLE;
+          objObs.render(VIEW_MATRIX,PROJECTION_MATRIX,2)
+          
+          // objLantai.MODEL_MATRIX = MODEL_MATRIX_LANTAI;
+          // objLantai.render(VIEW_MATRIX,PROJECTION_MATRIX,2)
+          
           // obj4.MODEL_MATRIX = MODEL_MATRIX4;
           // obj4.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
