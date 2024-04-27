@@ -6,6 +6,7 @@ function generateTorus(majorRadius, minorRadius, sectorCount, sideCount, red, gr
   var g = green;
   var b = blue;
   sectorAngle, sideAngle;
+  var sectorStep = 2 * Math.PI / sectorCount;
   var sideStep = 2 * Math.PI / sideCount;
 
   for (var i = 0; i <= sideCount; ++i) {
