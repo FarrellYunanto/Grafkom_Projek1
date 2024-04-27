@@ -1,4 +1,36 @@
 var GL;
+
+function generate3DTrapesium(lengthTop, lengthBottom, height, depth, r, g, b) {
+  var vertices = [
+      // Vertices trapesium
+      // Atas
+      -lengthTop / 2,     height / 2, 0, r, g, b, 1, 1, // V0
+       lengthTop / 2,     height / 2, 0, r, g, b, 1, 0, // V1
+       lengthBottom / 2, -height / 2, 0, r, g, b, 0, 0, // V2
+      -lengthBottom / 2, -height / 2, 0, r, g, b, 1, 1, // V3
+
+      // Bawah
+      -lengthTop / 2,     height / 2, -depth, r, g, b, 1, 0, // V4
+       lengthTop / 2,     height / 2, -depth, r, g, b, 0, 1, // V5
+       lengthBottom / 2, -height / 2, -depth, r, g, b, 1, 1, // V6
+      -lengthBottom / 2, -height / 2, -depth, r, g, b, 0, 0 // V7
+  ];
+
+  var faces = [
+      // Atas
+      0, 1, 2, 0, 2, 3,
+      // Bawah
+      4, 5, 6, 4, 6, 7,
+      // Samping
+      0, 1, 5, 0, 5, 4,
+      1, 2, 6, 1, 6, 5,
+      2, 3, 7, 2, 7, 6,
+      3, 0, 4, 3, 4, 7
+  ];
+
+  return { "vertices": vertices, "faces": faces };
+}
+
 function generateTorus(majorRadius, minorRadius, sectorCount, sideCount) {
   var vertices = [];
   var faces = [];
@@ -372,7 +404,7 @@ function generateCircle(x,y,rad){
 
     this.TRIANGLE_VERTEX = GL.createBuffer();
     this.TRIANGLE_FACES = GL.createBuffer();
-    this.texture = LIBS.load_texture("resource/images.jpg"); //buat kalo mau pake texture
+    this.texture = LIBS.load_texture("resource/beton.jpeg"); //buat kalo mau pake texture
     }
 
 
@@ -546,45 +578,45 @@ function generateCircle(x,y,rad){
     //Coordinates
     var cube = [
       //belakang
-      -1,-1,-1,   1,1,0, 0,0,
-      1,-1,-1,    1,1,0, 1,0,
-      1,1,-1,     1,1,0, 1,1,
-      -1,1,-1,    1,1,0, 0,1,
+      -1,-1,-1.5,   1,1,0, 0,0,
+      1,-1,-1.5,    1,1,0, 1,0,
+      1,1,-1.5,     1,1,0, 1,1,
+      -1,1,-1.5,    1,1,0, 0,1,
 
 
       //depan
-      -1,-1,1,    0,0,1, 0,0,
-      1,-1,1,     0,0,1, 1,0,
-      1,1,1,      0,0,1, 1,1,
-      -1,1,1,     0,0,1, 0,1,
+      -1,-1,1.5,    0,0,1, 0,0,
+      1,-1,1.5,     0,0,1, 1,0,
+      1,1,1.5,      0,0,1, 1,1,
+      -1,1,1.5,     0,0,1, 0,1,
 
 
       //kiri
-      -1,-1,-1,   0,1,1, 0,0,
-      -1,1,-1,    0,1,1, 1,0,
-      -1,1,1,     0,1,1, 1,1,
-      -1,-1,1,    0,1,1, 0,1,
+      -1,-1,-1.5,   0,1,1, 0,0,
+      -1,1,-1.5,    0,1,1, 1,0,
+      -1,1,1.5,     0,1,1, 1,1,
+      -1,-1,1.5,    0,1,1, 0,1,
 
 
       //kanan
-      1,-1,-1,    1,0,0, 0,0,
-      1,1,-1,     1,0,0, 1,0,
-      1,1,1,      1,0,0, 1,1,
-      1,-1,1,     1,0,0, 0,1,
+      1,-1,-1.5,    1,0,0, 0,0,
+      1,1,-1.5,     1,0,0, 1,0,
+      1,1,1.5,      1,0,0, 1,1,
+      1,-1,1.5,     1,0,0, 0,1,
 
 
       //bawah
-      -1,-1,-1,   1,0,1, 0,0,
-      -1,-1,1,    1,0,1, 1,0,
-      1,-1,1,     1,0,1, 1,1,
-      1,-1,-1,    1,0,1, 0,1,
+      -1,-1,-1.5,   1,0,1, 0,0,
+      -1,-1,1.5,    1,0,1, 1,0,
+      1,-1,1.5,     1,0,1, 1,1,
+      1,-1,-1.5,    1,0,1, 0,1,
 
 
       //atas
-      -1,1,-1,    0,1,0, 0,0,
-      -1,1,1,     0,1,0, 1,0,
-      1,1,1,      0,1,0, 1,1,
-      1,1,-1,     0,1,0, 0,1
+      -1,1,-1.5,    0,1,0, 0,0,
+      -1,1,1.5,     0,1,0, 1,0,
+      1,1,1.5,      0,1,0, 1,1,
+      1,1,-1.5,     0,1,0, 0,1
     ]
    
       // FACES:
@@ -613,18 +645,72 @@ function generateCircle(x,y,rad){
         20,22,23
       ];
 
+      //================================= GENERATE OBJECT ==================================
       //matrix
       var PROJECTION_MATRIX = LIBS.get_projection(40, CANVAS.width/CANVAS.height, 1,100);
       var VIEW_MATRIX = LIBS.get_I4();
 
 
-      LIBS.translateZ(VIEW_MATRIX,-10);
+      LIBS.translateZ(VIEW_MATRIX,-15);
 
-
+      //Body
       var object = new MyObject(cube, cube_faces, shader_vertex_source, shader_fragment_source);
-      var sphere = generateSphere(1,2,1,50,50);
+      
+      //paha kiri
+      var sphere = generateHalfSphere(0.7,0.9,0.7,50,50);
       var object2 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source);
-      object.childs.push(object2)
+
+      //paha kanan
+      var object3 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source);
+
+      //betis kanan
+      var cylinder = generateCylinder(0.5,2,50);
+      var object4 = new MyObject(cylinder['vertices'], cylinder['faces'], shader_vertex_source, shader_fragment_source);
+
+      //betis kiri
+      var object5 = new MyObject(cylinder['vertices'], cylinder['faces'], shader_vertex_source, shader_fragment_source);
+
+      //duri 1
+      var cone = generateCone(0.6, 0.6,25,25);
+      var object6 = new MyObject(cone['vertices'], cone['faces'], shader_vertex_source, shader_fragment_source);
+      //duri 2
+      var cone = generateCone(0.6, 0.6,25,25);
+      var object7 = new MyObject(cone['vertices'], cone['faces'], shader_vertex_source, shader_fragment_source);
+      //duri 3
+      var cone = generateCone(0.6, 0.6,25,25);
+      var object8  = new MyObject(cone['vertices'], cone['faces'], shader_vertex_source, shader_fragment_source);
+
+      //mata kanan
+      var sphere = generateSphere(0.3,0.3,0.3,50,50);
+      var object9  = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source);
+
+      //mata kiri
+      var sphere = generateSphere(0.3,0.3,0.3,50,50);
+      var object10 = new MyObject(sphere['vertices'], sphere['faces'], shader_vertex_source, shader_fragment_source);
+
+      //kaki kanan
+      var trapesium = generate3DTrapesium(1,2,1,1);
+      var object11 = new MyObject(trapesium['vertices'], trapesium['faces'], shader_vertex_source, shader_fragment_source);
+
+      //kaki kiri
+      var object12 = new MyObject(trapesium['vertices'], trapesium['faces'], shader_vertex_source, shader_fragment_source);
+
+
+
+
+
+      //setup
+      object.childs.push(object2);
+      object.childs.push(object3);
+      object.childs.push(object4);
+      object.childs.push(object5);
+      object.childs.push(object6);
+      object.childs.push(object7);
+      object.childs.push(object8);
+      object.childs.push(object9);
+      object.childs.push(object10);
+      object.childs.push(object11);
+      object.childs.push(object12);
       object.setup();
 
       /*========================= DRAWING ========================= */
@@ -650,23 +736,122 @@ function generateCircle(x,y,rad){
           //ngukur pergerakan
           var radius = 2;
           var pos_x = radius * THETA;
-          var pos_y = radius * ALPHA;
+          var pos_y = radius * -ALPHA;
           var pos_z = 0;
           
           MODEL_MATRIX = LIBS.get_I4(); //ngambil matrix normalnya biar bisa di transform
           MODEL_MATRIX2 = LIBS.get_I4();
-           LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
+          MODEL_MATRIX3 = LIBS.get_I4();
+          MODEL_MATRIX4 = LIBS.get_I4();
+          MODEL_MATRIX5 = LIBS.get_I4();
+          MODEL_MATRIX6 = LIBS.get_I4();
+          MODEL_MATRIX7 = LIBS.get_I4();
+          MODEL_MATRIX8 = LIBS.get_I4();
+          MODEL_MATRIX9 = LIBS.get_I4();
+          MODEL_MATRIX10 = LIBS.get_I4();
+          MODEL_MATRIX11 = LIBS.get_I4();
+          MODEL_MATRIX12 = LIBS.get_I4();
+          
+          // LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
+          
+          // LIBS.rotateX(MODEL_MATRIX, time/1000)
+          
 
           LIBS.rotateY(MODEL_MATRIX, THETA); //puter objek kanan kiri
           LIBS.rotateX(MODEL_MATRIX, ALPHA); // puter objek atas bawah
+          
 
-
-          LIBS.translateX(MODEL_MATRIX2,4);
+          //atur posisi paha kiri
+          LIBS.rotateY(MODEL_MATRIX2, 4.8);
+          LIBS.rotateX(MODEL_MATRIX2, 1);
           LIBS.rotateY(MODEL_MATRIX2, THETA);
           LIBS.rotateX(MODEL_MATRIX2, ALPHA);
 
-          var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [1, 0, 0]);
+          //atur posisi paha kanan
+          LIBS.rotateY(MODEL_MATRIX3, -4.8);
+          LIBS.rotateX(MODEL_MATRIX3, 1);
+          LIBS.rotateY(MODEL_MATRIX3, THETA);
+          LIBS.rotateX(MODEL_MATRIX3, ALPHA);
+
+          //atur posisi betis kanan
+          LIBS.rotateY(MODEL_MATRIX4, 0);
+          LIBS.rotateX(MODEL_MATRIX4, 1);
+          LIBS.rotateY(MODEL_MATRIX4, THETA);
+          LIBS.rotateX(MODEL_MATRIX4, ALPHA);
+          
+          //atur posisi betis kiri
+          LIBS.rotateY(MODEL_MATRIX5, 0);
+          LIBS.rotateX(MODEL_MATRIX5, 1);
+          LIBS.rotateY(MODEL_MATRIX5, THETA);
+          LIBS.rotateX(MODEL_MATRIX5, ALPHA);
+
+          //atur posisi duri 1
+          LIBS.rotateY(MODEL_MATRIX6, 0);
+          LIBS.rotateX(MODEL_MATRIX6, 4.7);
+          LIBS.rotateY(MODEL_MATRIX6, THETA);
+          LIBS.rotateX(MODEL_MATRIX6, ALPHA);
+          //atur posisi duri 2
+          LIBS.rotateY(MODEL_MATRIX7, 0);
+          LIBS.rotateX(MODEL_MATRIX7, 4.7);
+          LIBS.rotateY(MODEL_MATRIX7, THETA);
+          LIBS.rotateX(MODEL_MATRIX7, ALPHA);
+          //atur posisi duri 3
+          LIBS.rotateY(MODEL_MATRIX8, 0);
+          LIBS.rotateX(MODEL_MATRIX8, 4.7);
+          LIBS.rotateY(MODEL_MATRIX8, THETA);
+          LIBS.rotateX(MODEL_MATRIX8, ALPHA);
+
+          //atur kaki kanan
+          LIBS.rotateY(MODEL_MATRIX11, 1.6);
+          LIBS.rotateX(MODEL_MATRIX11, 0);
+          LIBS.rotateY(MODEL_MATRIX11, THETA);
+          LIBS.rotateX(MODEL_MATRIX11, ALPHA);
+          //atur kaki kiri
+          LIBS.rotateY(MODEL_MATRIX12, 1.6);
+          LIBS.rotateX(MODEL_MATRIX12, 0);
+          LIBS.rotateY(MODEL_MATRIX12, THETA);
+          LIBS.rotateX(MODEL_MATRIX12, ALPHA);
+
+          //paha kiri terhadap badan
+          var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [1, -1, -1]);
           LIBS.setPosition(MODEL_MATRIX2,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+
+          //duri terhadap badan
+          var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [0, 1.2, 0.9]);
+          LIBS.setPosition(MODEL_MATRIX6,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+
+          transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [0, 1.2, 0]);
+          LIBS.setPosition(MODEL_MATRIX7,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+
+          transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [0, 1.2, -0.9]);
+          LIBS.setPosition(MODEL_MATRIX8,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+          
+          //paha kanan terhadap badan
+          transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [-1, -1, -1]);
+          LIBS.setPosition(MODEL_MATRIX3,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+
+          //betis kanan terhadap paha kanan
+          transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX3, [-1, -0.7, 0]);
+          LIBS.setPosition(MODEL_MATRIX4,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+
+          //betis kiri terhadap paha kiri
+          transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX2, [1, -0.7, 0]);
+          LIBS.setPosition(MODEL_MATRIX5,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+
+          //mata kanan terhadap badan
+          transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [-0.8, 0.4, 0.9]);
+          LIBS.setPosition(MODEL_MATRIX9,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+
+          //mata kiri terhadap badan
+          transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [0.8, 0.4, 0.9]);
+          LIBS.setPosition(MODEL_MATRIX10,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+
+          //kaki kanan terhadap betis kanan
+          transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX4, [0.5, 0.3, 1.4]);
+          LIBS.setPosition(MODEL_MATRIX11,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+          //mata kiri terhadap badan
+          transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX5, [0.5, 0.3, 1.4]);
+          LIBS.setPosition(MODEL_MATRIX12,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
 
         //    LIBS.setPosition(MODEL_MATRIX2,pos_x,pos_y,pos_z);
           // var temp = LIBS.get_I4();
@@ -675,12 +860,45 @@ function generateCircle(x,y,rad){
          
           // MODEL_MATRIX2= LIBS.multiply(MODEL_MATRIX2,temp)
 
-          object.MODEL_MATRIX=MODEL_MATRIX;
+          object.MODEL_MATRIX= MODEL_MATRIX;
           object.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
 
           object2.MODEL_MATRIX = MODEL_MATRIX2;
           object2.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+          object3.MODEL_MATRIX=MODEL_MATRIX3;
+          object3.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+          object4.MODEL_MATRIX=MODEL_MATRIX4;
+          object4.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+          object5.MODEL_MATRIX=MODEL_MATRIX5;
+          object5.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+          //duri
+          object6.MODEL_MATRIX=MODEL_MATRIX6;
+          object6.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+          object7.MODEL_MATRIX=MODEL_MATRIX7;
+          object7.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+          object8.MODEL_MATRIX=MODEL_MATRIX8;
+          object8.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+          // mata
+          object9.MODEL_MATRIX=MODEL_MATRIX9;
+          object9.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+          object10.MODEL_MATRIX=MODEL_MATRIX10;
+          object10.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+          //kaki
+          object11.MODEL_MATRIX=MODEL_MATRIX11;
+          object11.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+          object12.MODEL_MATRIX=MODEL_MATRIX12;
+          object12.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
 
           window.requestAnimationFrame(animate);
