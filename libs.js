@@ -198,4 +198,10 @@ transpose: function(m) {
         }
         return result;
     },
+    scale: function(m, scaleX, scaleY, scaleZ) {
+      m[0] *= scaleX;
+      m[5] *= scaleY;
+      m[10] *= scaleZ;
+  },
   };
+  

@@ -509,18 +509,30 @@ function generateCircle(x,y,rad){
           GL.uniformMatrix4fv(this._MMatrix,false,this.MODEL_MATRIX);
           GL.uniform1f(this._greyScality, 1);
           GL.uniform1i(this._sampler,0);
- 
+          console.log(TYPE);
           if(TYPE == 1){
+            
+
             GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
           }
            else if (TYPE == 2) {
+            
+
             GL.drawElements(GL.TRIANGLE_FAN, this.faces.length, GL.UNSIGNED_SHORT, 0);
           }
            else if (TYPE == 3) {
+            
+
             GL.drawElements(GL.LINES, this.faces.length, GL.UNSIGNED_SHORT, 0);
           }
            else if (TYPE == 4) {
-            GL.drawElements(GL.TRIANGLE, this.faces.length, GL.UNSIGNED_SHORT, 0);
+            
+
+            GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
+          } else {
+            
+            GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
+
           }
 
           // switch (TYPE) {
@@ -761,9 +773,9 @@ function generateCircle(x,y,rad){
       var E_MODEL_MATRIX4 = LIBS.get_I4();
       var E_MODEL_MATRIX5 = LIBS.get_I4();
       var E_MODEL_MATRIX6 = LIBS.get_I4();
-      var E_MODEL_MATRIX7 = LIBS.get_I4();
+      // var E_MODEL_MATRIX7 = LIBS.get_I4();
       var E_MODEL_MATRIX_OBSTACLE = LIBS.get_I4();
-      var E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
+      // var E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
 
 
       LIBS.translateZ(VIEW_MATRIX,-25);
@@ -793,8 +805,14 @@ function generateCircle(x,y,rad){
       var Eobs = generateTorus(0.5,0.7,0.6,100,100,1,1,0);
       var EobjObs = new MyObject(Eobs['vertices'],Eobs['faces'],shader_vertex_source, shader_fragment_source)
 
-      var Elantai = generateRectangle3DGeometry(2,200,200,0,1,0);
-      var EobjLantai = new MyObject(Elantai['vertices'],Elantai['faces'],shader_vertex_source, shader_fragment_source)
+      // var ERing = generateTorus(0.5,0.7,0.6,100,100,1,1,0);
+      // var EobjRing = new MyObject(Eobs['vertices'],Eobs['faces'],shader_vertex_source, shader_fragment_source)
+
+      // var ERing2 = generateTorus(0.5,0.7,0.6,100,100,1,1,0);
+      // var EobjObs = new MyObject(Eobs['vertices'],Eobs['faces'],shader_vertex_source, shader_fragment_source)
+
+      // var Elantai = generateRectangle3DGeometry(2,200,200,0,1,0);
+      // var EobjLantai = new MyObject(Elantai['vertices'],Elantai['faces'],shader_vertex_source, shader_fragment_source)
 
 
       var testTrapesium = generate3DTrapesium(5,2,1,1,0,1,0)
@@ -812,9 +830,11 @@ function generateCircle(x,y,rad){
       Eobject.childs.push(EobjSayap)
       Eobject.childs.push(EobjSayap2)
       Eobject.childs.push(EobjPucuk)
-      Eobject.childs.push(objTrapesium)
+      // Eobject.childs.push(objTrapesium)
       Eobject.childs.push(EobjObs)
-      EobjLantai.setup()
+      // Eobject.childs.push(EobjObs)
+      // Eobject.childs.push(EobjObs)
+      // EobjLantai.setup()
       // objObs.setup();
       Eobject.setup();
 
@@ -866,7 +886,7 @@ function generateCircle(x,y,rad){
             THETA += dX *2*Math.PI/CANVAS.width;
             ALPHA += dY * 2*Math.PI/CANVAS.height;
           }
-          console.log("Detik : ",tempE)
+          // console.log("Detik : ",tempE)
           //ngukur pergerakan
           var radius = 2;
           var pos_x = radius * now/1000;
@@ -881,9 +901,9 @@ function generateCircle(x,y,rad){
           E_MODEL_MATRIX4 = LIBS.get_I4();
           E_MODEL_MATRIX5 = LIBS.get_I4();
           E_MODEL_MATRIX6 = LIBS.get_I4();
-          E_MODEL_MATRIX7 = LIBS.get_I4();
+          // E_MODEL_MATRIX7 = LIBS.get_I4();
           E_MODEL_MATRIX_OBSTACLE = LIBS.get_I4();
-          E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
+          // E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
           // LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
           // LIBS.rotateX(MODEL_MATRIX,10)
           
@@ -912,20 +932,20 @@ function generateCircle(x,y,rad){
           LIBS.rotateX(E_MODEL_MATRIX6, ALPHA);
           
           
-          LIBS.rotateX(E_MODEL_MATRIX7,90)
-          LIBS.translateX(E_MODEL_MATRIX7,-5)
-          LIBS.rotateY(E_MODEL_MATRIX7, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX7, ALPHA);
+          // LIBS.rotateX(E_MODEL_MATRIX7,90)
+          // LIBS.translateX(E_MODEL_MATRIX7,-5)
+          // LIBS.rotateY(E_MODEL_MATRIX7, THETA);
+          // LIBS.rotateX(E_MODEL_MATRIX7, ALPHA);
 
-          LIBS.translateX(E_MODEL_MATRIX_OBSTACLE,30)
+          LIBS.translateX(E_MODEL_MATRIX_OBSTACLE,4)
           LIBS.rotateY(E_MODEL_MATRIX_OBSTACLE, THETA);
           LIBS.rotateX(E_MODEL_MATRIX_OBSTACLE, ALPHA);
 
-          LIBS.translateY(E_MODEL_MATRIX_LANTAI,-10)
-          LIBS.rotateX(E_MODEL_MATRIX_LANTAI,LIBS.degToRad(90))
-          LIBS.rotateZ(E_MODEL_MATRIX_LANTAI,LIBS.degToRad(90))
-          LIBS.rotateY(E_MODEL_MATRIX_LANTAI, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX_LANTAI, ALPHA);
+          // LIBS.translateY(E_MODEL_MATRIX_LANTAI,-10)
+          // LIBS.rotateX(E_MODEL_MATRIX_LANTAI,LIBS.degToRad(90))
+          // LIBS.rotateZ(E_MODEL_MATRIX_LANTAI,LIBS.degToRad(90))
+          // LIBS.rotateY(E_MODEL_MATRIX_LANTAI, THETA);
+          // LIBS.rotateX(E_MODEL_MATRIX_LANTAI, ALPHA);
 
 
           var obj = [E_MODEL_MATRIX, E_MODEL_MATRIX2,E_MODEL_MATRIX3,E_MODEL_MATRIX4,E_MODEL_MATRIX5,E_MODEL_MATRIX6]
@@ -1049,7 +1069,7 @@ function generateCircle(x,y,rad){
           //   // rotateXGlobal(obj,xrot*2)
           //   // LIBS.translateZ(MODEL_MATRIX,k*5)
           // }
-          console.log(xrotE *2)     
+          // console.log(xrotE *2)     
           // if (now > 20){
           //   // console.log("HIT!10")
           //     t_obs = -0.01;
@@ -1065,7 +1085,7 @@ function generateCircle(x,y,rad){
           // LIBS.translateX(MODEL_MATRIX,i* 10)
           LIBS.translateY(E_MODEL_MATRIX,jE*5)
           LIBS.translateX(E_MODEL_MATRIX,iE*5)
-          console.log("i : ", iE*10)
+          // console.log("i : ", iE*10)ss
           LIBS.translateZ(E_MODEL_MATRIX,kE*7)
           rotateZGlobal(obj,LIBS.degToRad(zrotE))
           rotateXGlobal(obj,xrotE*7)
@@ -1119,7 +1139,7 @@ function generateCircle(x,y,rad){
           
           // MODEL_MATRIX2= LIBS.multiply(MODEL_MATRIX2,temp)
           
-          LIBS.translateY(E_MODEL_MATRIX_OBSTACLE,t_objE*10)
+          // LIBS.translateY(E_MODEL_MATRIX_OBSTACLE,t_objE*10)
           Eobject.MODEL_MATRIX=E_MODEL_MATRIX;
           Eobject.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
