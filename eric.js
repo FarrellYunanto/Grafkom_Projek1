@@ -843,7 +843,7 @@ function generateCircle(x,y,rad){
             THETA += dX *2*Math.PI/CANVAS.width;
             ALPHA += dY * 2*Math.PI/CANVAS.height;
           }
-          console.log(temp)
+          console.log("Detik : ",temp)
           //ngukur pergerakan
           var radius = 2;
           var pos_x = radius * now/1000;
@@ -912,15 +912,15 @@ function generateCircle(x,y,rad){
           rotateYGlobal(obj,LIBS.degToRad(90))
           // rotateYGlobal(obj,LIBS.degToRad(yrot))
           rotateZGlobal(obj,LIBS.degToRad(zrot))
-          if(i > 2.0){
-            console.log("HIt")
+          if(i > 1.0){
+           
             x = -0.01;
           }
-          else if (i < -2){
+          else if (i < -1){
             x = 0.01;
           }
           if(j > 1){
-            console.log("HIt")
+            
             y = -0.01;
           }
 
@@ -928,7 +928,16 @@ function generateCircle(x,y,rad){
             y = 0.01;
           }
           if(zrot > 1){
-            console.log("HIt")
+            
+            zcount = -0.01;
+            
+          }
+          else if (zrot < -1){
+            zcount = 0.01;
+            
+          }
+          if(zrot > 1){
+            
             zcount = -0.01;
             
           }
@@ -953,7 +962,7 @@ function generateCircle(x,y,rad){
           else if (now  >15 && now < 19){
             ycount  = 0.01;
 
-            xcount = 0;
+           
           }
           else if (now  >19 && now < 22){
             ycount = -0.01;
@@ -978,13 +987,33 @@ function generateCircle(x,y,rad){
               time = 0;
               time_prev = 0;
             }
+           
           }
-
+          if (now > 33){
+            xcount = 0.01;
+            z = 0.01
+            if (xrot*2 > 45){
+              xcount = -0.01
+            }
+            else if (xrot *2 > LIBS.degToRad(180)){
+              xcount = 0
+            }
+            if (k > 1){
+              z = -0.01
+            }
+            else{
+              // console.log("HITK")
+              z = 0.01
+            }
+            console.log(xrot *2)
+            // rotateXGlobal(obj,xrot*2)
+            // LIBS.translateZ(MODEL_MATRIX,k*5)
+          }
         
           if (now > 20){
-            console.log("HIT!10")
+            // console.log("HIT!10")
               t_obs = -0.01;
-              console.log(t_obj)
+              // console.log(t_obj)
           }
          
           if (t_obj< -30){
@@ -994,36 +1023,28 @@ function generateCircle(x,y,rad){
           // rotateXGlobal(obj,LIBS.degToRad(yrot*10))
           // rotateZGlobal(obj,i/2)
           // LIBS.translateX(MODEL_MATRIX,i* 10)
-          LIBS.translateY(MODEL_MATRIX,j*10)
-          LIBS.translateX(MODEL_MATRIX,i*10)
+          LIBS.translateY(MODEL_MATRIX,j*7)
+          LIBS.translateX(MODEL_MATRIX,i*7)
+          console.log("i : ", i*10)
           LIBS.translateZ(MODEL_MATRIX,k*5)
           rotateZGlobal(obj,LIBS.degToRad(zrot))
           rotateXGlobal(obj,xrot*10)
-          // if(now > 30 ){
-          //   object = null;
+          // if (xrot < 0){
+          //   xcount = 0.01
           // }
-          // LIBS.rotateX(MODEL_MATRIX,i)
-          // LIBS.rotateX(MODEL_MATRIX2,i)
-          // LIBS.rotateX(MODEL_MATRIX3,i)
-          // LIBS.rotateX(MODEL_MATRIX4,i)
-          // LIBS.rotateX(MODEL_MATRIX5,i)
-          // LIBS.rotateX(MODEL_MATRIX6,i)
+          // else if (xrot > 0){
+          //   xcount = 0;
+          // }
+         
 
-          // LIBS.rotateY(MODEL_MATRIX,i)
-          // LIBS.rotateY(MODEL_MATRIX2,i)
-          // LIBS.rotateY(MODEL_MATRIX3,i)
-          // LIBS.rotateY(MODEL_MATRIX4,i)
-          // LIBS.rotateY(MODEL_MATRIX5,i)
-          // LIBS.rotateY(MODEL_MATRIX6,i)
-          // LIBS.translateX(MODEL_MATRIX,time/-1000)
-          // LIBS.rotateY(MODEL_MATRIX,LIBS.degToRad(180*dt/100))
-          // LIBS.translateX(MODEL_MATRIX4,-6);
-          // LIBS.rotateY(MODEL_MATRIX4, -THETA);
-          // LIBS.rotateX(MODEL_MATRIX4, -ALPHA);
 
-          // LIBS.translateY(MODEL_MATRIX5,-3);
-          // LIBS.rotateY(MODEL_MATRIX5, -THETA);
-          // LIBS.rotateX(MODEL_MATRIX5, -ALPHA);
+
+
+
+
+
+
+
           LIBS.translateY(MODEL_MATRIX_OBSTACLE,t_obj*10)
           var transformedBadanPesawat = LIBS.transformPoint(MODEL_MATRIX, [0, 0, 0]);
           LIBS.setPosition(MODEL_MATRIX,transformedBadanPesawat[0], transformedBadanPesawat[1], transformedBadanPesawat[2]);
