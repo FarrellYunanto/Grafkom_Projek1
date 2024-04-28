@@ -183,9 +183,13 @@ function generateSphere(xrad, yrad, zrad, stack, step){
   return {"vertices": vertices, "faces": faces};
 }
 
-function generateHalfSphere(xrad, yrad, zrad, stack, step){
+function generateHalfSphere(xrad, yrad, zrad, stack, step, r,g,b){
     var vertices = [];
     var faces = [];
+
+    var red=r;
+    var green = g;
+    var blue = b;
   
     for(var i = 0;i<=stack;i++){
       for(var j = 0;j<=step/2;j++){
@@ -199,7 +203,7 @@ function generateHalfSphere(xrad, yrad, zrad, stack, step){
         v = i*1.0/stack;
         u = j*1.0/step;
   
-        vertices.push(x,y,z,1,1,1,v,u);
+        vertices.push(x,y,z,red,green,blue,v,u);
       }
     }
   
@@ -633,8 +637,7 @@ function generateCircle(x,y,rad){
       var PROJECTION_MATRIX = LIBS.get_projection(40, CANVAS.width/CANVAS.height, 1,100);
       var VIEW_MATRIX = LIBS.get_I4();
 
-
-      LIBS.translateZ(VIEW_MATRIX, -15);
+      LIBS.translateZ(VIEW_MATRIX, -25);
 
       //CREATE OBJECT
       var object = new MyObject(cube, cube_faces, shader_vertex_source, shader_fragment_source);
@@ -644,10 +647,21 @@ function generateCircle(x,y,rad){
       var object3 = new MyObject(donut2['vertices'], donut2['faces'], shader_vertex_source, shader_fragment_source);
       var donut3 = generateTorus(1,0.35,72,24,0,1,0)
       var object4 = new MyObject(donut3['vertices'], donut3['faces'], shader_vertex_source, shader_fragment_source);
+      var halfSphere = generateHalfSphere(3, 3 , 3, 80, 80, 0,0,1);
+      var object5 = new MyObject(halfSphere['vertices'], halfSphere['faces'], shader_vertex_source ,shader_fragment_source);
 
-      object.childs.push(object2)
-      object.childs.push(object3)
-      object.childs.push(object4)
+        //trail 
+        var donut4 = generateTorus(2,0.2,72,24, 0.8,0.8,0.8)
+        var object6 = new MyObject(donut4['vertices'], donut4['faces'], shader_vertex_source, shader_fragment_source);
+        var donut5 = generateTorus(1,0.1,72,24, 0.8,0.8,0.8)
+        var object7 = new MyObject(donut5['vertices'], donut5['faces'], shader_vertex_source, shader_fragment_source);
+
+      object.childs.push(object2);
+      object.childs.push(object3);
+      object.childs.push(object4);
+      object.childs.push(object5);
+      object.childs.push(object6);
+      object.childs.push(object7);
       object.setup();
 
       /*========================= DRAWING ========================= */
@@ -691,10 +705,14 @@ function generateCircle(x,y,rad){
         var pos_y = radius * ALPHA;
         var pos_z = 0;
         
+        //MATRIX NORM MODEL
         MODEL_MATRIX = LIBS.get_I4(); //ngambil matrix normalnya biar bisa di transform
         MODEL_MATRIX2 = LIBS.get_I4();
         MODEL_MATRIX3 = LIBS.get_I4();
         MODEL_MATRIX4 = LIBS.get_I4();
+        MODEL_MATRIX5 = LIBS.get_I4();
+        MODEL_MATRIX6 = LIBS.get_I4();
+        MODEL_MATRIX7 = LIBS.get_I4();
         
         // LIBS.setPosition(MODEL_MATRIX,0, 1, 0); // geser geser
 
@@ -703,37 +721,73 @@ function generateCircle(x,y,rad){
         LIBS.rotateY(MODEL_MATRIX, 1.2);
         LIBS.rotateX(MODEL_MATRIX, ALPHA); // puter objek atas bawah
         LIBS.rotateY(MODEL_MATRIX, THETA); //puter objek kanan kiri
-        var transformPosCube = LIBS.transformPoint(MODEL_MATRIX,[0,0,0]);
-        LIBS.setPosition(MODEL_MATRIX, transformPosCube[0], transformPosCube[1], transformPosCube[2]);
-       
+        
         //body donut
         LIBS.rotateX(MODEL_MATRIX2, -4.7);
         LIBS.rotateY(MODEL_MATRIX2, 1.2);
         LIBS.rotateX(MODEL_MATRIX2, ALPHA);
         LIBS.rotateY(MODEL_MATRIX2, THETA);
-        var transformPosDonut = LIBS.transformPoint(MODEL_MATRIX,[0,0,1]);
-        LIBS.setPosition(MODEL_MATRIX2, transformPosDonut[0], transformPosDonut[1], transformPosDonut[2]);
         
         //body donut2
         LIBS.rotateX(MODEL_MATRIX3, -4.7);
         LIBS.rotateY(MODEL_MATRIX3, 1.2);
         LIBS.rotateX(MODEL_MATRIX3, ALPHA);
         LIBS.rotateY(MODEL_MATRIX3, THETA);
-        var transformPosDonut_2= LIBS.transformPoint(MODEL_MATRIX,[0,0,1.8]);
-        LIBS.setPosition(MODEL_MATRIX3, transformPosDonut_2[0], transformPosDonut_2[1], transformPosDonut_2[2]);
         
         //body donut3
         LIBS.rotateX(MODEL_MATRIX4, -4.7);
         LIBS.rotateY(MODEL_MATRIX4, 1.2);
         LIBS.rotateX(MODEL_MATRIX4, ALPHA);
         LIBS.rotateY(MODEL_MATRIX4, THETA);
+        
+        //halfsphere glass
+        LIBS.rotateX(MODEL_MATRIX5, -4.7);
+        LIBS.rotateY(MODEL_MATRIX5, 1.2);
+        LIBS.rotateX(MODEL_MATRIX5, ALPHA);
+        LIBS.rotateY(MODEL_MATRIX5, THETA);
+
+        //donut trail big
+        LIBS.rotateX(MODEL_MATRIX6, -4.7);
+        LIBS.rotateY(MODEL_MATRIX6, 1.2);
+        LIBS.rotateX(MODEL_MATRIX6, ALPHA);
+        LIBS.rotateY(MODEL_MATRIX6, THETA);
+   
+        //donut trail small
+        LIBS.rotateX(MODEL_MATRIX7, -4.7);
+        LIBS.rotateY(MODEL_MATRIX7, 1.2);
+        LIBS.rotateX(MODEL_MATRIX7, ALPHA);
+        LIBS.rotateY(MODEL_MATRIX7, THETA);
+        
+        //ROTATE GROUP
+        var UFO = [MODEL_MATRIX, MODEL_MATRIX2, MODEL_MATRIX3, MODEL_MATRIX4, 
+            MODEL_MATRIX5, MODEL_MATRIX6, MODEL_MATRIX7];
+        rotateYGlobal(UFO, i*10); 
+        // rotateXGlobal(UFO, i*10); 
+        // rotateZGlobal(UFO, i*10); 
+        
+        //TRANSFORM POSITION : FIXED TO CUBE
+        var transformPosCube = LIBS.transformPoint(MODEL_MATRIX,[0,0,0]);
+        LIBS.setPosition(MODEL_MATRIX, transformPosCube[0], transformPosCube[1], transformPosCube[2]);
+        
+        var transformPosDonut = LIBS.transformPoint(MODEL_MATRIX,[0,0,1]);
+        LIBS.setPosition(MODEL_MATRIX2, transformPosDonut[0], transformPosDonut[1], transformPosDonut[2]);
+        
+        var transformPosDonut_2= LIBS.transformPoint(MODEL_MATRIX,[0,0,1.8]);
+        LIBS.setPosition(MODEL_MATRIX3, transformPosDonut_2[0], transformPosDonut_2[1], transformPosDonut_2[2]);
+
         var transformPosDonut_3= LIBS.transformPoint(MODEL_MATRIX,[0,0,2.3]);
         LIBS.setPosition(MODEL_MATRIX4, transformPosDonut_3[0], transformPosDonut_3[1], transformPosDonut_3[2]);
 
-        // var UFO = [MODEL_MATRIX, MODEL_MATRIX2, MODEL_MATRIX3, MODEL_MATRIX4];
-        // rotateYGlobal(UFO, i); 
-        // rotateXGlobal(UFO, i); 
+        var transformPosGlass= LIBS.transformPoint(MODEL_MATRIX,[0,0,0.4]);
+        LIBS.setPosition(MODEL_MATRIX5, transformPosGlass[0], transformPosGlass[1], transformPosGlass[2]);
+
+        var transformPosDonut_4= LIBS.transformPoint(MODEL_MATRIX,[0,0,4]);
+        LIBS.setPosition(MODEL_MATRIX6, transformPosDonut_4[0], transformPosDonut_4[1], transformPosDonut_4[2]);
         
+        var transformPosDonut_5= LIBS.transformPoint(MODEL_MATRIX,[0,0,5]);
+        LIBS.setPosition(MODEL_MATRIX7, transformPosDonut_5[0], transformPosDonut_5[1], transformPosDonut_5[2]);
+        
+
         //RENDER
         object.MODEL_MATRIX=MODEL_MATRIX;
         object.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
@@ -746,6 +800,15 @@ function generateCircle(x,y,rad){
         
         object4.MODEL_MATRIX = MODEL_MATRIX4;
         object4.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+     
+        object5.MODEL_MATRIX = MODEL_MATRIX5;
+        object5.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+       
+        object6.MODEL_MATRIX = MODEL_MATRIX6;
+        object6.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+        
+        object7.MODEL_MATRIX = MODEL_MATRIX7;
+        object7.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
 
         window.requestAnimationFrame(animate);
       };
