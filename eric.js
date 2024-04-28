@@ -995,7 +995,7 @@ function generateCircle(x,y,rad){
             if (xrot*2 > 45){
               xcount = -0.01
             }
-            else if (xrot *2 > LIBS.degToRad(180)){
+            else if (xrot *2 < LIBS.degToRad(-90)){
               xcount = 0
             }
             if (k > 1){
