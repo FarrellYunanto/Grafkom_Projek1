@@ -853,6 +853,8 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
         var E_MODEL_MATRIX6 = LIBS.get_I4();
       //   var E_MODEL_MATRIX7 = LIBS.get_I4();
         var E_MODEL_MATRIX_OBSTACLE = LIBS.get_I4();
+        var E_MODEL_MATRIX_RING = LIBS.get_I4(); 
+        var E_MODEL_MATRIX_RING2 = LIBS.get_I4(); 
       //   var E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
 
       //NORM MISAEL 
@@ -912,9 +914,15 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
         var Elantai = generateRectangle3DGeometry(2,200,200,0,1,0);
         var EobjLantai = new MyObject(Elantai['vertices'],Elantai['faces'],shader_vertex_source, shader_fragment_source)
         
-        var testTrapesium = generate3DTrapesium(0,2,1,1,0,1,0)
-        var objTrapesium = new MyObject(testTrapesium['vertices'],testTrapesium['faces'], shader_vertex_source, shader_fragment_source)
-      // var donut = generateTorus(1,0.3,72,24)
+        var ERing = generateTorus(0.5,0.1,100,100,1,0,0);
+        var EobjRing = new MyObject(ERing['vertices'],ERing['faces'],shader_vertex_source, shader_fragment_source)
+      
+        var ERing2 = generateTorus(0.7,0.1,100,100,1,0,0);
+        var EobjRing2 = new MyObject(ERing2['vertices'],ERing2['faces'],shader_vertex_source, shader_fragment_source)
+
+    //     var testTrapesium = generate3DTrapesium(0,2,1,1,0,1,0)
+    //     var objTrapesium = new MyObject(testTrapesium['vertices'],testTrapesium['faces'], shader_vertex_source, shader_fragment_source)
+    //   // var donut = generateTorus(1,0.3,72,24)
       // var tabung = generateCylinder(0.5,1,50) // kalo base radius 0 jadi cone
       // var tri = generateCone(1,1,3,40) // kalo sector count 3 jaditetra hedron, kalao 4 jadi square pyramid
       // var cone = generateCone(1,1,3,40) // kalo sector count 3 jaditetra hedron, kalao 4 jadi square pyramid
@@ -928,8 +936,10 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
       Eobject.childs.push(EobjSayap)
       Eobject.childs.push(EobjSayap2)
       Eobject.childs.push(EobjPucuk)
-      Eobject.childs.push(objTrapesium)
+    //   Eobject.childs.push(objTrapesium)
       Eobject.childs.push(EobjObs)
+      Eobject.childs.push(EobjRing)
+      Eobject.childs.push(EobjRing2)
       // EobjLantai.setup()
       // objObs.setup();
       Eobject.setup();
@@ -1048,7 +1058,11 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
       var yE = 0.03;
       var zE = 0.02;
       var t_objE = 0;
+      var scaleE = 0;
+      var scale2E = 0;
 
+      var countScaleE = 1;
+      var countScale2E = 1.7;
       var t_obsE = 0;
       var xrotE = 0;
       var zrotE = 0;
@@ -1088,6 +1102,8 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
         iE += xE;
         jE += yE;
         kE += zE;
+        scaleE +=countScaleE;
+        scale2E += countScale2E;
 
         t_objE += t_obsE;
         zrotE +=zcountE;
@@ -1163,6 +1179,8 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
           E_MODEL_MATRIX6 = LIBS.get_I4();
         //   E_MODEL_MATRIX7 = LIBS.get_I4();
           E_MODEL_MATRIX_OBSTACLE = LIBS.get_I4();
+          E_MODEL_MATRIX_RING = LIBS.get_I4();
+          E_MODEL_MATRIX_RING2 = LIBS.get_I4();
         //   E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
           // LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
           // LIBS.rotateX(MODEL_MATRIX,10)
@@ -1198,6 +1216,15 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
           LIBS.rotateX(E_MODEL_MATRIX_OBSTACLE, ALPHA);
           LIBS.rotateY(E_MODEL_MATRIX_OBSTACLE,yrotE* 6)
           LIBS.rotateX(E_MODEL_MATRIX_OBSTACLE,xrotE* 6)
+
+          LIBS.rotateY(E_MODEL_MATRIX_RING,LIBS.degToRad(90))
+          LIBS.rotateY(E_MODEL_MATRIX_RING, THETA);
+          LIBS.rotateX(E_MODEL_MATRIX_RING, ALPHA);
+        
+          LIBS.rotateY(E_MODEL_MATRIX_RING2,LIBS.degToRad(90))
+          LIBS.rotateY(E_MODEL_MATRIX_RING2, THETA);
+          LIBS.rotateX(E_MODEL_MATRIX_RING2, ALPHA);
+          
         //   LIBS.translateX(E_MODEL_MATRIX_OBSTACLE,t_objE*10)
         //   LIBS.translateY(E_MODEL_MATRIX_LANTAI,-10)
         //   LIBS.rotateX(E_MODEL_MATRIX_LANTAI,LIBS.degToRad(90))
@@ -1436,6 +1463,24 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
             ycountE = 0.01;
             
           }
+
+          if(scaleE > 1.7){
+            
+            countScaleE = -0.026;
+            
+          }
+          else if (scaleE < 1){
+            countScaleE = 0.026;
+          }
+          if(scale2E >= 1.7){
+            
+            countScale2E = -0.026;
+            
+          }
+          else if (scale2E < 1){
+            countScale2E = 0.026;
+            
+          }
           // console.log(i)
           // console.log(j)
           // if(now > 5 && now < 7){
@@ -1520,6 +1565,10 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
           LIBS.translateZ(E_MODEL_MATRIX,kE*7)
           rotateZGlobal(obj,LIBS.degToRad(zrotE))
           rotateXGlobal(obj,xrotE)
+
+          LIBS.scale(E_MODEL_MATRIX_RING,scaleE,scaleE,scaleE)
+          LIBS.scale(E_MODEL_MATRIX_RING2,scale2E,scale2E,scale2E)
+        
           // if (xrot < 0){
           //   xcount = 0.01
           // }
@@ -1550,6 +1599,13 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
 
           var transformedObs = LIBS.transformPoint(E_MODEL_MATRIX, [0, 0, 0]);
           LIBS.setPosition(E_MODEL_MATRIX_OBSTACLE,transformedObs[0], transformedObs[1], transformedObs[2]);
+
+          var transformedRing = LIBS.transformPoint(E_MODEL_MATRIX, [0, 0, -4]);
+          LIBS.setPosition(E_MODEL_MATRIX_RING,transformedRing[0], transformedRing[1], transformedRing[2]);
+
+          var transformedRing2 = LIBS.transformPoint(E_MODEL_MATRIX, [0, 0, -4.6]);
+          LIBS.setPosition(E_MODEL_MATRIX_RING2,transformedRing2[0], transformedRing2[1], transformedRing2[2]);
+      
           // var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [1, -1, 0]);
           // LIBS.setPosition(MODEL_MATRIX5,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
         //============================END SETPOS RELATIVE ERICK==========================
@@ -1701,6 +1757,13 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
 
           EobjObs.MODEL_MATRIX = E_MODEL_MATRIX_OBSTACLE;
           EobjObs.render(VIEW_MATRIX,PROJECTION_MATRIX, 1)
+
+          EobjRing.MODEL_MATRIX = E_MODEL_MATRIX_RING;
+          EobjRing.render(VIEW_MATRIX,PROJECTION_MATRIX,1)
+
+          EobjRing2.MODEL_MATRIX = E_MODEL_MATRIX_RING2;
+          EobjRing2.render(VIEW_MATRIX,PROJECTION_MATRIX,1)
+          
           
           // objLantai.MODEL_MATRIX = MODEL_MATRIX_LANTAI;
           // objLantai.render(VIEW_MATRIX,PROJECTION_MATRIX,2)
