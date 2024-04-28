@@ -325,7 +325,7 @@ function generateCircle(x,y,rad){
     TRIANGLE_FACES = null;
 
 
-    MODEL_MATRIX = LIBS.get_I4();
+    mMODEL_MATRIX = LIBS.get_I4();
 
 
     constructor(vertex, faces, source_shader_vertex, source_shader_fragment){
@@ -415,7 +415,7 @@ function generateCircle(x,y,rad){
 
           GL.uniformMatrix4fv(this._PMatrix,false,PROJECTION_MATRIX);
           GL.uniformMatrix4fv(this._VMatrix,false,VIEW_MATRIX);
-          GL.uniformMatrix4fv(this._MMatrix,false,this.MODEL_MATRIX);
+          GL.uniformMatrix4fv(this._MMatrix,false,this.mMODEL_MATRIX);
           GL.uniform1f(this._greyScality, 1);
           GL.uniform1i(this._sampler,0);
 
@@ -685,9 +685,9 @@ function generateCircle(x,y,rad){
       GL.depthFunc(GL.LEQUAL);
 
       var prev_time = 0;
-      var i = 0;
-      var j = 0;
-      var k = 0;
+      var i = 0; //buat translate smoke
+      var j = 0; //buat rotate di y axis 
+      var k = 0; //buat gerak gerak 
       var x = 0.01;
       var y = 0.01;
       var z = 0.01;
@@ -702,7 +702,7 @@ function generateCircle(x,y,rad){
         // LIBS.rotateY(VIEW_MATRIX, LIBS.degToRad(90*dt/400));
         // // LIBS.translateY(VIEW_MATRIX, LIBS.degToRad(90*dt/400))
      
-          i += x;
+          i += x; 
           j += y;
           k += z;  
 
@@ -721,163 +721,173 @@ function generateCircle(x,y,rad){
         var pos_z = 0;
         
         //MATRIX NORM MODEL
-        MODEL_MATRIX = LIBS.get_I4(); //ngambil matrix normalnya biar bisa di transform
-        MODEL_MATRIX2 = LIBS.get_I4();
-        MODEL_MATRIX3 = LIBS.get_I4();
-        MODEL_MATRIX4 = LIBS.get_I4();
-        MODEL_MATRIX5 = LIBS.get_I4();
-        MODEL_MATRIX6 = LIBS.get_I4();
-        MODEL_MATRIX7 = LIBS.get_I4();
-        MODEL_MATRIX8 = LIBS.get_I4();
-        MODEL_MATRIX9 = LIBS.get_I4();
-        MODEL_MATRIX10 = LIBS.get_I4();
-        MODEL_MATRIX11 = LIBS.get_I4();
+        mMODEL_MATRIX = LIBS.get_I4(); //ngambil matrix normalnya biar bisa di transform
+        mMODEL_MATRIX2 = LIBS.get_I4();
+        mMODEL_MATRIX3 = LIBS.get_I4();
+        mMODEL_MATRIX4 = LIBS.get_I4();
+        mMODEL_MATRIX5 = LIBS.get_I4();
+        mMODEL_MATRIX6 = LIBS.get_I4();
+        mMODEL_MATRIX7 = LIBS.get_I4();
+        mMODEL_MATRIX8 = LIBS.get_I4();
+        mMODEL_MATRIX9 = LIBS.get_I4();
+        mMODEL_MATRIX10 = LIBS.get_I4();
+        mMODEL_MATRIX11 = LIBS.get_I4();
         
-        // LIBS.setPosition(MODEL_MATRIX,0, 1, 0); // geser geser
+        // LIBS.setPosition(mMODEL_MATRIX,0, 1, 0); // geser geser
 
+        //SET ROTATE UNTUK POSISI AWAL
         //cube head
-        LIBS.rotateX(MODEL_MATRIX, -4.7);
-        LIBS.rotateY(MODEL_MATRIX, 1.2);
-        LIBS.rotateX(MODEL_MATRIX, ALPHA); // puter objek atas bawah
-        LIBS.rotateY(MODEL_MATRIX, THETA); //puter objek kanan kiri
+        LIBS.rotateX(mMODEL_MATRIX, -4.7);
+        LIBS.rotateY(mMODEL_MATRIX, 1.2);
+        LIBS.rotateX(mMODEL_MATRIX, ALPHA); // puter objek atas bawah
+        LIBS.rotateY(mMODEL_MATRIX, THETA); //puter objek kanan kiri
         
         //body donut
-        LIBS.rotateX(MODEL_MATRIX2, -4.7);
-        LIBS.rotateY(MODEL_MATRIX2, 1.2);
-        LIBS.rotateX(MODEL_MATRIX2, ALPHA);
-        LIBS.rotateY(MODEL_MATRIX2, THETA);
+        LIBS.rotateX(mMODEL_MATRIX2, -4.7);
+        LIBS.rotateY(mMODEL_MATRIX2, 1.2);
+        LIBS.rotateX(mMODEL_MATRIX2, ALPHA);
+        LIBS.rotateY(mMODEL_MATRIX2, THETA);
         
         //body donut2
-        LIBS.rotateX(MODEL_MATRIX3, -4.7);
-        LIBS.rotateY(MODEL_MATRIX3, 1.2);
-        LIBS.rotateX(MODEL_MATRIX3, ALPHA);
-        LIBS.rotateY(MODEL_MATRIX3, THETA);
+        LIBS.rotateX(mMODEL_MATRIX3, -4.7);
+        LIBS.rotateY(mMODEL_MATRIX3, 1.2);
+        LIBS.rotateX(mMODEL_MATRIX3, ALPHA);
+        LIBS.rotateY(mMODEL_MATRIX3, THETA);
         
         //body donut3
-        LIBS.rotateX(MODEL_MATRIX4, -4.7);
-        LIBS.rotateY(MODEL_MATRIX4, 1.2);
-        LIBS.rotateX(MODEL_MATRIX4, ALPHA);
-        LIBS.rotateY(MODEL_MATRIX4, THETA);
+        LIBS.rotateX(mMODEL_MATRIX4, -4.7);
+        LIBS.rotateY(mMODEL_MATRIX4, 1.2);
+        LIBS.rotateX(mMODEL_MATRIX4, ALPHA);
+        LIBS.rotateY(mMODEL_MATRIX4, THETA);
         
         //halfsphere glass
-        LIBS.rotateX(MODEL_MATRIX5, -4.7);
-        LIBS.rotateY(MODEL_MATRIX5, 1.2);
-        LIBS.rotateX(MODEL_MATRIX5, ALPHA);
-        LIBS.rotateY(MODEL_MATRIX5, THETA);
+        LIBS.rotateX(mMODEL_MATRIX5, -4.7);
+        LIBS.rotateY(mMODEL_MATRIX5, 1.2);
+        LIBS.rotateX(mMODEL_MATRIX5, ALPHA);
+        LIBS.rotateY(mMODEL_MATRIX5, THETA);
 
             //donut trail big
-            LIBS.rotateX(MODEL_MATRIX6, -4.7);
-            LIBS.rotateY(MODEL_MATRIX6, 1.2);
-            LIBS.rotateX(MODEL_MATRIX6, ALPHA);
-            LIBS.rotateY(MODEL_MATRIX6, THETA);
+            LIBS.rotateX(mMODEL_MATRIX6, -4.7);
+            LIBS.rotateY(mMODEL_MATRIX6, 1.2);
+            LIBS.rotateX(mMODEL_MATRIX6, ALPHA);
+            LIBS.rotateY(mMODEL_MATRIX6, THETA);
     
             //donut trail small
-            LIBS.rotateX(MODEL_MATRIX7, -4.7);
-            LIBS.rotateY(MODEL_MATRIX7, 1.2);
-            LIBS.rotateX(MODEL_MATRIX7, ALPHA);
-            LIBS.rotateY(MODEL_MATRIX7, THETA);
+            LIBS.rotateX(mMODEL_MATRIX7, -4.7);
+            LIBS.rotateY(mMODEL_MATRIX7, 1.2);
+            LIBS.rotateX(mMODEL_MATRIX7, ALPHA);
+            LIBS.rotateY(mMODEL_MATRIX7, THETA);
             
         //antenna right
-        LIBS.rotateX(MODEL_MATRIX8, -7.4);
-        LIBS.rotateY(MODEL_MATRIX8, 1.2);
-        LIBS.rotateX(MODEL_MATRIX8, ALPHA);
-        LIBS.rotateY(MODEL_MATRIX8, THETA);
+        LIBS.rotateX(mMODEL_MATRIX8, -7.4);
+        LIBS.rotateY(mMODEL_MATRIX8, 1.2);
+        LIBS.rotateX(mMODEL_MATRIX8, ALPHA);
+        LIBS.rotateY(mMODEL_MATRIX8, THETA);
         
-        LIBS.rotateX(MODEL_MATRIX9, -7.4);
-        LIBS.rotateY(MODEL_MATRIX9, 1,5);
-        LIBS.rotateX(MODEL_MATRIX9, ALPHA);
-        LIBS.rotateY(MODEL_MATRIX9, THETA);
+        LIBS.rotateX(mMODEL_MATRIX9, -7.4);
+        LIBS.rotateY(mMODEL_MATRIX9, 1,5);
+        LIBS.rotateX(mMODEL_MATRIX9, ALPHA);
+        LIBS.rotateY(mMODEL_MATRIX9, THETA);
  
         //antenna left
-        LIBS.rotateX(MODEL_MATRIX10, -14.6);
-        LIBS.rotateY(MODEL_MATRIX10, 1.2);
-        LIBS.rotateX(MODEL_MATRIX10, ALPHA);
-        LIBS.rotateY(MODEL_MATRIX10, THETA);
+        LIBS.rotateX(mMODEL_MATRIX10, -14.6);
+        LIBS.rotateY(mMODEL_MATRIX10, 1.2);
+        LIBS.rotateX(mMODEL_MATRIX10, ALPHA);
+        LIBS.rotateY(mMODEL_MATRIX10, THETA);
 
-        LIBS.rotateX(MODEL_MATRIX9, -14.6);
-        LIBS.rotateY(MODEL_MATRIX9, 1,5);
-        LIBS.rotateX(MODEL_MATRIX9, ALPHA);
-        LIBS.rotateY(MODEL_MATRIX9, THETA);
-
-        // LIBS.translateY(MODEL_MATRIX, i*10);
-        // LIBS.translateX(MODEL_MATRIX, i*10);
-        // LIBS.translateZ(MODEL_MATRIX, i*10);
-        // LIBS.translateY(MODEL_MATRIX7, i*10);
+        LIBS.rotateX(mMODEL_MATRIX9, -14.6);
+        LIBS.rotateY(mMODEL_MATRIX9, 1,5);
+        LIBS.rotateX(mMODEL_MATRIX9, ALPHA);
+        LIBS.rotateY(mMODEL_MATRIX9, THETA);
      
         //ROTATE GROUP
-        var UFO = [MODEL_MATRIX, MODEL_MATRIX2, MODEL_MATRIX3, MODEL_MATRIX4, 
-            MODEL_MATRIX5, MODEL_MATRIX6, MODEL_MATRIX7, MODEL_MATRIX8, MODEL_MATRIX9, 
-            MODEL_MATRIX10, MODEL_MATRIX11];
-        rotateYGlobal(UFO, i*10); 
+        var UFO = [mMODEL_MATRIX, mMODEL_MATRIX2, mMODEL_MATRIX3, mMODEL_MATRIX4, 
+            mMODEL_MATRIX5, mMODEL_MATRIX6, mMODEL_MATRIX7, mMODEL_MATRIX8, mMODEL_MATRIX9, 
+            mMODEL_MATRIX10, mMODEL_MATRIX11];
+        rotateYGlobal(UFO, j*10); 
         // rotateXGlobal(UFO, i*10); 
         // rotateZGlobal(UFO, i*10); 
         
+        //GERAK GERAK TRANSLATE
+        // LIBS.translateZ(mMODEL_MATRIX, k*10);
+        
         //TRANSFORM POSITION : FIXED TO CUBE
-        var transformPosCube = LIBS.transformPoint(MODEL_MATRIX,[0,0,0]);
-        LIBS.setPosition(MODEL_MATRIX, transformPosCube[0], transformPosCube[1], transformPosCube[2]);
+        var transformPosCube = LIBS.transformPoint(mMODEL_MATRIX,[0,0,0]);
+        LIBS.setPosition(mMODEL_MATRIX, transformPosCube[0], transformPosCube[1], transformPosCube[2]);
         
-        var transformPosDonut = LIBS.transformPoint(MODEL_MATRIX,[0,0,1]);
-        LIBS.setPosition(MODEL_MATRIX2, transformPosDonut[0], transformPosDonut[1], transformPosDonut[2]);
+        var transformPosDonut = LIBS.transformPoint(mMODEL_MATRIX,[0,0,1]);
+        LIBS.setPosition(mMODEL_MATRIX2, transformPosDonut[0], transformPosDonut[1], transformPosDonut[2]);
         
-        var transformPosDonut_2= LIBS.transformPoint(MODEL_MATRIX,[0,0,1.8]);
-        LIBS.setPosition(MODEL_MATRIX3, transformPosDonut_2[0], transformPosDonut_2[1], transformPosDonut_2[2]);
+        var transformPosDonut_2= LIBS.transformPoint(mMODEL_MATRIX,[0,0,1.8]);
+        LIBS.setPosition(mMODEL_MATRIX3, transformPosDonut_2[0], transformPosDonut_2[1], transformPosDonut_2[2]);
 
-        var transformPosDonut_3= LIBS.transformPoint(MODEL_MATRIX,[0,0,2.3]);
-        LIBS.setPosition(MODEL_MATRIX4, transformPosDonut_3[0], transformPosDonut_3[1], transformPosDonut_3[2]);
+        var transformPosDonut_3= LIBS.transformPoint(mMODEL_MATRIX,[0,0,2.3]);
+        LIBS.setPosition(mMODEL_MATRIX4, transformPosDonut_3[0], transformPosDonut_3[1], transformPosDonut_3[2]);
 
-        var transformPosGlass= LIBS.transformPoint(MODEL_MATRIX,[0,0,0.4]);
-        LIBS.setPosition(MODEL_MATRIX5, transformPosGlass[0], transformPosGlass[1], transformPosGlass[2]);
+        var transformPosGlass= LIBS.transformPoint(mMODEL_MATRIX,[0,0,0.4]);
+        LIBS.setPosition(mMODEL_MATRIX5, transformPosGlass[0], transformPosGlass[1], transformPosGlass[2]);
 
-        var transformPosDonut_4= LIBS.transformPoint(MODEL_MATRIX,[0,0,4]);
-        LIBS.setPosition(MODEL_MATRIX6, transformPosDonut_4[0], transformPosDonut_4[1], transformPosDonut_4[2]);
+        var transformPosDonut_4= LIBS.transformPoint(mMODEL_MATRIX,[0,0,4]);
+        LIBS.setPosition(mMODEL_MATRIX6, transformPosDonut_4[0], transformPosDonut_4[1], transformPosDonut_4[2]);
         
-        var transformPosDonut_5= LIBS.transformPoint(MODEL_MATRIX,[0,0,5]);
-        LIBS.setPosition(MODEL_MATRIX7, transformPosDonut_5[0], transformPosDonut_5[1], transformPosDonut_5[2]);
+        var transformPosDonut_5= LIBS.transformPoint(mMODEL_MATRIX,[0,0,5]);
+        LIBS.setPosition(mMODEL_MATRIX7, transformPosDonut_5[0], transformPosDonut_5[1], transformPosDonut_5[2]);
         
-        var transformPosCone= LIBS.transformPoint(MODEL_MATRIX,[0,2,-2.2]);
-        LIBS.setPosition(MODEL_MATRIX8, transformPosCone[0], transformPosCone[1], transformPosCone[2]);
+        var transformPosCone= LIBS.transformPoint(mMODEL_MATRIX,[0,2,-2.2]);
+        LIBS.setPosition(mMODEL_MATRIX8, transformPosCone[0], transformPosCone[1], transformPosCone[2]);
         
-        var transformPosSphere= LIBS.transformPoint(MODEL_MATRIX,[0,2.55,-3.4]);
-        LIBS.setPosition(MODEL_MATRIX9, transformPosSphere[0], transformPosSphere[1], transformPosSphere[2]);
+        var transformPosSphere= LIBS.transformPoint(mMODEL_MATRIX,[0,2.55,-3.4]);
+        LIBS.setPosition(mMODEL_MATRIX9, transformPosSphere[0], transformPosSphere[1], transformPosSphere[2]);
         
-        var transformPosConeLeft= LIBS.transformPoint(MODEL_MATRIX,[0,-2,-2,24]);
-        LIBS.setPosition(MODEL_MATRIX10, transformPosConeLeft[0], transformPosConeLeft[1], transformPosConeLeft[2]);
+        var transformPosConeLeft= LIBS.transformPoint(mMODEL_MATRIX,[0,-2,-2,24]);
+        LIBS.setPosition(mMODEL_MATRIX10, transformPosConeLeft[0], transformPosConeLeft[1], transformPosConeLeft[2]);
         
-        var transformPosSphereRight= LIBS.transformPoint(MODEL_MATRIX,[0,-2.7,-3.39]);
-        LIBS.setPosition(MODEL_MATRIX11, transformPosSphereRight[0], transformPosSphereRight[1], transformPosSphereRight[2]);
+        var transformPosSphereRight= LIBS.transformPoint(mMODEL_MATRIX,[0,-2.7,-3.39]);
+        LIBS.setPosition(mMODEL_MATRIX11, transformPosSphereRight[0], transformPosSphereRight[1], transformPosSphereRight[2]);
         
+        //TRANSLATE SMOKE TRAIL
+        LIBS.translateY(mMODEL_MATRIX6, i*10);
+        LIBS.translateY(mMODEL_MATRIX7, i*10);
+        if (i > 0.08){
+            x = -0.01;
+        } 
+        else if (i < -0.25){
+            x = 0.01;
+        }
+
+
         //RENDER
-        mobject.MODEL_MATRIX=MODEL_MATRIX;
+        mobject.mMODEL_MATRIX=mMODEL_MATRIX;
         mobject.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
-        objectm2.MODEL_MATRIX = MODEL_MATRIX2;
+        objectm2.mMODEL_MATRIX = mMODEL_MATRIX2;
         objectm2.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
         
-        objectm3.MODEL_MATRIX = MODEL_MATRIX3;
+        objectm3.mMODEL_MATRIX = mMODEL_MATRIX3;
         objectm3.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
         
-        objectm4.MODEL_MATRIX = MODEL_MATRIX4;
+        objectm4.mMODEL_MATRIX = mMODEL_MATRIX4;
         objectm4.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
      
-        objectm5.MODEL_MATRIX = MODEL_MATRIX5;
+        objectm5.mMODEL_MATRIX = mMODEL_MATRIX5;
         objectm5.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
        
-        objectm6.MODEL_MATRIX = MODEL_MATRIX6;
+        objectm6.mMODEL_MATRIX = mMODEL_MATRIX6;
         objectm6.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
         
-        objectm7.MODEL_MATRIX = MODEL_MATRIX7;
+        objectm7.mMODEL_MATRIX = mMODEL_MATRIX7;
         objectm7.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
         
-        objectm8.MODEL_MATRIX = MODEL_MATRIX8;
+        objectm8.mMODEL_MATRIX = mMODEL_MATRIX8;
         objectm8.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
 
-        objectm9.MODEL_MATRIX = MODEL_MATRIX9;
+        objectm9.mMODEL_MATRIX = mMODEL_MATRIX9;
         objectm9.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
         
-        objectm10.MODEL_MATRIX = MODEL_MATRIX10;
+        objectm10.mMODEL_MATRIX = mMODEL_MATRIX10;
         objectm10.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
     
-        objectm11.MODEL_MATRIX = MODEL_MATRIX11;
+        objectm11.mMODEL_MATRIX = mMODEL_MATRIX11;
         objectm11.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
 
         window.requestAnimationFrame(animate);
