@@ -598,7 +598,7 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
       var THETA = 0;
       var ALPHA = 0;
 
-      var FRICTION= 0.95;
+      var FRICTION= 0.9;
 
       var mouseDown = function(e){
         drag = true;
@@ -743,6 +743,47 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
       1,1,1,      0,1,0, 1,1,
       1,1,-1,     0,1,0, 0,1
     ]
+    var moonVertex = [
+      //belakang
+      -10,-1,-10,   1,1,0, 0,0,
+      10,-1,-10,    1,1,0, 1,0,
+      10,1,-10,     1,1,0, 1,1,
+      -10,1,-10,    1,1,0, 0,1,
+
+      //depan
+      -10,-1,10,    0,0,1, 0,0,
+      10,-1,10,     0,0,1, 1,0,
+      10,1,10,      0,0,1, 1,1,
+      -10,1,10,     0,0,1, 0,1,
+
+
+      //kiri
+      -10,-1,-10,   0,1,1, 0,0,
+      -10,1,-10,    0,1,1, 1,0,
+      -10,1,10,     0,1,1, 1,1,
+      -10,-1,10,    0,1,1, 0,1,
+
+
+      //kanan
+      10,-1,-10,    1,0,0, 0,0,
+      10,1,-10,     1,0,0, 1,0,
+      10,1,10,      1,0,0, 1,1,
+      10,-1,10,     1,0,0, 0,1,
+
+
+      //bawah
+      -10,-1,-10,   1,0,1, 0,0,
+      -10,-1,10,    1,0,1, 1,0,
+      10,-1,10,     1,0,1, 1,1,
+      10,-1,-10,    1,0,1, 0,1,
+
+
+      //atas
+      -10,1,-10,    0,1,0, 0,0,
+      -10,1,10,     0,1,0, 1,0,
+      10,1,10,      0,1,0, 1,1,
+      10,1,-10,     0,1,0, 0,1
+    ]
    
       // FACES:
       var cube_faces = [
@@ -770,7 +811,7 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
         20,22,23
       ];
 
-      //BLOCK CUBE FARREL
+      //BLOCK CUBE FARRELL
       var block = [
         //belakang
         -1,-1,-1.5,   1,1,0, 0,0,
@@ -870,7 +911,7 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
         var mMODEL_MATRIX10 = LIBS.get_I4();
         var mMODEL_MATRIX11 = LIBS.get_I4();
       
-      //NORM FARREL 
+      //NORM FARRELL 
         var fMODEL_MATRIX = LIBS.get_I4(); 
         var fMODEL_MATRIX2 = LIBS.get_I4();
         var fMODEL_MATRIX3 = LIBS.get_I4();
@@ -882,9 +923,27 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
         var fMODEL_MATRIX9 = LIBS.get_I4();
         var fMODEL_MATRIX10 = LIBS.get_I4();
         var fMODEL_MATRIX11 = LIBS.get_I4();
-        var fMODEL_MATRIX12 = LIBS.get_I4()
+        var fMODEL_MATRIX12 = LIBS.get_I4();
+        var fMODEL_MATRIX13 = LIBS.get_I4();
+        var fMODEL_MATRIX14 = LIBS.get_I4();
+        var fMODEL_MATRIX15 = LIBS.get_I4();
 
-      LIBS.translateZ(VIEW_MATRIX,-25);
+      // NORM MOON
+      var MOON_MODEL_MATRIX = LIBS.get_I4();
+      var MOON_MODEL_MATRIX2 = LIBS.get_I4();
+      var MOON_MODEL_MATRIX3 = LIBS.get_I4();
+      var MOON_MODEL_MATRIX4 = LIBS.get_I4();
+      var MOON_MODEL_MATRIX5 = LIBS.get_I4();
+      var MOON_MODEL_MATRIX6 = LIBS.get_I4();
+      var MOON_MODEL_MATRIX7 = LIBS.get_I4();
+      
+      //NORM STAR
+      
+
+
+      LIBS.translateZ(VIEW_MATRIX,-60);
+      // LIBS.translateY(VIEW_MATRIX, -2);
+      // LIBS.rotateY(VIEW_MATRIX, 0.9);
 
       //=========================OBJECT ERIK================================
         //badan pesawat
@@ -985,7 +1044,7 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
         
         mobject.setup();
 
-        //======================================OBJECT FARREL=====================================
+        //======================================OBJECT FARRELL=====================================
         //Body
         var fobject = new MyObject(block, block_faces, shader_vertex_source, shader_fragment_source_nt, "resource/dwood.jpg");
         
@@ -1028,6 +1087,14 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
         //kaki kiri
         var fobject12 = new MyObject(ftrapesium['vertices'], ftrapesium['faces'], shader_vertex_source, shader_fragment_source_nt, "resource/dwood.jpg");
 
+        //Jet Booster
+        var firefly = generateTorus(1,0.1,100,100,0.5,0.1,0.3);
+        var fobject13 = new MyObject(firefly['vertices'], firefly['faces'], shader_vertex_source, shader_fragment_source);
+        var firefly2 = generateTorus(0.5,0.1,100,100,0.5,0.1,0.3);
+        var fobject14 = new MyObject(firefly2['vertices'], firefly2['faces'], shader_vertex_source, shader_fragment_source);
+        var firefly3 = generateTorus(1.5,0.1,100,100,0.5,0.1,0.3);
+        var fobject15 = new MyObject(firefly3['vertices'], firefly3['faces'], shader_vertex_source, shader_fragment_source);
+
         //setup
         fobject.childs.push(fobject2);
         fobject.childs.push(fobject3);
@@ -1040,9 +1107,32 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
         fobject.childs.push(fobject10);
         fobject.childs.push(fobject11);
         fobject.childs.push(fobject12);
+        fobject.childs.push(fobject13);
+        fobject.childs.push(fobject14);
+        fobject.childs.push(fobject15);
         fobject.setup();
 
+//======================================OBJECT ENVIRONMENT=====================================//
+        var moon = generateSphere(1,1,1,100,100,1,1,1)
+        var objMoon = new MyObject(moonVertex, cube_faces, shader_vertex_source, shader_fragment_source_nt, "resource/moon.jpeg");
+        var moon2 = generateSphere(0.2,0.2,0.2,100,100,0.128,0.128,0.128)
+        var objMoon2= new MyObject(moon2['vertices'], moon2['faces'], shader_vertex_source, shader_fragment_source);
+        var objMoon3 = objMoon2
+        var objMoon4 = objMoon2
+        var objMoon5 = objMoon2
+        var objMoon6 = objMoon2
+        var objMoon7 = objMoon2
 
+
+        // setup
+        objMoon.childs.push(objMoon2)
+        objMoon.childs.push(objMoon3)
+        objMoon.childs.push(objMoon4)
+        objMoon.childs.push(objMoon5)
+        objMoon.childs.push(objMoon6)
+        objMoon.childs.push(objMoon7)
+        objMoon.setup()
+//======================================OBJECT ENVIRONMENT END=====================================//
       /*========================= DRAWING ========================= */
       GL.clearColor(0.0, 0.0, 0.0, 0.0);
       GL.enable(GL.DEPTH_TEST);
@@ -1078,6 +1168,12 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
       var i = 0; //buat translate smoke
       var j = 0; //buat rotate di y axis 
       var k = 0; //buat gerak gerak 
+      var kt = 0;
+      var r =0;
+      var rx = 0.01;
+      var kz =0;
+      var zz = 0.02;
+      var zt = 0.03;
       var x = 0.01;
       var y = 0.01;
       var z = 0.01;
@@ -1091,9 +1187,10 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
       var fi = 0;
       var fj = 1;
       var fk = 0;
-      var fx = 0.01;
+      var fx = 0.05;
       var fy = 0.01;
-      var fz = 0.01;
+      var fz = 0.1;
+      var fMR = 1;
       //END VAR REL
 
       var animate = function(time) {
@@ -1122,7 +1219,10 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
      
           i += x; 
           j += y;
-          k += z;  
+          k += z; 
+          kt += zt;
+          kz += zz;
+          r += rx; 
         //end mis
 
         //rel
@@ -1132,18 +1232,20 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
 
         if(fi > 1.0){
           console.log("HIt")
-          fx = -0.01;
+          fx = -0.05;
         }
         else if (fi < 0){
-          fx = 0.01;
+          fx = 0.05;
         }
 
-        if(fk > 5.0){
+        if(fk > 10){
           console.log("HIt")
-          fz = -0.01;
+          fz = -0.1;
+          fMR = -1.4
         }
-        else if (fk < -5){
-          fz = 0.01;
+        else if (fk < -30){
+          fz = 0.1;
+          fMR = 1.4
         }
         //end rel 
 
@@ -1159,6 +1261,9 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
             THETA += dX *2*Math.PI/CANVAS.width;
             ALPHA += dY * 2*Math.PI/CANVAS.height;
           }
+          // VIEW_MATRIX = LIBS.get_I4();
+          LIBS.rotateX(VIEW_MATRIX, ALPHA/1000);
+          LIBS.rotateY(VIEW_MATRIX, THETA/1000);
           // console.log("Detik : ",now)
 
           //ngukur pergerakan
@@ -1184,46 +1289,48 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
         //   E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
           // LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
           // LIBS.rotateX(MODEL_MATRIX,10)
-          
-          LIBS.rotateY(E_MODEL_MATRIX, THETA); //puter objek kanan kiri
-          LIBS.rotateX(E_MODEL_MATRIX, ALPHA); // puter objek atas bawah
+          LIBS.translateY(E_MODEL_MATRIX, 10);
+          LIBS.translateX(E_MODEL_MATRIX, -15);
+
+          // LIBS.rotateY(E_MODEL_MATRIX, THETA); //puter objek kanan kiri
+          // LIBS.rotateX(E_MODEL_MATRIX, ALPHA); // puter objek atas bawah
 
           LIBS.rotateY(E_MODEL_MATRIX2,-9.425)
-          LIBS.rotateY(E_MODEL_MATRIX2, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX2, ALPHA);   
+          // LIBS.rotateY(E_MODEL_MATRIX2, THETA);
+          // LIBS.rotateX(E_MODEL_MATRIX2, ALPHA);   
  
-          LIBS.rotateY(E_MODEL_MATRIX3, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX3, ALPHA);
+          // LIBS.rotateY(E_MODEL_MATRIX3, THETA);
+          // LIBS.rotateX(E_MODEL_MATRIX3, ALPHA);
  
           LIBS.rotateY(E_MODEL_MATRIX4,-21)
-          LIBS.rotateY(E_MODEL_MATRIX4, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX4, ALPHA);
+          // LIBS.rotateY(E_MODEL_MATRIX4, THETA);
+          // LIBS.rotateX(E_MODEL_MATRIX4, ALPHA);
 
           LIBS.rotateY(E_MODEL_MATRIX5,21)
-          LIBS.rotateY(E_MODEL_MATRIX5, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX5, ALPHA);
+          // LIBS.rotateY(E_MODEL_MATRIX5, THETA);
+          // LIBS.rotateX(E_MODEL_MATRIX5, ALPHA);
 
           LIBS.rotateX(E_MODEL_MATRIX6,LIBS.degToRad(215))
-          LIBS.rotateY(E_MODEL_MATRIX6, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX6, ALPHA);
+          // LIBS.rotateY(E_MODEL_MATRIX6, THETA);
+          // LIBS.rotateX(E_MODEL_MATRIX6, ALPHA);
           
         //   LIBS.rotateX(E_MODEL_MATRIX7,90)
         // //   LIBS.translateX(E_MODEL_MATRIX7,-5)
         //   LIBS.rotateY(E_MODEL_MATRIX7, THETA);
         //   LIBS.rotateX(E_MODEL_MATRIX7, ALPHA);
           
-          LIBS.rotateY(E_MODEL_MATRIX_OBSTACLE, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX_OBSTACLE, ALPHA);
+          // LIBS.rotateY(E_MODEL_MATRIX_OBSTACLE, THETA);
+          // LIBS.rotateX(E_MODEL_MATRIX_OBSTACLE, ALPHA);
           LIBS.rotateY(E_MODEL_MATRIX_OBSTACLE,yrotE* 6)
           LIBS.rotateX(E_MODEL_MATRIX_OBSTACLE,xrotE* 6)
 
-          LIBS.rotateY(E_MODEL_MATRIX_RING,LIBS.degToRad(90))
-          LIBS.rotateY(E_MODEL_MATRIX_RING, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX_RING, ALPHA);
+          // LIBS.rotateY(E_MODEL_MATRIX_RING,LIBS.degToRad(90))
+          // LIBS.rotateY(E_MODEL_MATRIX_RING, THETA);
+          // LIBS.rotateX(E_MODEL_MATRIX_RING, ALPHA);
         
-          LIBS.rotateY(E_MODEL_MATRIX_RING2,LIBS.degToRad(90))
-          LIBS.rotateY(E_MODEL_MATRIX_RING2, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX_RING2, ALPHA);
+          // LIBS.rotateY(E_MODEL_MATRIX_RING2,LIBS.degToRad(180==))
+          // LIBS.rotateY(E_MODEL_MATRIX_RING2, THETA);
+          // LIBS.rotateX(E_MODEL_MATRIX_RING2, ALPHA);
           
         //   LIBS.translateX(E_MODEL_MATRIX_OBSTACLE,t_objE*10)
         //   LIBS.translateY(E_MODEL_MATRIX_LANTAI,-10)
@@ -1248,72 +1355,74 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
       
           //SET ROTATE UNTUK POSISI AWAL
           //cube head
+          LIBS.translateY(mMODEL_MATRIX, 10);
+          LIBS.translateZ(mMODEL_MATRIX, 10);
           LIBS.rotateX(mMODEL_MATRIX, -4.7);
           LIBS.rotateY(mMODEL_MATRIX, 1.2);
-          LIBS.rotateX(mMODEL_MATRIX, ALPHA); 
-          LIBS.rotateY(mMODEL_MATRIX, THETA); 
+          // LIBS.rotateX(mMODEL_MATRIX, ALPHA); 
+          // LIBS.rotateY(mMODEL_MATRIX, THETA); 
           
           //body donut
           LIBS.rotateX(mMODEL_MATRIX2, -4.7);
           LIBS.rotateY(mMODEL_MATRIX2, 1.2);
-          LIBS.rotateX(mMODEL_MATRIX2, ALPHA);
-          LIBS.rotateY(mMODEL_MATRIX2, THETA);
+          // LIBS.rotateX(mMODEL_MATRIX2, ALPHA);
+          // LIBS.rotateY(mMODEL_MATRIX2, THETA);
           
           //body donut2
           LIBS.rotateX(mMODEL_MATRIX3, -4.7);
           LIBS.rotateY(mMODEL_MATRIX3, 1.2);
-          LIBS.rotateX(mMODEL_MATRIX3, ALPHA);
-          LIBS.rotateY(mMODEL_MATRIX3, THETA);
+          // LIBS.rotateX(mMODEL_MATRIX3, ALPHA);
+          // LIBS.rotateY(mMODEL_MATRIX3, THETA);
           
           //body donut3
           LIBS.rotateX(mMODEL_MATRIX4, -4.7);
           LIBS.rotateY(mMODEL_MATRIX4, 1.2);
-          LIBS.rotateX(mMODEL_MATRIX4, ALPHA);
-          LIBS.rotateY(mMODEL_MATRIX4, THETA);
+          // LIBS.rotateX(mMODEL_MATRIX4, ALPHA);
+          // LIBS.rotateY(mMODEL_MATRIX4, THETA);
           
           //halfsphere glass
           LIBS.rotateX(mMODEL_MATRIX5, -4.7);
           LIBS.rotateY(mMODEL_MATRIX5, 1.2);
-          LIBS.rotateX(mMODEL_MATRIX5, ALPHA);
-          LIBS.rotateY(mMODEL_MATRIX5, THETA);
+          // LIBS.rotateX(mMODEL_MATRIX5, ALPHA);
+          // LIBS.rotateY(mMODEL_MATRIX5, THETA);
 
               //donut trail big
               LIBS.rotateX(mMODEL_MATRIX6, -4.7);
               LIBS.rotateY(mMODEL_MATRIX6, 1.2);
-              LIBS.rotateX(mMODEL_MATRIX6, ALPHA);
-              LIBS.rotateY(mMODEL_MATRIX6, THETA);
+              // LIBS.rotateX(mMODEL_MATRIX6, ALPHA);
+              // LIBS.rotateY(mMODEL_MATRIX6, THETA);
       
               //donut trail small
               LIBS.rotateX(mMODEL_MATRIX7, -4.7);
               LIBS.rotateY(mMODEL_MATRIX7, 1.2);
-              LIBS.rotateX(mMODEL_MATRIX7, ALPHA);
-              LIBS.rotateY(mMODEL_MATRIX7, THETA);
+              // LIBS.rotateX(mMODEL_MATRIX7, ALPHA);
+              // LIBS.rotateY(mMODEL_MATRIX7, THETA);
               
           //antenna right
           LIBS.rotateX(mMODEL_MATRIX8, -7.4);
           LIBS.rotateY(mMODEL_MATRIX8, 1.2);
-          LIBS.rotateX(mMODEL_MATRIX8, ALPHA);
-          LIBS.rotateY(mMODEL_MATRIX8, THETA);
+          // LIBS.rotateX(mMODEL_MATRIX8, ALPHA);
+          // LIBS.rotateY(mMODEL_MATRIX8, THETA);
           
           LIBS.rotateX(mMODEL_MATRIX9, -7.4);
           LIBS.rotateY(mMODEL_MATRIX9, 1,5);
-          LIBS.rotateX(mMODEL_MATRIX9, ALPHA);
-          LIBS.rotateY(mMODEL_MATRIX9, THETA);
+          // LIBS.rotateX(mMODEL_MATRIX9, ALPHA);
+          // LIBS.rotateY(mMODEL_MATRIX9, THETA);
   
           //antenna left
           LIBS.rotateX(mMODEL_MATRIX10, -14.6);
           LIBS.rotateY(mMODEL_MATRIX10, 1.2);
-          LIBS.rotateX(mMODEL_MATRIX10, ALPHA);
-          LIBS.rotateY(mMODEL_MATRIX10, THETA);
+          // LIBS.rotateX(mMODEL_MATRIX10, ALPHA);
+          // LIBS.rotateY(mMODEL_MATRIX10, THETA);
 
           LIBS.rotateX(mMODEL_MATRIX11, -14.6);
           LIBS.rotateY(mMODEL_MATRIX11, 1,5);
-          LIBS.rotateX(mMODEL_MATRIX11, ALPHA);
-          LIBS.rotateY(mMODEL_MATRIX11, THETA);
+          // LIBS.rotateX(mMODEL_MATRIX11, ALPHA);
+          // LIBS.rotateY(mMODEL_MATRIX11, THETA);
 
           //=============================================END SETPOS MISAEL==============================================
-
-          //=====================================SETPOS FARREL================================================
+          // 
+          //=====================================SETPOS FARRELL================================================
           fMODEL_MATRIX = LIBS.get_I4(); //ngambil matrix normalnya biar bisa di transform
           fMODEL_MATRIX2 = LIBS.get_I4();
           fMODEL_MATRIX3 = LIBS.get_I4();
@@ -1326,81 +1435,139 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
           fMODEL_MATRIX10 = LIBS.get_I4();
           fMODEL_MATRIX11 = LIBS.get_I4();
           fMODEL_MATRIX12 = LIBS.get_I4();
+          fMODEL_MATRIX13 = LIBS.get_I4();
+          fMODEL_MATRIX14 = LIBS.get_I4();
+          fMODEL_MATRIX15 = LIBS.get_I4();
           
           // LIBS.setPosition(fMODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
           // LIBS.rotateX(fMODEL_MATRIX, time/1000)
           
           LIBS.translateX(fMODEL_MATRIX, fk); //puter objek kanan kiri
-          LIBS.rotateY(fMODEL_MATRIX, THETA); //puter objek kanan kiri
-          LIBS.rotateX(fMODEL_MATRIX, ALPHA); // puter objek atas bawah
+          LIBS.translateX(fMODEL_MATRIX, 10); //puter objek kanan kiri
+          // LIBS.rotateY(fMODEL_MATRIX, THETA); //puter objek kanan kiri
+          // LIBS.rotateX(fMODEL_MATRIX, ALPHA); // puter objek atas bawah
           
           //atur posisi paha kiri
           LIBS.rotateY(fMODEL_MATRIX2, 4.8);
           LIBS.rotateX(fMODEL_MATRIX2, fi);
-          LIBS.rotateY(fMODEL_MATRIX2, THETA);
-          LIBS.rotateX(fMODEL_MATRIX2, ALPHA);
+          // LIBS.rotateY(fMODEL_MATRIX2, THETA);
+          // LIBS.rotateX(fMODEL_MATRIX2, ALPHA);
           
           //atur posisi paha kanan
           LIBS.rotateY(fMODEL_MATRIX3, -4.8);
           LIBS.rotateX(fMODEL_MATRIX3, fj);
-          LIBS.rotateY(fMODEL_MATRIX3, THETA);
-          LIBS.rotateX(fMODEL_MATRIX3, ALPHA);
+          // LIBS.rotateY(fMODEL_MATRIX3, THETA);
+          // LIBS.rotateX(fMODEL_MATRIX3, ALPHA);
           
           //atur posisi betis kanan
           LIBS.rotateY(fMODEL_MATRIX4, 0);
           LIBS.rotateX(fMODEL_MATRIX4, 1);
-          LIBS.rotateY(fMODEL_MATRIX4, THETA);
-          LIBS.rotateX(fMODEL_MATRIX4, ALPHA);
+          // LIBS.rotateY(fMODEL_MATRIX4, THETA);
+          // LIBS.rotateX(fMODEL_MATRIX4, ALPHA);
           
           //atur posisi betis kiri
           LIBS.rotateY(fMODEL_MATRIX5, 0);
           LIBS.rotateX(fMODEL_MATRIX5, 1);
-          LIBS.rotateY(fMODEL_MATRIX5, THETA);
-          LIBS.rotateX(fMODEL_MATRIX5, ALPHA);
+          // LIBS.rotateY(fMODEL_MATRIX5, THETA);
+          // LIBS.rotateX(fMODEL_MATRIX5, ALPHA);
           
           //atur posisi duri 1
           LIBS.rotateY(fMODEL_MATRIX6, 0);
           LIBS.rotateX(fMODEL_MATRIX6, 4.7);
-          LIBS.rotateY(fMODEL_MATRIX6, THETA);
-          LIBS.rotateX(fMODEL_MATRIX6, ALPHA);
+          // LIBS.rotateY(fMODEL_MATRIX6, THETA);
+          // LIBS.rotateX(fMODEL_MATRIX6, ALPHA);
           //atur posisi duri 2
           LIBS.rotateY(fMODEL_MATRIX7, 0);
           LIBS.rotateX(fMODEL_MATRIX7, 4.7);
-          LIBS.rotateY(fMODEL_MATRIX7, THETA);
-          LIBS.rotateX(fMODEL_MATRIX7, ALPHA);
+          // LIBS.rotateY(fMODEL_MATRIX7, THETA);
+          // LIBS.rotateX(fMODEL_MATRIX7, ALPHA);
           //atur posisi duri 3
           LIBS.rotateY(fMODEL_MATRIX8, 0);
           LIBS.rotateX(fMODEL_MATRIX8, 4.7);
-          LIBS.rotateY(fMODEL_MATRIX8, THETA);
-          LIBS.rotateX(fMODEL_MATRIX8, ALPHA);
+          // LIBS.rotateY(fMODEL_MATRIX8, THETA);
+          // LIBS.rotateX(fMODEL_MATRIX8, ALPHA);
           
           //atur kaki kanan
           LIBS.rotateY(fMODEL_MATRIX11, 1.6);
           LIBS.rotateX(fMODEL_MATRIX11, 0);
-          LIBS.rotateY(fMODEL_MATRIX11, THETA);
-          LIBS.rotateX(fMODEL_MATRIX11, ALPHA);
+          // LIBS.rotateY(fMODEL_MATRIX11, THETA);
+          // LIBS.rotateX(fMODEL_MATRIX11, ALPHA);
           //atur kaki kiri
           LIBS.rotateY(fMODEL_MATRIX12, 1.6);
           LIBS.rotateX(fMODEL_MATRIX12, 0);
-          LIBS.rotateY(fMODEL_MATRIX12, THETA);
-          LIBS.rotateX(fMODEL_MATRIX12, ALPHA);
+          // LIBS.rotateY(fMODEL_MATRIX12, THETA);
+          // LIBS.rotateX(fMODEL_MATRIX12, ALPHA);
+
+          //atur ring 1
+          LIBS.rotateY(fMODEL_MATRIX13, 3.13);
+          LIBS.rotateX(fMODEL_MATRIX13, 0);
+          // LIBS.rotateY(fMODEL_MATRIX13, THETA);
+          // LIBS.rotateX(fMODEL_MATRIX13, ALPHA);
+          //atur ring 2
+          LIBS.rotateY(fMODEL_MATRIX14, 3.13);
+          LIBS.rotateX(fMODEL_MATRIX14, 0);
+          // LIBS.rotateY(fMODEL_MATRIX14, THETA);
+          // LIBS.rotateX(fMODEL_MATRIX14, ALPHA);
+          //atur ring 3
+          LIBS.rotateY(fMODEL_MATRIX15, 3.13);
+          LIBS.rotateX(fMODEL_MATRIX15, 0);
+          // LIBS.rotateY(fMODEL_MATRIX15, THETA);
+          // LIBS.rotateX(fMODEL_MATRIX15, ALPHA);
 
         //======================================OBJ GROUP=======================================
-        var obj = [E_MODEL_MATRIX, E_MODEL_MATRIX2,E_MODEL_MATRIX3,E_MODEL_MATRIX4,E_MODEL_MATRIX5,E_MODEL_MATRIX6] //erick
+        var obj = [E_MODEL_MATRIX, E_MODEL_MATRIX2,E_MODEL_MATRIX3,E_MODEL_MATRIX4,E_MODEL_MATRIX5,E_MODEL_MATRIX6,E_MODEL_MATRIX_RING,E_MODEL_MATRIX_RING2] //erick
         
         var UFO = [mMODEL_MATRIX, mMODEL_MATRIX2, mMODEL_MATRIX3, mMODEL_MATRIX4, 
           mMODEL_MATRIX5, mMODEL_MATRIX6, mMODEL_MATRIX7, mMODEL_MATRIX8, mMODEL_MATRIX9, 
           mMODEL_MATRIX10, mMODEL_MATRIX11]; //misael
-          rotateYGlobal(UFO, j*10); 
         
         var objGroup = [
           fMODEL_MATRIX, fMODEL_MATRIX2, fMODEL_MATRIX3, 
           fMODEL_MATRIX4, fMODEL_MATRIX5, fMODEL_MATRIX6, 
           fMODEL_MATRIX7, fMODEL_MATRIX8, fMODEL_MATRIX9, 
-          fMODEL_MATRIX10, fMODEL_MATRIX11, fMODEL_MATRIX12];
-        rotateYGlobal(objGroup,1.4);
+          fMODEL_MATRIX10, fMODEL_MATRIX11, fMODEL_MATRIX12, 
+          fMODEL_MATRIX13, fMODEL_MATRIX14, fMODEL_MATRIX15];
           
+          // rotateYGlobal(objGroup,1.4); //farrell
+          rotateYGlobal(objGroup,fMR); //farrell
+        
+        //======================================MOVESET MISAEL==============================
+          rotateYGlobal(UFO, j*10);
+          LIBS.translateY(mMODEL_MATRIX, k*10) 
+          LIBS.translateX(mMODEL_MATRIX, kt*10)
+          LIBS.translateZ(mMODEL_MATRIX, kz*10)
+
+          rotateXGlobal(UFO, r*0.2)
+          rotateZGlobal(UFO, r*0.2)
+        
+          
+          if(k > 0.7){
+            z = -0.01;
+            rx = -0.01;
+          } else if (k < -0.5){
+            z = 0.01
+            rx = 0.01
+          } if (kt > 1.8){
+            zt = -0.01;
+            rx = -0.02
+          } else if (kt < -0.3){
+            zt = 0.01;
+            rx = 0.01
+          }
+          if (kz > 1.2){
+            zz = -0.02;
+            rx = -0.01
+          } else if (kz < -0.5){
+            zz = 0.02;
+            rx = 0.01
+          } if (rx>0.4){
+            rx = -0.01;
+          } else if(rx < -0.4){
+            rx = 0.01;
+          }
+
         //=======================================MOVESET ERICK================================
+
           rotateYGlobal(obj,LIBS.degToRad(90))
           // rotateYGlobal(obj,LIBS.degToRad(yrot))
           rotateZGlobal(obj,LIBS.degToRad(zrotE))
@@ -1646,7 +1813,7 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
           LIBS.setPosition(mMODEL_MATRIX11, transformPosSphereRight[0], transformPosSphereRight[1], transformPosSphereRight[2]);
         //=================================END SETPOS MISAEL=================================================
 
-        //================================================SETPOS FARREL===============================================
+        //================================================SETPOS FARRELL===============================================
           //paha kiri terhadap badan
           var transformedSpherePos = LIBS.transformPoint(fMODEL_MATRIX, [1, -1, -1]);
           LIBS.setPosition(fMODEL_MATRIX2,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
@@ -1684,9 +1851,19 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
           //kaki kanan terhadap betis kanan
           transformedSpherePos = LIBS.transformPoint(fMODEL_MATRIX4, [0.5, 0.3, 1.4]);
           LIBS.setPosition(fMODEL_MATRIX11,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
-          //mata kiri terhadap badan
+          //kaki kiri terhadap betis kiri
           transformedSpherePos = LIBS.transformPoint(fMODEL_MATRIX5, [0.5, 0.3, 1.4]);
           LIBS.setPosition(fMODEL_MATRIX12,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+
+          //ring 1 terhadap badan
+          transformedSpherePos = LIBS.transformPoint(fMODEL_MATRIX, [-0.1, 0.3, -2.5]);
+          LIBS.setPosition(fMODEL_MATRIX13,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+          //ring 2 terhadap badan
+          transformedSpherePos = LIBS.transformPoint(fMODEL_MATRIX, [-0.1, 0.3, -2]);
+          LIBS.setPosition(fMODEL_MATRIX14,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+          //ring 3 terhadap badan
+          transformedSpherePos = LIBS.transformPoint(fMODEL_MATRIX, [-0.1, 0.3, -3]);
+          LIBS.setPosition(fMODEL_MATRIX15,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
 
         //    LIBS.setPosition(fMODEL_MATRIX2,pos_x,pos_y,pos_z);
           // var temp = LIBS.get_I4();
@@ -1694,7 +1871,7 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
           // LIBS.rotateX(temp,THETA);
           
           // fMODEL_MATRIX2= LIBS.multiply(fMODEL_MATRIX2,temp)
-        //===============================================END SETPOS FARREL=============================================
+        //===============================================END SETPOS FARRELL=============================================
 
         //==========================================MOVESET TRANSLATE ERICK============================================
           if(now > 10){
@@ -1721,15 +1898,26 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
         
         //==========================================MOVESET TRANSLATE MISAEL============================================
           //TRANSLATE SMOKE TRAIL
-          LIBS.translateY(mMODEL_MATRIX6, i*10);
-          LIBS.translateY(mMODEL_MATRIX7, i*10);
+          LIBS.translateY(mMODEL_MATRIX6, i*5);
+          LIBS.translateY(mMODEL_MATRIX7, i*3);
+          LIBS.scale(mMODEL_MATRIX6, scaleE, scaleE, scaleE);
+          LIBS.scale(mMODEL_MATRIX7, scale2E, scale2E, scale2E);
           if (i > 0.08){
               x = -0.01;
           } 
-          else if (i < -0.25){
+          else if (i < -0.12){
               x = 0.01;
           }
+
+          //TRANSLATE ALL
+        
+
         //==========================================END MOVESET TRANSLATE MISAEL============================================
+        //==========================================MOVESET FARRELL ========================================================
+
+        LIBS.scale(fMODEL_MATRIX13,scaleE,scaleE,scaleE);
+        LIBS.scale(fMODEL_MATRIX14,scale2E,scale2E,scale2E);
+        LIBS.scale(fMODEL_MATRIX15,scaleE,scaleE,scaleE);
           
         //==========================================RENDER ERICK================================================
           Eobject.MODEL_MATRIX=E_MODEL_MATRIX;
@@ -1776,43 +1964,44 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
         //===================================================END RENDER ERICK============================================
 
         //=============================================RENDER MISAEL=====================================================
+        //cube 
         mobject.MODEL_MATRIX=mMODEL_MATRIX;
         mobject.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
-
+        //donut body1
         objectm2.MODEL_MATRIX = mMODEL_MATRIX2;
-        objectm2.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
-        
+        objectm2.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+        //donut body2
         objectm3.MODEL_MATRIX = mMODEL_MATRIX3;
         objectm3.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
-        
+        //donut body3
         objectm4.MODEL_MATRIX = mMODEL_MATRIX4;
         objectm4.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
-    
+        //glass
         objectm5.MODEL_MATRIX = mMODEL_MATRIX5;
         objectm5.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
-      
+        //smoke trail
         objectm6.MODEL_MATRIX = mMODEL_MATRIX6;
-        objectm6.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
-        
+        objectm6.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+        //smoke trail
         objectm7.MODEL_MATRIX = mMODEL_MATRIX7;
-        objectm7.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
-        
+        objectm7.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+        //cone right
         objectm8.MODEL_MATRIX = mMODEL_MATRIX8;
-        objectm8.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
-
+        objectm8.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+        //sphere right
         objectm9.MODEL_MATRIX = mMODEL_MATRIX9;
         objectm9.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
-        
+        //cone left
         objectm10.MODEL_MATRIX = mMODEL_MATRIX10;
-        objectm10.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
-    
+        objectm10.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+        //sphere left
         objectm11.MODEL_MATRIX = mMODEL_MATRIX11;
         objectm11.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
         
           // GL.drawArrays(GL.LINE_STRIP, 0, mouth.vertices.length / 6);
         //===============================================END RENDER MISAEL===============================================
 
-        //===============================================RENDER FARREL====================================================
+        //===============================================RENDER FARRELL====================================================
           fobject.MODEL_MATRIX= fMODEL_MATRIX;
           fobject.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
@@ -1852,7 +2041,80 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
 
           fobject12.MODEL_MATRIX=fMODEL_MATRIX12;
           fobject12.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
-        //=================================================END RENDER FARREL==============================================
+
+          fobject13.MODEL_MATRIX=fMODEL_MATRIX13;
+          fobject13.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+
+          fobject14.MODEL_MATRIX=fMODEL_MATRIX14;
+          fobject14.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+
+          fobject15.MODEL_MATRIX=fMODEL_MATRIX15;
+          fobject15.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+        //=================================================END RENDER FARRELL==============================================
+        //=================================================START RENDER MOON==============================================
+        MOON_MODEL_MATRIX = LIBS.get_I4();
+        MOON_MODEL_MATRIX2 = LIBS.get_I4();
+        MOON_MODEL_MATRIX3 = LIBS.get_I4();
+        MOON_MODEL_MATRIX4 = LIBS.get_I4();
+        MOON_MODEL_MATRIX5 = LIBS.get_I4();
+        MOON_MODEL_MATRIX6 = LIBS.get_I4();
+        MOON_MODEL_MATRIX7 = LIBS.get_I4();
+        
+          LIBS.scale(MOON_MODEL_MATRIX,10,10,10)
+          LIBS.translateY(MOON_MODEL_MATRIX,-14)
+          LIBS.translateX(MOON_MODEL_MATRIX,25)
+
+        
+        var fullMoon = [MOON_MODEL_MATRIX,MOON_MODEL_MATRIX2,MOON_MODEL_MATRIX3,MOON_MODEL_MATRIX4,MOON_MODEL_MATRIX5,MOON_MODEL_MATRIX6,MOON_MODEL_MATRIX7]
+        
+        // rotateYGlobal(fullMoon,xrotE*2)
+        // rotateXGlobal(fullMoon,-xrotE*2)
+        
+
+
+        var transformMoon = LIBS.transformPoint(MOON_MODEL_MATRIX,[0,0,0]);
+        LIBS.setPosition(MOON_MODEL_MATRIX, transformMoon[0], transformMoon[1], transformMoon[2]);
+
+        var transformMoon2 = LIBS.transformPoint(MOON_MODEL_MATRIX,[0,-1,0]);
+        LIBS.setPosition(MOON_MODEL_MATRIX2, transformMoon2[0], transformMoon2[1], transformMoon2[2]);
+
+        var transformMoon3 = LIBS.transformPoint(MOON_MODEL_MATRIX,[1,-0,0]);
+        LIBS.setPosition(MOON_MODEL_MATRIX3, transformMoon3[0], transformMoon3[1], transformMoon3[2]);
+
+        var transformMoon4 = LIBS.transformPoint(MOON_MODEL_MATRIX,[-0,0,1]);
+        LIBS.setPosition(MOON_MODEL_MATRIX4, transformMoon4[0], transformMoon4[1], transformMoon4[2]);
+
+        var transformMoon5 = LIBS.transformPoint(MOON_MODEL_MATRIX,[-1,-0,-0]);
+        LIBS.setPosition(MOON_MODEL_MATRIX5, transformMoon5[0], transformMoon5[1], transformMoon5[2]);
+
+        var transformMoon6 = LIBS.transformPoint(MOON_MODEL_MATRIX,[-0,0,-1]);
+        LIBS.setPosition(MOON_MODEL_MATRIX6, transformMoon6[0], transformMoon6[1], transformMoon6[2]);
+
+        var transformMoon7 = LIBS.transformPoint(MOON_MODEL_MATRIX,[0,1,0]);
+        LIBS.setPosition(MOON_MODEL_MATRIX7, transformMoon7[0], transformMoon7[1], transformMoon7[2]);
+
+        objMoon.MODEL_MATRIX=MOON_MODEL_MATRIX;
+        objMoon.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+
+        objMoon2.MODEL_MATRIX=MOON_MODEL_MATRIX2;
+        objMoon2.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+        objMoon3.MODEL_MATRIX=MOON_MODEL_MATRIX3;
+        objMoon3.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+        objMoon4.MODEL_MATRIX=MOON_MODEL_MATRIX4;
+        objMoon4.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+        objMoon5.MODEL_MATRIX=MOON_MODEL_MATRIX5;
+        objMoon5.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+        objMoon6.MODEL_MATRIX=MOON_MODEL_MATRIX6;
+        objMoon6.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+
+        objMoon7.MODEL_MATRIX=MOON_MODEL_MATRIX7;
+        objMoon7.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+        
+        //=================================================END RENDER MOON==============================================
 
           window.requestAnimationFrame(animate);
       };
