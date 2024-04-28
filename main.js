@@ -761,9 +761,9 @@ function generateCircle(x,y,rad){
       var E_MODEL_MATRIX4 = LIBS.get_I4();
       var E_MODEL_MATRIX5 = LIBS.get_I4();
       var E_MODEL_MATRIX6 = LIBS.get_I4();
-      var E_MODEL_MATRIX7 = LIBS.get_I4();
+    //   var E_MODEL_MATRIX7 = LIBS.get_I4();
       var E_MODEL_MATRIX_OBSTACLE = LIBS.get_I4();
-      var E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
+    //   var E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
 
 
       LIBS.translateZ(VIEW_MATRIX,-25);
@@ -790,14 +790,14 @@ function generateCircle(x,y,rad){
       var Epucuk = generateCone(0.5,2,4,100,1,1,0);
       var EobjPucuk = new MyObject(Epucuk['vertices'],Epucuk['faces'], shader_vertex_source, shader_fragment_source);
       
-      var Eobs = generateTorus(0.5,0.7,0.6,100,100,1,1,0);
+      var Eobs = generateTorus(0.4,0.2,100,100,1,1,0);
       var EobjObs = new MyObject(Eobs['vertices'],Eobs['faces'],shader_vertex_source, shader_fragment_source)
 
       var Elantai = generateRectangle3DGeometry(2,200,200,0,1,0);
       var EobjLantai = new MyObject(Elantai['vertices'],Elantai['faces'],shader_vertex_source, shader_fragment_source)
 
 
-      var testTrapesium = generate3DTrapesium(5,2,1,1,0,1,0)
+      var testTrapesium = generate3DTrapesium(0,2,1,1,0,1,0)
       var objTrapesium = new MyObject(testTrapesium['vertices'],testTrapesium['faces'], shader_vertex_source, shader_fragment_source)
       // var donut = generateTorus(1,0.3,72,24)
       // var tabung = generateCylinder(0.5,1,50) // kalo base radius 0 jadi cone
@@ -812,10 +812,10 @@ function generateCircle(x,y,rad){
       Eobject.childs.push(EobjSayap)
       Eobject.childs.push(EobjSayap2)
       Eobject.childs.push(EobjPucuk)
-      Eobject.childs.push(objTrapesium)
-      Eobject.childs.push(EobjObs)
-      EobjLantai.setup()
-      // objObs.setup();
+    //   Eobject.childs.push(objTrapesium)
+    //   Eobject.childs.push(EobjObs)
+    //   EobjLantai.setup()
+      EobjObs.setup();
       Eobject.setup();
 
       /*========================= DRAWING ========================= */
@@ -836,6 +836,7 @@ function generateCircle(x,y,rad){
       var t_obsE = 0;
       var xrotE = 0;
       var zrotE = 0;
+      var yrotE = 0;
       var xcountE = 0.01;
       var zcountE = 0.01;
       var ycountE = 0.01;
@@ -866,7 +867,7 @@ function generateCircle(x,y,rad){
             THETA += dX *2*Math.PI/CANVAS.width;
             ALPHA += dY * 2*Math.PI/CANVAS.height;
           }
-          console.log("Detik : ",tempE)
+          console.log("Detik : ",now)
           //ngukur pergerakan
           var radius = 2;
           var pos_x = radius * now/1000;
@@ -881,9 +882,9 @@ function generateCircle(x,y,rad){
           E_MODEL_MATRIX4 = LIBS.get_I4();
           E_MODEL_MATRIX5 = LIBS.get_I4();
           E_MODEL_MATRIX6 = LIBS.get_I4();
-          E_MODEL_MATRIX7 = LIBS.get_I4();
+        //   E_MODEL_MATRIX7 = LIBS.get_I4();
           E_MODEL_MATRIX_OBSTACLE = LIBS.get_I4();
-          E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
+        //   E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
           // LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
           // LIBS.rotateX(MODEL_MATRIX,10)
           
@@ -912,20 +913,22 @@ function generateCircle(x,y,rad){
           LIBS.rotateX(E_MODEL_MATRIX6, ALPHA);
           
           
-          LIBS.rotateX(E_MODEL_MATRIX7,90)
-          LIBS.translateX(E_MODEL_MATRIX7,-5)
-          LIBS.rotateY(E_MODEL_MATRIX7, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX7, ALPHA);
+        //   LIBS.rotateX(E_MODEL_MATRIX7,90)
+        // //   LIBS.translateX(E_MODEL_MATRIX7,-5)
+        //   LIBS.rotateY(E_MODEL_MATRIX7, THETA);
+        //   LIBS.rotateX(E_MODEL_MATRIX7, ALPHA);
 
-          LIBS.translateX(E_MODEL_MATRIX_OBSTACLE,30)
+          
           LIBS.rotateY(E_MODEL_MATRIX_OBSTACLE, THETA);
           LIBS.rotateX(E_MODEL_MATRIX_OBSTACLE, ALPHA);
-
-          LIBS.translateY(E_MODEL_MATRIX_LANTAI,-10)
-          LIBS.rotateX(E_MODEL_MATRIX_LANTAI,LIBS.degToRad(90))
-          LIBS.rotateZ(E_MODEL_MATRIX_LANTAI,LIBS.degToRad(90))
-          LIBS.rotateY(E_MODEL_MATRIX_LANTAI, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX_LANTAI, ALPHA);
+          LIBS.rotateY(E_MODEL_MATRIX_OBSTACLE,yrotE* 6)
+          LIBS.rotateX(E_MODEL_MATRIX_OBSTACLE,xrotE* 6)
+        //   LIBS.translateX(E_MODEL_MATRIX_OBSTACLE,t_objE*10)
+        //   LIBS.translateY(E_MODEL_MATRIX_LANTAI,-10)
+        //   LIBS.rotateX(E_MODEL_MATRIX_LANTAI,LIBS.degToRad(90))
+        //   LIBS.rotateZ(E_MODEL_MATRIX_LANTAI,LIBS.degToRad(90))
+        //   LIBS.rotateY(E_MODEL_MATRIX_LANTAI, THETA);
+        //   LIBS.rotateX(E_MODEL_MATRIX_LANTAI, ALPHA);
 
 
           var obj = [E_MODEL_MATRIX, E_MODEL_MATRIX2,E_MODEL_MATRIX3,E_MODEL_MATRIX4,E_MODEL_MATRIX5,E_MODEL_MATRIX6]
@@ -983,6 +986,15 @@ function generateCircle(x,y,rad){
           }
           else if (zrotE < -1){
             xcountE = 0.01;
+            
+          }
+          if(yrotE > 1){
+            
+            ycountE = -0.01;
+            
+          }
+          else if (yrotE < -1){
+            ycountE = 0.01;
             
           }
           // console.log(i)
@@ -1049,7 +1061,7 @@ function generateCircle(x,y,rad){
           //   // rotateXGlobal(obj,xrot*2)
           //   // LIBS.translateZ(MODEL_MATRIX,k*5)
           // }
-          console.log(xrotE *2)     
+        //   console.log(xrotE *2)     
           // if (now > 20){
           //   // console.log("HIT!10")
           //     t_obs = -0.01;
@@ -1068,7 +1080,7 @@ function generateCircle(x,y,rad){
           console.log("i : ", iE*10)
           LIBS.translateZ(E_MODEL_MATRIX,kE*7)
           rotateZGlobal(obj,LIBS.degToRad(zrotE))
-          rotateXGlobal(obj,xrotE*7)
+          rotateXGlobal(obj,xrotE)
           // if (xrot < 0){
           //   xcount = 0.01
           // }
@@ -1109,8 +1121,18 @@ function generateCircle(x,y,rad){
           // var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [1, -1, 0]);
           // LIBS.setPosition(MODEL_MATRIX5,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
           
-          
-          
+          if(now > 10){
+            t_obsE = -0.01
+        transformedObs = LIBS.transformPoint(E_MODEL_MATRIX_OBSTACLE,[0,0,0]);
+        // LIBS.setPosition(E_MODEL_MATRIX_OBSTACLE,transformedObs[0], transformedObs[1], transformedObs[2]);
+            
+          }
+          if (now > 15){
+            t_obsE = 0;
+          }
+          LIBS.translateY(E_MODEL_MATRIX_OBSTACLE,t_objE*100 )
+     
+          LIBS.rotateY(E_MODEL_MATRIX_OBSTACLE,yrotE*6)
           
           //   LIBS.setPosition(MODEL_MATRIX2,-pos_x,-pos_y,-pos_z);
           // var temp = LIBS.get_I4();
@@ -1119,7 +1141,8 @@ function generateCircle(x,y,rad){
           
           // MODEL_MATRIX2= LIBS.multiply(MODEL_MATRIX2,temp)
           
-          LIBS.translateY(E_MODEL_MATRIX_OBSTACLE,t_objE*10)
+
+
           Eobject.MODEL_MATRIX=E_MODEL_MATRIX;
           Eobject.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
