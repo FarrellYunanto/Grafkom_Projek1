@@ -184,4 +184,18 @@ var LIBS = {
         transformedPoint[2] = matrix[2] * point[0] + matrix[6] * point[1] + matrix[10] * point[2] + matrix[14];
         return transformedPoint;
     },
+    scale: function(m, scale) {
+      m[0] *= scale;
+      m[5] *= scale;
+      m[10] *= scale;
+  },
+transpose: function(m) {
+        var result = [];
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
+                result.push(m[j * 4 + i]);
+            }
+        }
+        return result;
+    },
   };
