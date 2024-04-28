@@ -1,5 +1,21 @@
 var GL;
 
+function rotateXGlobal(obj,rotation){
+  obj.forEach(child => {
+    LIBS.rotateX(child,rotation)
+  });
+ }
+ function rotateYGlobal(obj,rotation){
+  obj.forEach(child => {
+    LIBS.rotateY(child,rotation)
+  });
+ }
+ function rotateZGlobal(obj,rotation){
+  obj.forEach(child => {
+    LIBS.rotateZ(child,rotation)
+  });
+ }
+
 function generate3DTrapesium(lengthTop, lengthBottom, height, depth, r, g, b) {
   var vertices = [
       // Vertices trapesium
@@ -737,7 +753,39 @@ function generateCircle(x,y,rad){
       GL.depthFunc(GL.LEQUAL);
 
       var time_prev = 0;
+      var i = 0;
+      var x = 0.001;
+
+      var i = 0;
+      var j = 1;
+      var k = 0;
+      var x = 0.01;
+      var y = 0.01;
+      var z = 0.01;
+
       var animate = function(time) {
+
+          i += x;
+          j += -x;
+          k +=z;
+
+
+          if(i > 1.0){
+            console.log("HIt")
+            x = -0.01;
+          }
+          else if (i < 0){
+            x = 0.01;
+          }
+
+          if(k > 5.0){
+            console.log("HIt")
+            z = -0.01;
+          }
+          else if (k < -5){
+            z = 0.01;
+          }
+
           GL.viewport(0, 0, CANVAS.width, CANVAS.height);
           GL.clear(GL.COLOR_BUFFER_BIT | GL.D_BUFFER_BIT);
           time_prev=time;
@@ -770,27 +818,29 @@ function generateCircle(x,y,rad){
           MODEL_MATRIX11 = LIBS.get_I4();
           MODEL_MATRIX12 = LIBS.get_I4();
           
+
           // LIBS.setPosition(MODEL_MATRIX,pos_x,pos_y,pos_z); // geser geser
-          
           // LIBS.rotateX(MODEL_MATRIX, time/1000)
           
-
+          LIBS.translateX(MODEL_MATRIX, k); //puter objek kanan kiri
           LIBS.rotateY(MODEL_MATRIX, THETA); //puter objek kanan kiri
           LIBS.rotateX(MODEL_MATRIX, ALPHA); // puter objek atas bawah
           
-
+          
+          
+          
           //atur posisi paha kiri
           LIBS.rotateY(MODEL_MATRIX2, 4.8);
-          LIBS.rotateX(MODEL_MATRIX2, 1);
+          LIBS.rotateX(MODEL_MATRIX2, i);
           LIBS.rotateY(MODEL_MATRIX2, THETA);
           LIBS.rotateX(MODEL_MATRIX2, ALPHA);
-
+          
           //atur posisi paha kanan
           LIBS.rotateY(MODEL_MATRIX3, -4.8);
-          LIBS.rotateX(MODEL_MATRIX3, 1);
+          LIBS.rotateX(MODEL_MATRIX3, j);
           LIBS.rotateY(MODEL_MATRIX3, THETA);
           LIBS.rotateX(MODEL_MATRIX3, ALPHA);
-
+          
           //atur posisi betis kanan
           LIBS.rotateY(MODEL_MATRIX4, 0);
           LIBS.rotateX(MODEL_MATRIX4, 1);
@@ -802,7 +852,7 @@ function generateCircle(x,y,rad){
           LIBS.rotateX(MODEL_MATRIX5, 1);
           LIBS.rotateY(MODEL_MATRIX5, THETA);
           LIBS.rotateX(MODEL_MATRIX5, ALPHA);
-
+          
           //atur posisi duri 1
           LIBS.rotateY(MODEL_MATRIX6, 0);
           LIBS.rotateX(MODEL_MATRIX6, 4.7);
@@ -818,7 +868,7 @@ function generateCircle(x,y,rad){
           LIBS.rotateX(MODEL_MATRIX8, 4.7);
           LIBS.rotateY(MODEL_MATRIX8, THETA);
           LIBS.rotateX(MODEL_MATRIX8, ALPHA);
-
+          
           //atur kaki kanan
           LIBS.rotateY(MODEL_MATRIX11, 1.6);
           LIBS.rotateX(MODEL_MATRIX11, 0);
@@ -829,18 +879,25 @@ function generateCircle(x,y,rad){
           LIBS.rotateX(MODEL_MATRIX12, 0);
           LIBS.rotateY(MODEL_MATRIX12, THETA);
           LIBS.rotateX(MODEL_MATRIX12, ALPHA);
+          
+          var objGroup = [
+            MODEL_MATRIX, MODEL_MATRIX2, MODEL_MATRIX3, 
+            MODEL_MATRIX4, MODEL_MATRIX5, MODEL_MATRIX6, 
+            MODEL_MATRIX7, MODEL_MATRIX8, MODEL_MATRIX9, 
+            MODEL_MATRIX10, MODEL_MATRIX11, MODEL_MATRIX12];
+          rotateYGlobal(objGroup,1.4);
 
           //paha kiri terhadap badan
           var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [1, -1, -1]);
           LIBS.setPosition(MODEL_MATRIX2,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
-
+          
           //duri terhadap badan
           var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [0, 1.2, 0.9]);
           LIBS.setPosition(MODEL_MATRIX6,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
-
+          
           transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [0, 1.2, 0]);
           LIBS.setPosition(MODEL_MATRIX7,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
-
+          
           transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [0, 1.2, -0.9]);
           LIBS.setPosition(MODEL_MATRIX8,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
           
@@ -878,6 +935,7 @@ function generateCircle(x,y,rad){
          
           // MODEL_MATRIX2= LIBS.multiply(MODEL_MATRIX2,temp)
 
+            
           object.MODEL_MATRIX= MODEL_MATRIX;
           object.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
@@ -917,7 +975,8 @@ function generateCircle(x,y,rad){
 
           object12.MODEL_MATRIX=MODEL_MATRIX12;
           object12.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
-
+          
+        
 
           window.requestAnimationFrame(animate);
       };
