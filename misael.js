@@ -640,29 +640,44 @@ function generateCircle(x,y,rad){
       LIBS.translateZ(VIEW_MATRIX, -25);
 
       //CREATE OBJECT
-      var object = new MyObject(cube, cube_faces, shader_vertex_source, shader_fragment_source);
+      var mobject = new MyObject(cube, cube_faces, shader_vertex_source, shader_fragment_source);
       var donut1 = generateTorus(3,0.8,72,24,1,0,1)
-      var object2 = new MyObject(donut1['vertices'], donut1['faces'], shader_vertex_source, shader_fragment_source);
+      var objectm2 = new MyObject(donut1['vertices'], donut1['faces'], shader_vertex_source, shader_fragment_source);
       var donut2 = generateTorus(2,0.5,72,24,0.8,1,0)
-      var object3 = new MyObject(donut2['vertices'], donut2['faces'], shader_vertex_source, shader_fragment_source);
+      var objectm3 = new MyObject(donut2['vertices'], donut2['faces'], shader_vertex_source, shader_fragment_source);
       var donut3 = generateTorus(1,0.35,72,24,0,1,0)
-      var object4 = new MyObject(donut3['vertices'], donut3['faces'], shader_vertex_source, shader_fragment_source);
+      var objectm4 = new MyObject(donut3['vertices'], donut3['faces'], shader_vertex_source, shader_fragment_source);
       var halfSphere = generateHalfSphere(3, 3 , 3, 80, 80, 0,0,1);
-      var object5 = new MyObject(halfSphere['vertices'], halfSphere['faces'], shader_vertex_source ,shader_fragment_source);
+      var objectm5 = new MyObject(halfSphere['vertices'], halfSphere['faces'], shader_vertex_source ,shader_fragment_source);
 
         //trail 
         var donut4 = generateTorus(2,0.2,72,24, 0.8,0.8,0.8)
-        var object6 = new MyObject(donut4['vertices'], donut4['faces'], shader_vertex_source, shader_fragment_source);
+        var objectm6 = new MyObject(donut4['vertices'], donut4['faces'], shader_vertex_source, shader_fragment_source);
         var donut5 = generateTorus(1,0.1,72,24, 0.8,0.8,0.8)
-        var object7 = new MyObject(donut5['vertices'], donut5['faces'], shader_vertex_source, shader_fragment_source);
+        var objectm7 = new MyObject(donut5['vertices'], donut5['faces'], shader_vertex_source, shader_fragment_source);
+        
+        //antenna
+        var cone1 = generateCone(0.3, 3, 20, 20);
+        var objectm8 = new MyObject(cone1['vertices'], cone1['faces'], shader_vertex_source, shader_fragment_source);
+        var sphere1 = generateSphere(0.3,0.3,0.3, 30, 30)
+        var objectm9 = new MyObject(sphere1['vertices'], sphere1['faces'], shader_vertex_source, shader_fragment_source);
+        
+        var cone2 = generateCone(0.3, 3, 20, 20);
+        var objectm10 = new MyObject(cone2['vertices'], cone2['faces'], shader_vertex_source, shader_fragment_source);
+        var sphere2 = generateSphere(0.3,0.3,0.3, 30, 30)
+        var objectm11 = new MyObject(sphere2['vertices'], sphere2['faces'], shader_vertex_source, shader_fragment_source);
 
-      object.childs.push(object2);
-      object.childs.push(object3);
-      object.childs.push(object4);
-      object.childs.push(object5);
-      object.childs.push(object6);
-      object.childs.push(object7);
-      object.setup();
+      mobject.childs.push(objectm2);
+      mobject.childs.push(objectm3);
+      mobject.childs.push(objectm4);
+      mobject.childs.push(objectm5);
+      mobject.childs.push(objectm6);
+      mobject.childs.push(objectm7);
+      mobject.childs.push(objectm8);
+      mobject.childs.push(objectm9);
+      mobject.childs.push(objectm10);
+      mobject.childs.push(objectm11);
+      mobject.setup();
 
       /*========================= DRAWING ========================= */
       GL.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -713,6 +728,10 @@ function generateCircle(x,y,rad){
         MODEL_MATRIX5 = LIBS.get_I4();
         MODEL_MATRIX6 = LIBS.get_I4();
         MODEL_MATRIX7 = LIBS.get_I4();
+        MODEL_MATRIX8 = LIBS.get_I4();
+        MODEL_MATRIX9 = LIBS.get_I4();
+        MODEL_MATRIX10 = LIBS.get_I4();
+        MODEL_MATRIX11 = LIBS.get_I4();
         
         // LIBS.setPosition(MODEL_MATRIX,0, 1, 0); // geser geser
 
@@ -746,21 +765,49 @@ function generateCircle(x,y,rad){
         LIBS.rotateX(MODEL_MATRIX5, ALPHA);
         LIBS.rotateY(MODEL_MATRIX5, THETA);
 
-        //donut trail big
-        LIBS.rotateX(MODEL_MATRIX6, -4.7);
-        LIBS.rotateY(MODEL_MATRIX6, 1.2);
-        LIBS.rotateX(MODEL_MATRIX6, ALPHA);
-        LIBS.rotateY(MODEL_MATRIX6, THETA);
-   
-        //donut trail small
-        LIBS.rotateX(MODEL_MATRIX7, -4.7);
-        LIBS.rotateY(MODEL_MATRIX7, 1.2);
-        LIBS.rotateX(MODEL_MATRIX7, ALPHA);
-        LIBS.rotateY(MODEL_MATRIX7, THETA);
+            //donut trail big
+            LIBS.rotateX(MODEL_MATRIX6, -4.7);
+            LIBS.rotateY(MODEL_MATRIX6, 1.2);
+            LIBS.rotateX(MODEL_MATRIX6, ALPHA);
+            LIBS.rotateY(MODEL_MATRIX6, THETA);
+    
+            //donut trail small
+            LIBS.rotateX(MODEL_MATRIX7, -4.7);
+            LIBS.rotateY(MODEL_MATRIX7, 1.2);
+            LIBS.rotateX(MODEL_MATRIX7, ALPHA);
+            LIBS.rotateY(MODEL_MATRIX7, THETA);
+            
+        //antenna right
+        LIBS.rotateX(MODEL_MATRIX8, -7.4);
+        LIBS.rotateY(MODEL_MATRIX8, 1.2);
+        LIBS.rotateX(MODEL_MATRIX8, ALPHA);
+        LIBS.rotateY(MODEL_MATRIX8, THETA);
         
+        LIBS.rotateX(MODEL_MATRIX9, -7.4);
+        LIBS.rotateY(MODEL_MATRIX9, 1,5);
+        LIBS.rotateX(MODEL_MATRIX9, ALPHA);
+        LIBS.rotateY(MODEL_MATRIX9, THETA);
+ 
+        //antenna left
+        LIBS.rotateX(MODEL_MATRIX10, -14.6);
+        LIBS.rotateY(MODEL_MATRIX10, 1.2);
+        LIBS.rotateX(MODEL_MATRIX10, ALPHA);
+        LIBS.rotateY(MODEL_MATRIX10, THETA);
+
+        LIBS.rotateX(MODEL_MATRIX9, -14.6);
+        LIBS.rotateY(MODEL_MATRIX9, 1,5);
+        LIBS.rotateX(MODEL_MATRIX9, ALPHA);
+        LIBS.rotateY(MODEL_MATRIX9, THETA);
+
+        // LIBS.translateY(MODEL_MATRIX, i*10);
+        // LIBS.translateX(MODEL_MATRIX, i*10);
+        // LIBS.translateZ(MODEL_MATRIX, i*10);
+        // LIBS.translateY(MODEL_MATRIX7, i*10);
+     
         //ROTATE GROUP
         var UFO = [MODEL_MATRIX, MODEL_MATRIX2, MODEL_MATRIX3, MODEL_MATRIX4, 
-            MODEL_MATRIX5, MODEL_MATRIX6, MODEL_MATRIX7];
+            MODEL_MATRIX5, MODEL_MATRIX6, MODEL_MATRIX7, MODEL_MATRIX8, MODEL_MATRIX9, 
+            MODEL_MATRIX10, MODEL_MATRIX11];
         rotateYGlobal(UFO, i*10); 
         // rotateXGlobal(UFO, i*10); 
         // rotateZGlobal(UFO, i*10); 
@@ -787,28 +834,51 @@ function generateCircle(x,y,rad){
         var transformPosDonut_5= LIBS.transformPoint(MODEL_MATRIX,[0,0,5]);
         LIBS.setPosition(MODEL_MATRIX7, transformPosDonut_5[0], transformPosDonut_5[1], transformPosDonut_5[2]);
         
-
+        var transformPosCone= LIBS.transformPoint(MODEL_MATRIX,[0,2,-2.2]);
+        LIBS.setPosition(MODEL_MATRIX8, transformPosCone[0], transformPosCone[1], transformPosCone[2]);
+        
+        var transformPosSphere= LIBS.transformPoint(MODEL_MATRIX,[0,2.55,-3.4]);
+        LIBS.setPosition(MODEL_MATRIX9, transformPosSphere[0], transformPosSphere[1], transformPosSphere[2]);
+        
+        var transformPosConeLeft= LIBS.transformPoint(MODEL_MATRIX,[0,-2,-2,24]);
+        LIBS.setPosition(MODEL_MATRIX10, transformPosConeLeft[0], transformPosConeLeft[1], transformPosConeLeft[2]);
+        
+        var transformPosSphereRight= LIBS.transformPoint(MODEL_MATRIX,[0,-2.7,-3.39]);
+        LIBS.setPosition(MODEL_MATRIX11, transformPosSphereRight[0], transformPosSphereRight[1], transformPosSphereRight[2]);
+        
         //RENDER
-        object.MODEL_MATRIX=MODEL_MATRIX;
-        object.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+        mobject.MODEL_MATRIX=MODEL_MATRIX;
+        mobject.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
-        object2.MODEL_MATRIX = MODEL_MATRIX2;
-        object2.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+        objectm2.MODEL_MATRIX = MODEL_MATRIX2;
+        objectm2.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
         
-        object3.MODEL_MATRIX = MODEL_MATRIX3;
-        object3.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+        objectm3.MODEL_MATRIX = MODEL_MATRIX3;
+        objectm3.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
         
-        object4.MODEL_MATRIX = MODEL_MATRIX4;
-        object4.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+        objectm4.MODEL_MATRIX = MODEL_MATRIX4;
+        objectm4.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
      
-        object5.MODEL_MATRIX = MODEL_MATRIX5;
-        object5.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+        objectm5.MODEL_MATRIX = MODEL_MATRIX5;
+        objectm5.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
        
-        object6.MODEL_MATRIX = MODEL_MATRIX6;
-        object6.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+        objectm6.MODEL_MATRIX = MODEL_MATRIX6;
+        objectm6.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
         
-        object7.MODEL_MATRIX = MODEL_MATRIX7;
-        object7.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+        objectm7.MODEL_MATRIX = MODEL_MATRIX7;
+        objectm7.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+        
+        objectm8.MODEL_MATRIX = MODEL_MATRIX8;
+        objectm8.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+
+        objectm9.MODEL_MATRIX = MODEL_MATRIX9;
+        objectm9.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+        
+        objectm10.MODEL_MATRIX = MODEL_MATRIX10;
+        objectm10.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+    
+        objectm11.MODEL_MATRIX = MODEL_MATRIX11;
+        objectm11.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
 
         window.requestAnimationFrame(animate);
       };
