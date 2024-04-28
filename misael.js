@@ -1,37 +1,37 @@
 var GL;
 // generate curves
-function generateCurves(object, z, segments) {
-    var vertices = [];
-    var colors = [];
+// function generateCurves(object, z, segments) {
+//     var vertices = [];
+//     var colors = [];
   
-    var rainbowColors = [[1, 1, 1]];
+//     var rainbowColors = [[1, 1, 1]];
   
-    for (var i = 0; i <= segments; i++) {
-      var t = i / segments;
-      var x = Math.pow(1 - t, 3) * object[0][0] + 3 * Math.pow(1 - t, 2) * t * object[1][0] + 3 * (1 - t) * Math.pow(t, 2) * object[2][0] + Math.pow(t, 3) * object[3][0];
-      var y = Math.pow(1 - t, 3) * object[0][1] + 3 * Math.pow(1 - t, 2) * t * object[1][1] + 3 * (1 - t) * Math.pow(t, 2) * object[2][1] + Math.pow(t, 3) * object[3][1];
+//     for (var i = 0; i <= segments; i++) {
+//       var t = i / segments;
+//       var x = Math.pow(1 - t, 3) * object[0][0] + 3 * Math.pow(1 - t, 2) * t * object[1][0] + 3 * (1 - t) * Math.pow(t, 2) * object[2][0] + Math.pow(t, 3) * object[3][0];
+//       var y = Math.pow(1 - t, 3) * object[0][1] + 3 * Math.pow(1 - t, 2) * t * object[1][1] + 3 * (1 - t) * Math.pow(t, 2) * object[2][1] + Math.pow(t, 3) * object[3][1];
   
-      // Add vertices for the thicker lines
-      vertices.push(x - 0.01, y - 0.01, z); // offset for thickness
-      vertices.push(x + 0.01, y - 0.01, z);
-      vertices.push(x, y + 0.01, z);
+//       // Add vertices for the thicker lines
+//       vertices.push(x - 0.01, y - 0.01, z); // offset for thickness
+//       vertices.push(x + 0.01, y - 0.01, z);
+//       vertices.push(x, y + 0.01, z);
   
-      for (var j = 0; j <= segments; j++) {
-        var colorIndex = j % rainbowColors.length;
-        colors = colors.concat(rainbowColors[colorIndex]);
-        vertices.push(colors);
-        vertices.push(0,1)
-      }
-    }
+//       for (var j = 0; j <= segments; j++) {
+//         var colorIndex = j % rainbowColors.length;
+//         colors = colors.concat(rainbowColors[colorIndex]);
+//         vertices.push(colors);
+//         // vertices.push(0,1)
+//       }
+//     }
   
-    var faces = [];
-    for (var i = 0; i < segments; i++) {
-      var index = i * 3;
-      faces.push(index, index + 1, index + 2); // create triangles for each vertex
-    }
+//     var faces = [];
+//     for (var i = 0; i < segments; i++) {
+//       var index = i * 3;
+//       faces.push(index, index + 1, index + 2); // create triangles for each vertex
+//     }
   
-    return { "vertices": vertices, "faces": faces };
-  }
+//     return { "vertices": vertices, "faces": faces };
+//   }
 
 function generateTorus(majorRadius, minorRadius, sectorCount, sideCount, red, green, blue) {
   var vertices = [];
@@ -359,7 +359,7 @@ function generateCircle(x,y,rad){
     TRIANGLE_FACES = null;
 
 
-    mMODEL_MATRIX = LIBS.get_I4();
+    MODEL_MATRIX = LIBS.get_I4();
 
 
     constructor(vertex, faces, source_shader_vertex, source_shader_fragment){
@@ -449,7 +449,7 @@ function generateCircle(x,y,rad){
 
           GL.uniformMatrix4fv(this._PMatrix,false,PROJECTION_MATRIX);
           GL.uniformMatrix4fv(this._VMatrix,false,VIEW_MATRIX);
-          GL.uniformMatrix4fv(this._MMatrix,false,this.mMODEL_MATRIX);
+          GL.uniformMatrix4fv(this._MMatrix,false,this.MODEL_MATRIX);
           GL.uniform1f(this._greyScality, 1);
           GL.uniform1i(this._sampler,0);
 
@@ -702,17 +702,17 @@ function generateCircle(x,y,rad){
         var objectm11 = new MyObject(sphere2['vertices'], sphere2['faces'], shader_vertex_source, shader_fragment_source);
 
         //spline
-        var mouth = generateCurves(
-            [
-              [-0.15, -0.1],
-              [-0.12, -0.3],
-              [0.12, -0.3],
-              [0.15, -0.1],
-            ],
-            1,
-            100
-          );
-          var objMouth = new MyObject(mouth['vertices'], mouth['faces'], shader_vertex_source, shader_fragment_source);
+        // var mouth = generateCurves(
+        //     [
+        //       [-0.15, -0.1],
+        //       [-0.12, -0.3],
+        //       [0.12, -0.3],
+        //       [0.15, -0.1],
+        //     ],
+        //     1,
+        //     100
+        //   );
+        //   var objMouth = new MyObject(mouth['vertices'], mouth['faces'], shader_vertex_source, shader_fragment_source);
 
       mobject.childs.push(objectm2);
       mobject.childs.push(objectm3);
@@ -724,7 +724,6 @@ function generateCircle(x,y,rad){
       mobject.childs.push(objectm9);
       mobject.childs.push(objectm10);
       mobject.childs.push(objectm11);
-      mobject.childs.push(objMouth);
       mobject.setup();
 
       /*========================= DRAWING ========================= */
@@ -780,7 +779,6 @@ function generateCircle(x,y,rad){
         mMODEL_MATRIX9 = LIBS.get_I4();
         mMODEL_MATRIX10 = LIBS.get_I4();
         mMODEL_MATRIX11 = LIBS.get_I4();
-        mMODEL_MATRIX12 = LIBS.get_I4();
         
         // LIBS.setPosition(mMODEL_MATRIX,0, 1, 0); // geser geser
 
@@ -844,15 +842,11 @@ function generateCircle(x,y,rad){
         LIBS.rotateX(mMODEL_MATRIX10, ALPHA);
         LIBS.rotateY(mMODEL_MATRIX10, THETA);
 
-        LIBS.rotateX(mMODEL_MATRIX9, -14.6);
-        LIBS.rotateY(mMODEL_MATRIX9, 1,5);
-        LIBS.rotateX(mMODEL_MATRIX9, ALPHA);
-        LIBS.rotateY(mMODEL_MATRIX9, THETA);
+        LIBS.rotateX(mMODEL_MATRIX11, -14.6);
+        LIBS.rotateY(mMODEL_MATRIX11, 1,5);
+        LIBS.rotateX(mMODEL_MATRIX11, ALPHA);
+        LIBS.rotateY(mMODEL_MATRIX11, THETA);
 
-        LIBS.translateX(mMODEL_MATRIX12,-2)
-        LIBS.rotateX(mMODEL_MATRIX9, ALPHA);
-        LIBS.rotateY(mMODEL_MATRIX9, THETA);
-     
         //ROTATE GROUP
         var UFO = [mMODEL_MATRIX, mMODEL_MATRIX2, mMODEL_MATRIX3, mMODEL_MATRIX4, 
             mMODEL_MATRIX5, mMODEL_MATRIX6, mMODEL_MATRIX7, mMODEL_MATRIX8, mMODEL_MATRIX9, 
@@ -910,40 +904,40 @@ function generateCircle(x,y,rad){
 
 
         //RENDER
-        mobject.mMODEL_MATRIX=mMODEL_MATRIX;
+        mobject.MODEL_MATRIX=mMODEL_MATRIX;
         mobject.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
-        objectm2.mMODEL_MATRIX = mMODEL_MATRIX2;
+        objectm2.MODEL_MATRIX = mMODEL_MATRIX2;
         objectm2.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
         
-        objectm3.mMODEL_MATRIX = mMODEL_MATRIX3;
+        objectm3.MODEL_MATRIX = mMODEL_MATRIX3;
         objectm3.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
         
-        objectm4.mMODEL_MATRIX = mMODEL_MATRIX4;
+        objectm4.MODEL_MATRIX = mMODEL_MATRIX4;
         objectm4.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
      
-        objectm5.mMODEL_MATRIX = mMODEL_MATRIX5;
+        objectm5.MODEL_MATRIX = mMODEL_MATRIX5;
         objectm5.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
        
-        objectm6.mMODEL_MATRIX = mMODEL_MATRIX6;
+        objectm6.MODEL_MATRIX = mMODEL_MATRIX6;
         objectm6.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
         
-        objectm7.mMODEL_MATRIX = mMODEL_MATRIX7;
+        objectm7.MODEL_MATRIX = mMODEL_MATRIX7;
         objectm7.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
         
-        objectm8.mMODEL_MATRIX = mMODEL_MATRIX8;
+        objectm8.MODEL_MATRIX = mMODEL_MATRIX8;
         objectm8.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
 
-        objectm9.mMODEL_MATRIX = mMODEL_MATRIX9;
+        objectm9.MODEL_MATRIX = mMODEL_MATRIX9;
         objectm9.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
         
-        objectm10.mMODEL_MATRIX = mMODEL_MATRIX10;
+        objectm10.MODEL_MATRIX = mMODEL_MATRIX10;
         objectm10.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
     
-        objectm11.mMODEL_MATRIX = mMODEL_MATRIX11;
+        objectm11.MODEL_MATRIX = mMODEL_MATRIX11;
         objectm11.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
        
-        GL.drawArrays(GL.LINE_STRIP, 0, mouth.vertices.length / 6);
+        // GL.drawArrays(GL.LINE_STRIP, 0, mouth.vertices.length / 6);
 
         window.requestAnimationFrame(animate);
       };

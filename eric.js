@@ -510,33 +510,28 @@ function generateCircle(x,y,rad){
           GL.uniform1f(this._greyScality, 1);
           GL.uniform1i(this._sampler,0);
  
-          if(TYPE == 1){
+          if(TYPE == 12){
             GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
           }
-           else if (TYPE == 2) {
+           else if (TYPE == 21) {
             GL.drawElements(GL.TRIANGLE_FAN, this.faces.length, GL.UNSIGNED_SHORT, 0);
           }
-           else if (TYPE == 3) {
-            GL.drawElements(GL.LINES, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          }
-           else if (TYPE == 4) {
-            GL.drawElements(GL.TRIANGLE, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          }
 
-          // switch (TYPE) {
-          //   case 1:
-          //       GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          //       break;
-          //   case 2: 
-          //       GL.drawElements(GL.TRIANGLE_FAN, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          //       break;
-          //   case 3:
-          //       GL.drawElements(GL.LINES, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          //       break;
-          //   default:
-          //       GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          //       break;
-          // }
+
+          switch (TYPE) {
+            case 1:
+                GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
+                break;
+            case 2: 
+                GL.drawElements(GL.TRIANGLE_FAN, this.faces.length, GL.UNSIGNED_SHORT, 0);
+                break;
+            case 3:
+                GL.drawElements(GL.LINES, this.faces.length, GL.UNSIGNED_SHORT, 0);
+                break;
+            default:
+                GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
+                break;
+          }
          
           
           this.childs.forEach(child => {
@@ -1121,30 +1116,30 @@ function generateCircle(x,y,rad){
           
           LIBS.translateY(E_MODEL_MATRIX_OBSTACLE,t_objE*10)
           Eobject.MODEL_MATRIX=E_MODEL_MATRIX;
-          Eobject.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+          Eobject.render(VIEW_MATRIX, PROJECTION_MATRIX, 12);
 
 
           EobjTailPesawat.MODEL_MATRIX = E_MODEL_MATRIX2;
-          EobjTailPesawat.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+          EobjTailPesawat.render(VIEW_MATRIX, PROJECTION_MATRIX, 12);
 
           EobjMancungPesawat.MODEL_MATRIX = E_MODEL_MATRIX3;
-          EobjMancungPesawat.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+          EobjMancungPesawat.render(VIEW_MATRIX, PROJECTION_MATRIX, 21);
 
 
           EobjSayap.MODEL_MATRIX = E_MODEL_MATRIX4;
-          EobjSayap.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+          EobjSayap.render(VIEW_MATRIX, PROJECTION_MATRIX, 12);
 
           EobjSayap2.MODEL_MATRIX = E_MODEL_MATRIX5;
-          EobjSayap2.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+          EobjSayap2.render(VIEW_MATRIX, PROJECTION_MATRIX, 12);
 
           EobjPucuk.MODEL_MATRIX = E_MODEL_MATRIX6;
-          EobjPucuk.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+          EobjPucuk.render(VIEW_MATRIX, PROJECTION_MATRIX, 12);
 
           // objTrapesium.MODEL_MATRIX = MODEL_MATRIX7;
           // objTrapesium.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
           EobjObs.MODEL_MATRIX = E_MODEL_MATRIX_OBSTACLE;
-          EobjObs.render(VIEW_MATRIX,PROJECTION_MATRIX,1)
+          EobjObs.render(VIEW_MATRIX,PROJECTION_MATRIX,12)
           
           // objLantai.MODEL_MATRIX = MODEL_MATRIX_LANTAI;
           // objLantai.render(VIEW_MATRIX,PROJECTION_MATRIX,2)

@@ -365,7 +365,7 @@ function generateCircle(x,y,rad){
     TRIANGLE_FACES = null;
 
 
-    fMODEL_MATRIX = LIBS.get_I4();
+    MODEL_MATRIX = LIBS.get_I4();
 
 
     constructor(vertex, faces, source_shader_vertex, source_shader_fragment, texture){
@@ -456,7 +456,7 @@ function generateCircle(x,y,rad){
 
           GL.uniformMatrix4fv(this._PMatrix,false,PROJECTION_MATRIX);
           GL.uniformMatrix4fv(this._VMatrix,false,VIEW_MATRIX);
-          GL.uniformMatrix4fv(this._MMatrix,false,this.fMODEL_MATRIX);
+          GL.uniformMatrix4fv(this._MMatrix,false,this.MODEL_MATRIX);
           GL.uniform1f(this._greyScality, 1);
           GL.uniform1i(this._sampler,0);
  
@@ -491,7 +491,7 @@ function generateCircle(x,y,rad){
  
  
   function main(){
-      var CANVAS = document.getElementById("myCanvas");
+      var CANVAS = document.getElementById("myCanvas2");
  
  
       CANVAS.width = window.innerWidth;
@@ -936,44 +936,44 @@ function generateCircle(x,y,rad){
           // fMODEL_MATRIX2= LIBS.multiply(fMODEL_MATRIX2,temp)
 
             
-          fobject.fMODEL_MATRIX= fMODEL_MATRIX;
+          fobject.MODEL_MATRIX= fMODEL_MATRIX;
           fobject.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
 
-          fobject2.fMODEL_MATRIX = fMODEL_MATRIX2;
+          fobject2.MODEL_MATRIX = fMODEL_MATRIX2;
           fobject2.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
-          fobject3.fMODEL_MATRIX=fMODEL_MATRIX3;
+          fobject3.MODEL_MATRIX=fMODEL_MATRIX3;
           fobject3.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
-          fobject4.fMODEL_MATRIX=fMODEL_MATRIX4;
+          fobject4.MODEL_MATRIX=fMODEL_MATRIX4;
           fobject4.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
-          fobject5.fMODEL_MATRIX=fMODEL_MATRIX5;
+          fobject5.MODEL_MATRIX=fMODEL_MATRIX5;
           fobject5.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
           //duri
-          fobject6.fMODEL_MATRIX=fMODEL_MATRIX6;
+          fobject6.MODEL_MATRIX=fMODEL_MATRIX6;
           fobject6.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
-          fobject7.fMODEL_MATRIX=fMODEL_MATRIX7;
+          fobject7.MODEL_MATRIX=fMODEL_MATRIX7;
           fobject7.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
-          fobject8.fMODEL_MATRIX=fMODEL_MATRIX8;
+          fobject8.MODEL_MATRIX=fMODEL_MATRIX8;
           fobject8.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
           // mata
-          fobject9.fMODEL_MATRIX=fMODEL_MATRIX9;
+          fobject9.MODEL_MATRIX=fMODEL_MATRIX9;
           fobject9.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
-          fobject10.fMODEL_MATRIX=fMODEL_MATRIX10;
+          fobject10.MODEL_MATRIX=fMODEL_MATRIX10;
           fobject10.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
           //kaki
-          fobject11.fMODEL_MATRIX=fMODEL_MATRIX11;
+          fobject11.MODEL_MATRIX=fMODEL_MATRIX11;
           fobject11.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
-          fobject12.fMODEL_MATRIX=fMODEL_MATRIX12;
+          fobject12.MODEL_MATRIX=fMODEL_MATRIX12;
           fobject12.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
           
         

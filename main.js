@@ -1,8 +1,12 @@
 var GL;
 
-function generateHalfSphere(xrad, yrad, zrad, stack, step){
+function generateHalfSphere(xrad, yrad, zrad, stack, step, r,g,b){
   var vertices = [];
   var faces = [];
+
+  var red=r;
+  var green = g;
+  var blue = b;
 
   for(var i = 0;i<=stack;i++){
     for(var j = 0;j<=step/2;j++){
@@ -16,7 +20,7 @@ function generateHalfSphere(xrad, yrad, zrad, stack, step){
       v = i*1.0/stack;
       u = j*1.0/step;
 
-      vertices.push(x,y,z,1,1,1,v,u);
+      vertices.push(x,y,z,red,green,blue,v,u);
     }
   }
 
@@ -105,6 +109,7 @@ function generateWing(length, width, depth,r,g,b) {
 
   return { "vertices": vertices, "faces": faces };
 }
+
 function generateRectangle3DGeometry(length, width, height,r,g,b) {
   var vertices = [
       // Sisi atas
@@ -279,6 +284,7 @@ function generateCylinder(radius, height, sectorCount,r,g,b){
 
  return { "vertices": vertices, "faces": indices };
 }
+
 function generateSphere(xrad, yrad, zrad, stack, step,r,g,b){
   var vertices = [];
   var faces = [];
@@ -312,6 +318,7 @@ function generateSphere(xrad, yrad, zrad, stack, step,r,g,b){
 
   return {"vertices": vertices, "faces": faces};
 }
+
 function generateCircle(x,y,rad){
     var list = []
     for(var i=0;i<360;i++){
@@ -323,77 +330,77 @@ function generateCircle(x,y,rad){
     return list;
   }
 
-  function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
-    const PI = Math.acos(-1.0);
-    let sectorStep = 2 * PI / sectorCount;
-    let unitCircleVertices = [];
+function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
+  const PI = Math.acos(-1.0);
+  let sectorStep = 2 * PI / sectorCount;
+  let unitCircleVertices = [];
 
-    // Build unit circle vertices on XY plane
-    for (let i = 0; i <= sectorCount; ++i) {
-        let sectorAngle = i * sectorStep;
-        unitCircleVertices.push(Math.cos(sectorAngle)); // x
-        unitCircleVertices.push(Math.sin(sectorAngle)); // y
-        unitCircleVertices.push(0);                    // z
-    }
+  // Build unit circle vertices on XY plane
+  for (let i = 0; i <= sectorCount; ++i) {
+      let sectorAngle = i * sectorStep;
+      unitCircleVertices.push(Math.cos(sectorAngle)); // x
+      unitCircleVertices.push(Math.sin(sectorAngle)); // y
+      unitCircleVertices.push(0);                    // z
+  }
 
-    // Initialize arrays for vertices, normals, texture coordinates, and indices
-    let vertices = [];
-    let indices = []; //faces
+  // Initialize arrays for vertices, normals, texture coordinates, and indices
+  let vertices = [];
+  let indices = []; //faces
 
-    // Build side vertices
-    for (let i = 0; i <= stackCount; ++i) {
-        let z = -(height * 0.5) + i / stackCount * height;
-        let radius = baseRadius * (1 - i / stackCount);
-        let t = 1 - i / stackCount;
+  // Build side vertices
+  for (let i = 0; i <= stackCount; ++i) {
+      let z = -(height * 0.5) + i / stackCount * height;
+      let radius = baseRadius * (1 - i / stackCount);
+      let t = 1 - i / stackCount;
 
-        for (let j = 0, k = 0; j <= sectorCount; ++j, k += 3) {
-            let x = unitCircleVertices[k];
-            let y = unitCircleVertices[k + 1];
-            vertices.push(x * radius, y * radius, z);
-            vertices.push(r,g,b) //warna cone
-            vertices.push(j / sectorCount, t);
-        }
-    }
+      for (let j = 0, k = 0; j <= sectorCount; ++j, k += 3) {
+          let x = unitCircleVertices[k];
+          let y = unitCircleVertices[k + 1];
+          vertices.push(x * radius, y * radius, z);
+          vertices.push(r,g,b) //warna cone
+          vertices.push(j / sectorCount, t);
+      }
+  }
 
-    // Remember where the base vertices start
-    let baseVertexIndex = vertices.length / 8; // soal e vertice push sekali push ada 8 data
+  // Remember where the base vertices start
+  let baseVertexIndex = vertices.length / 8; // soal e vertice push sekali push ada 8 data
 
-    // Build base vertices
-    let z = -height * 0.5;
-    vertices.push(0, 0, z);
-    vertices.push(r,g,b);//warna cone
-    vertices.push(0.5, 0.5);
-    for (let i = 0, j = 0; i < sectorCount; ++i, j += 3) {
-        let x = unitCircleVertices[j];
-        let y = unitCircleVertices[j + 1];
-        vertices.push(x * baseRadius, y * baseRadius, z);
-        vertices.push(1,0,0)
-        vertices.push(-x * 0.5 + 0.5, -y * 0.5 + 0.5);
-    }
+  // Build base vertices
+  let z = -height * 0.5;
+  vertices.push(0, 0, z);
+  vertices.push(r,g,b);//warna cone
+  vertices.push(0.5, 0.5);
+  for (let i = 0, j = 0; i < sectorCount; ++i, j += 3) {
+      let x = unitCircleVertices[j];
+      let y = unitCircleVertices[j + 1];
+      vertices.push(x * baseRadius, y * baseRadius, z);
+      vertices.push(1,0,0)
+      vertices.push(-x * 0.5 + 0.5, -y * 0.5 + 0.5);
+  }
 
-    // Build indices for side
-    for (let i = 0; i < stackCount; ++i) {
-        let k1 = i * (sectorCount + 1);
-        let k2 = k1 + sectorCount + 1;
-        for (let j = 0; j < sectorCount; ++j, ++k1, ++k2) {
-            indices.push(k1, k1 + 1, k2);
-            indices.push(k2, k1 + 1, k2 + 1);
-        }
-    }
+  // Build indices for side
+  for (let i = 0; i < stackCount; ++i) {
+      let k1 = i * (sectorCount + 1);
+      let k2 = k1 + sectorCount + 1;
+      for (let j = 0; j < sectorCount; ++j, ++k1, ++k2) {
+          indices.push(k1, k1 + 1, k2);
+          indices.push(k2, k1 + 1, k2 + 1);
+      }
+  }
 
-    // Remember where the base indices start
-    let baseIndex = indices.length;
+  // Remember where the base indices start
+  let baseIndex = indices.length;
 
-    // Build indices for base
-    for (let i = 0, k = baseVertexIndex + 1; i < sectorCount; ++i, ++k) {
-        if (i < sectorCount - 1)
-            indices.push(baseVertexIndex, k + 1, k);
-        else
-            indices.push(baseVertexIndex, baseVertexIndex + 1, k);
-    }
+  // Build indices for base
+  for (let i = 0, k = baseVertexIndex + 1; i < sectorCount; ++i, ++k) {
+      if (i < sectorCount - 1)
+          indices.push(baseVertexIndex, k + 1, k);
+      else
+          indices.push(baseVertexIndex, baseVertexIndex + 1, k);
+  }
 
-    // Return the generated data
-    return {"vertices": vertices, "faces": indices };
+  // Return the generated data
+  return {"vertices": vertices, "faces": indices };
 }
   class MyObject{
     canvas = null;
@@ -467,13 +474,10 @@ function generateCircle(x,y,rad){
     GL.useProgram(this.SHADER_PROGRAM);
 
 
-
-
     this.TRIANGLE_VERTEX = GL.createBuffer();
     this.TRIANGLE_FACES = GL.createBuffer();
     // this.texture = LIBS.load_texture("resource/semen.jpg"); //buat kalo mau pake texture
     }
-
 
     setup(){
       GL.bindBuffer(GL.ARRAY_BUFFER, this.TRIANGLE_VERTEX);
@@ -509,36 +513,31 @@ function generateCircle(x,y,rad){
           GL.uniformMatrix4fv(this._MMatrix,false,this.MODEL_MATRIX);
           GL.uniform1f(this._greyScality, 1);
           GL.uniform1i(this._sampler,0);
+
  
-          if(TYPE == 1){
-            GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          }
-           else if (TYPE == 2) {
-            GL.drawElements(GL.TRIANGLE_FAN, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          }
-           else if (TYPE == 3) {
-            GL.drawElements(GL.LINES, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          }
-           else if (TYPE == 4) {
-            GL.drawElements(GL.TRIANGLE, this.faces.length, GL.UNSIGNED_SHORT, 0);
+          switch (TYPE) {
+            case 1:
+                GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
+                break;
+            case 2: 
+                GL.drawElements(GL.TRIANGLE_FAN, this.faces.length, GL.UNSIGNED_SHORT, 0);
+                break;
+            case 3:
+                GL.drawElements(GL.LINES, this.faces.length, GL.UNSIGNED_SHORT, 0);
+                break;
+            // default:
+            //   GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
           }
 
-          // switch (TYPE) {
-          //   case 1:
-          //       GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          //       break;
-          //   case 2: 
-          //       GL.drawElements(GL.TRIANGLE_FAN, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          //       break;
-          //   case 3:
-          //       GL.drawElements(GL.LINES, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          //       break;
-          //   default:
-          //       GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
-          //       break;
-          // }
-         
-          
+          if(TYPE == 5){
+            GL.drawElements(GL.TRIANGLES, this.faces.length, GL.UNSIGNED_SHORT, 0);
+          }
+           else if (TYPE == 6) {
+            GL.drawElements(GL.TRIANGLE_FAN, this.faces.length, GL.UNSIGNED_SHORT, 0);
+          }
+
+
+
           this.childs.forEach(child => {
             child.render(VIEW_MATRIX,PROJECTION_MATRIX)
           });
@@ -546,44 +545,45 @@ function generateCircle(x,y,rad){
           GL.flush();
     }
   }
- function rotateXGlobal(obj,rotation){
-  obj.forEach(child => {
-    LIBS.rotateX(child,rotation)
-  });
- }
- function rotateYGlobal(obj,rotation){
-  obj.forEach(child => {
-    LIBS.rotateY(child,rotation)
-  });
- }
- function rotateZGlobal(obj,rotation){
-  obj.forEach(child => {
-    LIBS.rotateZ(child,rotation)
-  });
- }
+  
+  //FUNCTION GERAK GERAK GROUP OBJ
+  function rotateXGlobal(obj,rotation){
+    obj.forEach(child => {
+      LIBS.rotateX(child,rotation)
+    });
+  }
+  function rotateYGlobal(obj,rotation){
+    obj.forEach(child => {
+      LIBS.rotateY(child,rotation)
+    });
+  }
+  function rotateZGlobal(obj,rotation){
+    obj.forEach(child => {
+      LIBS.rotateZ(child,rotation)
+    });
+  }
 
- function translateX(obj,translation){
-  obj.forEach(child => {
-    LIBS.translateX(child,rotation)
-  });
- }
+  function translateX(obj,translation){
+    obj.forEach(child => {
+      LIBS.translateX(child,rotation)
+    });
+  }
 
- function translateYGlobal(obj,translation){
-  obj.forEach(child => {
-    LIBS.translateY(child,rotation)
-  });
- }
+  function translateYGlobal(obj,translation){
+    obj.forEach(child => {
+      LIBS.translateY(child,rotation)
+    });
+  }
 
- function translateZGlobal(obj,translation){
-  obj.forEach(child => {
-    LIBS.translateZ(child,rotation)
-  });
- }
+  function translateZGlobal(obj,translation){
+    obj.forEach(child => {
+      LIBS.translateZ(child,rotation)
+    });
+  }
  
   function main(){
       var CANVAS = document.getElementById("myCanvas");
- 
- 
+
       CANVAS.width = window.innerWidth;
       CANVAS.height = window.innerHeight;
 
@@ -659,7 +659,6 @@ function generateCircle(x,y,rad){
     vColor = color;
     vUV = uv;
 
-
     gl_PointSize=20.0;
     }`;
 
@@ -681,6 +680,7 @@ function generateCircle(x,y,rad){
     gl_FragColor = vec4(color, 1.);
     //gl_FragColor = texture2D(sampler,vUV); //buat kalo mau pake texture
     }`;
+
 
     //Coordinates
     var cube = [
@@ -752,53 +752,66 @@ function generateCircle(x,y,rad){
         20,22,23
       ];
 
-      //matrix
+      //MATRIX
       var PROJECTION_MATRIX = LIBS.get_projection(40, CANVAS.width/CANVAS.height, 1,100);
       var VIEW_MATRIX = LIBS.get_I4();
-      var E_MODEL_MATRIX = LIBS.get_I4();
-      var E_MODEL_MATRIX2 = LIBS.get_I4();
-      var E_MODEL_MATRIX3 = LIBS.get_I4();
-      var E_MODEL_MATRIX4 = LIBS.get_I4();
-      var E_MODEL_MATRIX5 = LIBS.get_I4();
-      var E_MODEL_MATRIX6 = LIBS.get_I4();
-    //   var E_MODEL_MATRIX7 = LIBS.get_I4();
-      var E_MODEL_MATRIX_OBSTACLE = LIBS.get_I4();
-    //   var E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
+
+    
+        var E_MODEL_MATRIX = LIBS.get_I4();
+        var E_MODEL_MATRIX2 = LIBS.get_I4();
+        var E_MODEL_MATRIX3 = LIBS.get_I4();
+        var E_MODEL_MATRIX4 = LIBS.get_I4();
+        var E_MODEL_MATRIX5 = LIBS.get_I4();
+        var E_MODEL_MATRIX6 = LIBS.get_I4();
+      //   var E_MODEL_MATRIX7 = LIBS.get_I4();
+        var E_MODEL_MATRIX_OBSTACLE = LIBS.get_I4();
+      //   var E_MODEL_MATRIX_LANTAI = LIBS.get_I4();
+
+        var mMODEL_MATRIX = LIBS.get_I4(); 
+        var mMODEL_MATRIX2 = LIBS.get_I4();
+        var mMODEL_MATRIX3 = LIBS.get_I4();
+        var mMODEL_MATRIX4 = LIBS.get_I4();
+        var mMODEL_MATRIX5 = LIBS.get_I4();
+        var mMODEL_MATRIX6 = LIBS.get_I4();
+        var mMODEL_MATRIX7 = LIBS.get_I4();
+        var mMODEL_MATRIX8 = LIBS.get_I4();
+        var mMODEL_MATRIX9 = LIBS.get_I4();
+        var mMODEL_MATRIX10 = LIBS.get_I4();
+        var mMODEL_MATRIX11 = LIBS.get_I4();
 
 
       LIBS.translateZ(VIEW_MATRIX,-25);
 
-      //badan pesawat
-      var EbadanPesawat = generateCylinder(0.75,5,100,1,0,1)
-      var Eobject = new MyObject(EbadanPesawat['vertices'], EbadanPesawat['faces'], shader_vertex_source, shader_fragment_source);
-      
-      // mancung pesawat
-      var EmancungPesawat = generateSphere(0.75,0.7,1,100,100,1,1,0)
-      var EobjMancungPesawat = new MyObject(EmancungPesawat['vertices'],EmancungPesawat['faces'],shader_vertex_source,shader_fragment_source)
-      
-      // bokong pesawat
-      var EtailMancungPesawat = generateCone(0.75,2,100,100,0,1,1)
-      var EobjTailPesawat = new MyObject(EtailMancungPesawat['vertices'], EtailMancungPesawat['faces'], shader_vertex_source, shader_fragment_source);
-      
-      var Esayap = generateWing(-2,0.2,3,1,1,0);
-      var EobjSayap = new MyObject(Esayap['vertices'],Esayap['faces'], shader_vertex_source, shader_fragment_source);
-      
-      var Esayap2 = generateWing(-2,0.2,3,1,1,0);
-      var EobjSayap2 = new MyObject(Esayap2['vertices'],Esayap2['faces'], shader_vertex_source, shader_fragment_source);
-      
+      //=========================OBJECT ERIK================================
+        //badan pesawat
+        var EbadanPesawat = generateCylinder(0.75,5,100,1,0,1)
+        var Eobject = new MyObject(EbadanPesawat['vertices'], EbadanPesawat['faces'], shader_vertex_source, shader_fragment_source);
+        
+        // mancung pesawat
+        var EmancungPesawat = generateSphere(0.75,0.7,1,100,100,1,1,0)
+        var EobjMancungPesawat = new MyObject(EmancungPesawat['vertices'],EmancungPesawat['faces'],shader_vertex_source,shader_fragment_source)
+        
+        // bokong pesawat
+        var EtailMancungPesawat = generateCone(0.75,2,100,100,0,1,1)
+        var EobjTailPesawat = new MyObject(EtailMancungPesawat['vertices'], EtailMancungPesawat['faces'], shader_vertex_source, shader_fragment_source);
+        
+        var Esayap = generateWing(-2,0.2,3,1,1,0);
+        var EobjSayap = new MyObject(Esayap['vertices'],Esayap['faces'], shader_vertex_source, shader_fragment_source);
+        
+        var Esayap2 = generateWing(-2,0.2,3,1,1,0);
+        var EobjSayap2 = new MyObject(Esayap2['vertices'],Esayap2['faces'], shader_vertex_source, shader_fragment_source);
+        
+        var Epucuk = generateCone(0.5,2,4,100,1,1,0);
+        var EobjPucuk = new MyObject(Epucuk['vertices'],Epucuk['faces'], shader_vertex_source, shader_fragment_source);
+        
+        var Eobs = generateTorus(0.4,0.2,100,100,1,1,0);
+        var EobjObs = new MyObject(Eobs['vertices'],Eobs['faces'],shader_vertex_source, shader_fragment_source)
 
-      var Epucuk = generateCone(0.5,2,4,100,1,1,0);
-      var EobjPucuk = new MyObject(Epucuk['vertices'],Epucuk['faces'], shader_vertex_source, shader_fragment_source);
-      
-      var Eobs = generateTorus(0.4,0.2,100,100,1,1,0);
-      var EobjObs = new MyObject(Eobs['vertices'],Eobs['faces'],shader_vertex_source, shader_fragment_source)
-
-      var Elantai = generateRectangle3DGeometry(2,200,200,0,1,0);
-      var EobjLantai = new MyObject(Elantai['vertices'],Elantai['faces'],shader_vertex_source, shader_fragment_source)
-
-
-      var testTrapesium = generate3DTrapesium(0,2,1,1,0,1,0)
-      var objTrapesium = new MyObject(testTrapesium['vertices'],testTrapesium['faces'], shader_vertex_source, shader_fragment_source)
+        var Elantai = generateRectangle3DGeometry(2,200,200,0,1,0);
+        var EobjLantai = new MyObject(Elantai['vertices'],Elantai['faces'],shader_vertex_source, shader_fragment_source)
+        
+        var testTrapesium = generate3DTrapesium(0,2,1,1,0,1,0)
+        var objTrapesium = new MyObject(testTrapesium['vertices'],testTrapesium['faces'], shader_vertex_source, shader_fragment_source)
       // var donut = generateTorus(1,0.3,72,24)
       // var tabung = generateCylinder(0.5,1,50) // kalo base radius 0 jadi cone
       // var tri = generateCone(1,1,3,40) // kalo sector count 3 jaditetra hedron, kalao 4 jadi square pyramid
@@ -807,22 +820,66 @@ function generateCircle(x,y,rad){
       
       // var obj4 = new MyObject(tabung['vertices'],tabung['faces'],shader_vertex_source,shader_fragment_source)
       // var obj5 = new MyObject(cone['vertices'],cone['faces'],shader_vertex_source,shader_fragment_source)
+
       Eobject.childs.push(EobjTailPesawat)
       Eobject.childs.push(EobjMancungPesawat)
       Eobject.childs.push(EobjSayap)
       Eobject.childs.push(EobjSayap2)
       Eobject.childs.push(EobjPucuk)
-    //   Eobject.childs.push(objTrapesium)
-    //   Eobject.childs.push(EobjObs)
-    //   EobjLantai.setup()
-      EobjObs.setup();
+      Eobject.childs.push(objTrapesium)
+      Eobject.childs.push(EobjObs)
+      // EobjLantai.setup()
+      // objObs.setup();
       Eobject.setup();
 
+      /*==============================OBJECT MISAEL================================*/
+      var mobject = new MyObject(cube, cube_faces, shader_vertex_source, shader_fragment_source);
+      var donut1 = generateTorus(3,0.8,72,24,1,0,1)
+      var objectm2 = new MyObject(donut1['vertices'], donut1['faces'], shader_vertex_source, shader_fragment_source);
+      var donut2 = generateTorus(2,0.5,72,24,0.8,1,0)
+      var objectm3 = new MyObject(donut2['vertices'], donut2['faces'], shader_vertex_source, shader_fragment_source);
+      var donut3 = generateTorus(1,0.35,72,24,0,1,0)
+      var objectm4 = new MyObject(donut3['vertices'], donut3['faces'], shader_vertex_source, shader_fragment_source);
+      var halfSphere = generateHalfSphere(3, 3 , 3, 80, 80, 0,0,1);
+      var objectm5 = new MyObject(halfSphere['vertices'], halfSphere['faces'], shader_vertex_source ,shader_fragment_source);
+
+        //trail 
+        var donut4 = generateTorus(2,0.2,72,24, 0.8,0.8,0.8)
+        var objectm6 = new MyObject(donut4['vertices'], donut4['faces'], shader_vertex_source, shader_fragment_source);
+        var donut5 = generateTorus(1,0.1,72,24, 0.8,0.8,0.8)
+        var objectm7 = new MyObject(donut5['vertices'], donut5['faces'], shader_vertex_source, shader_fragment_source);
+        
+        //antenna
+        var cone1 = generateCone(0.3, 3, 20, 20, 0, 1, 1);
+        var objectm8 = new MyObject(cone1['vertices'], cone1['faces'], shader_vertex_source, shader_fragment_source);
+        var sphere1 = generateSphere(0.3,0.3,0.3, 30, 30, 1, 0 ,1)
+        var objectm9 = new MyObject(sphere1['vertices'], sphere1['faces'], shader_vertex_source, shader_fragment_source);
+        
+        var cone2 = generateCone(0.3, 3, 20, 20, 0,1, 1);
+        var objectm10 = new MyObject(cone2['vertices'], cone2['faces'], shader_vertex_source, shader_fragment_source);
+        var sphere2 = generateSphere(0.3,0.3,0.3, 30, 30, 1,0,1)
+        var objectm11 = new MyObject(sphere2['vertices'], sphere2['faces'], shader_vertex_source, shader_fragment_source);
+
+        mobject.childs.push(objectm2);
+        mobject.childs.push(objectm3);
+        mobject.childs.push(objectm4);
+        mobject.childs.push(objectm5);
+        mobject.childs.push(objectm6);
+        mobject.childs.push(objectm7);
+        mobject.childs.push(objectm8);
+        mobject.childs.push(objectm9);
+        mobject.childs.push(objectm10);
+        mobject.childs.push(objectm11);
+        
+
+        mobject.setup();
+  
       /*========================= DRAWING ========================= */
       GL.clearColor(0.0, 0.0, 0.0, 0.0);
       GL.enable(GL.DEPTH_TEST);
       GL.depthFunc(GL.LEQUAL);
-
+      
+      //VAR ERICK
       var time_prev_E = 0;
       var iE = 0;
       var jE = 0;
@@ -841,7 +898,17 @@ function generateCircle(x,y,rad){
       var zcountE = 0.01;
       var ycountE = 0.01;
       var temp_countE = 0.01;
+      //END VAR ERICK
 
+      //VAR MISAEL
+      var prev_time = 0;
+      var i = 0; //buat translate smoke
+      var j = 0; //buat rotate di y axis 
+      var k = 0; //buat gerak gerak 
+      var x = 0.01;
+      var y = 0.01;
+      var z = 0.01;
+      //END VAR MIS
 
 
       var animate = function(time) {
@@ -855,27 +922,31 @@ function generateCircle(x,y,rad){
         xrotE += xcountE;
         var dt =  time - time_prev_E;
         time_prev_E=time;
+
           GL.viewport(0, 0, CANVAS.width, CANVAS.height);
           GL.clear(GL.COLOR_BUFFER_BIT | GL.D_BUFFER_BIT);
           
           now = time/1000;
+
           if(!drag){
             dX*=FRICTION;
             dY*=FRICTION;
 
-
             THETA += dX *2*Math.PI/CANVAS.width;
             ALPHA += dY * 2*Math.PI/CANVAS.height;
           }
-          console.log("Detik : ",now)
+          // console.log("Detik : ",now)
+
           //ngukur pergerakan
           var radius = 2;
           var pos_x = radius * now/1000;
           var pos_y = -radius * now/1000;
           var pos_z = 0;
+
+          //====================================SETPOS ERICK==============================
+          //MATRIX NORM
           //badan pesawat
           E_MODEL_MATRIX = LIBS.get_I4();
-           //ngambil matrix normalnya biar bisa di transform
 
           E_MODEL_MATRIX2 = LIBS.get_I4();
           E_MODEL_MATRIX3 = LIBS.get_I4();
@@ -890,12 +961,10 @@ function generateCircle(x,y,rad){
           
           LIBS.rotateY(E_MODEL_MATRIX, THETA); //puter objek kanan kiri
           LIBS.rotateX(E_MODEL_MATRIX, ALPHA); // puter objek atas bawah
-          
 
           LIBS.rotateY(E_MODEL_MATRIX2,-9.425)
           LIBS.rotateY(E_MODEL_MATRIX2, THETA);
-          LIBS.rotateX(E_MODEL_MATRIX2, ALPHA);
-          
+          LIBS.rotateX(E_MODEL_MATRIX2, ALPHA);   
  
           LIBS.rotateY(E_MODEL_MATRIX3, THETA);
           LIBS.rotateX(E_MODEL_MATRIX3, ALPHA);
@@ -912,12 +981,10 @@ function generateCircle(x,y,rad){
           LIBS.rotateY(E_MODEL_MATRIX6, THETA);
           LIBS.rotateX(E_MODEL_MATRIX6, ALPHA);
           
-          
         //   LIBS.rotateX(E_MODEL_MATRIX7,90)
         // //   LIBS.translateX(E_MODEL_MATRIX7,-5)
         //   LIBS.rotateY(E_MODEL_MATRIX7, THETA);
         //   LIBS.rotateX(E_MODEL_MATRIX7, ALPHA);
-
           
           LIBS.rotateY(E_MODEL_MATRIX_OBSTACLE, THETA);
           LIBS.rotateX(E_MODEL_MATRIX_OBSTACLE, ALPHA);
@@ -929,12 +996,98 @@ function generateCircle(x,y,rad){
         //   LIBS.rotateZ(E_MODEL_MATRIX_LANTAI,LIBS.degToRad(90))
         //   LIBS.rotateY(E_MODEL_MATRIX_LANTAI, THETA);
         //   LIBS.rotateX(E_MODEL_MATRIX_LANTAI, ALPHA);
+        //===========================================END ERICK=================================
+          
+        //=========================================SETPOS MISAEL======================================
+          mMODEL_MATRIX = LIBS.get_I4(); 
+          mMODEL_MATRIX2 = LIBS.get_I4();
+          mMODEL_MATRIX3 = LIBS.get_I4();
+          mMODEL_MATRIX4 = LIBS.get_I4();
+          mMODEL_MATRIX5 = LIBS.get_I4();
+          mMODEL_MATRIX6 = LIBS.get_I4();
+          mMODEL_MATRIX7 = LIBS.get_I4();
+          mMODEL_MATRIX8 = LIBS.get_I4();
+          mMODEL_MATRIX9 = LIBS.get_I4();
+          mMODEL_MATRIX10 = LIBS.get_I4();
+          mMODEL_MATRIX11 = LIBS.get_I4();
+      
+          //SET ROTATE UNTUK POSISI AWAL
+          //cube head
+          LIBS.rotateX(mMODEL_MATRIX, -4.7);
+          LIBS.rotateY(mMODEL_MATRIX, 1.2);
+          LIBS.rotateX(mMODEL_MATRIX, ALPHA); 
+          LIBS.rotateY(mMODEL_MATRIX, THETA); 
+          
+          //body donut
+          LIBS.rotateX(mMODEL_MATRIX2, -4.7);
+          LIBS.rotateY(mMODEL_MATRIX2, 1.2);
+          LIBS.rotateX(mMODEL_MATRIX2, ALPHA);
+          LIBS.rotateY(mMODEL_MATRIX2, THETA);
+          
+          //body donut2
+          LIBS.rotateX(mMODEL_MATRIX3, -4.7);
+          LIBS.rotateY(mMODEL_MATRIX3, 1.2);
+          LIBS.rotateX(mMODEL_MATRIX3, ALPHA);
+          LIBS.rotateY(mMODEL_MATRIX3, THETA);
+          
+          //body donut3
+          LIBS.rotateX(mMODEL_MATRIX4, -4.7);
+          LIBS.rotateY(mMODEL_MATRIX4, 1.2);
+          LIBS.rotateX(mMODEL_MATRIX4, ALPHA);
+          LIBS.rotateY(mMODEL_MATRIX4, THETA);
+          
+          //halfsphere glass
+          LIBS.rotateX(mMODEL_MATRIX5, -4.7);
+          LIBS.rotateY(mMODEL_MATRIX5, 1.2);
+          LIBS.rotateX(mMODEL_MATRIX5, ALPHA);
+          LIBS.rotateY(mMODEL_MATRIX5, THETA);
 
+              //donut trail big
+              LIBS.rotateX(mMODEL_MATRIX6, -4.7);
+              LIBS.rotateY(mMODEL_MATRIX6, 1.2);
+              LIBS.rotateX(mMODEL_MATRIX6, ALPHA);
+              LIBS.rotateY(mMODEL_MATRIX6, THETA);
+      
+              //donut trail small
+              LIBS.rotateX(mMODEL_MATRIX7, -4.7);
+              LIBS.rotateY(mMODEL_MATRIX7, 1.2);
+              LIBS.rotateX(mMODEL_MATRIX7, ALPHA);
+              LIBS.rotateY(mMODEL_MATRIX7, THETA);
+              
+          //antenna right
+          LIBS.rotateX(mMODEL_MATRIX8, -7.4);
+          LIBS.rotateY(mMODEL_MATRIX8, 1.2);
+          LIBS.rotateX(mMODEL_MATRIX8, ALPHA);
+          LIBS.rotateY(mMODEL_MATRIX8, THETA);
+          
+          LIBS.rotateX(mMODEL_MATRIX9, -7.4);
+          LIBS.rotateY(mMODEL_MATRIX9, 1,5);
+          LIBS.rotateX(mMODEL_MATRIX9, ALPHA);
+          LIBS.rotateY(mMODEL_MATRIX9, THETA);
+  
+          //antenna left
+          LIBS.rotateX(mMODEL_MATRIX10, -14.6);
+          LIBS.rotateY(mMODEL_MATRIX10, 1.2);
+          LIBS.rotateX(mMODEL_MATRIX10, ALPHA);
+          LIBS.rotateY(mMODEL_MATRIX10, THETA);
 
-          var obj = [E_MODEL_MATRIX, E_MODEL_MATRIX2,E_MODEL_MATRIX3,E_MODEL_MATRIX4,E_MODEL_MATRIX5,E_MODEL_MATRIX6]
+          LIBS.rotateX(mMODEL_MATRIX11, -14.6);
+          LIBS.rotateY(mMODEL_MATRIX11, 1,5);
+          LIBS.rotateX(mMODEL_MATRIX11, ALPHA);
+          LIBS.rotateY(mMODEL_MATRIX11, THETA);
 
-
-
+          //=============================================END SETPOS MISAEL==============================================
+        
+        //OBJ GROUP 
+        var obj = [E_MODEL_MATRIX, E_MODEL_MATRIX2,E_MODEL_MATRIX3,E_MODEL_MATRIX4,E_MODEL_MATRIX5,E_MODEL_MATRIX6] //erick
+        
+        var UFO = [mMODEL_MATRIX, mMODEL_MATRIX2, mMODEL_MATRIX3, mMODEL_MATRIX4, 
+          mMODEL_MATRIX5, mMODEL_MATRIX6, mMODEL_MATRIX7, mMODEL_MATRIX8, mMODEL_MATRIX9, 
+          mMODEL_MATRIX10, mMODEL_MATRIX11]; //misael
+          rotateYGlobal(UFO, j*10); 
+          
+          
+        //=======================================MOVESET ERICK================================
           rotateYGlobal(obj,LIBS.degToRad(90))
           // rotateYGlobal(obj,LIBS.degToRad(yrot))
           rotateZGlobal(obj,LIBS.degToRad(zrotE))
@@ -1077,7 +1230,7 @@ function generateCircle(x,y,rad){
           // LIBS.translateX(MODEL_MATRIX,i* 10)
           LIBS.translateY(E_MODEL_MATRIX,jE*5)
           LIBS.translateX(E_MODEL_MATRIX,iE*5)
-          console.log("i : ", iE*10)
+          // console.log("i : ", iE*10)s
           LIBS.translateZ(E_MODEL_MATRIX,kE*7)
           rotateZGlobal(obj,LIBS.degToRad(zrotE))
           rotateXGlobal(obj,xrotE)
@@ -1087,16 +1240,9 @@ function generateCircle(x,y,rad){
           // else if (xrot > 0){
           //   xcount = 0;
           // }
-         
+        //==================================END MOVESET ERICK=======================
 
-
-
-
-
-
-
-
-
+        //===============================SETPOS RELATIVE ERICK====================
           var transformedBadanPesawat = LIBS.transformPoint(E_MODEL_MATRIX, [0, 0, 0]);
           LIBS.setPosition(E_MODEL_MATRIX,transformedBadanPesawat[0], transformedBadanPesawat[1], transformedBadanPesawat[2]);
           
@@ -1120,7 +1266,45 @@ function generateCircle(x,y,rad){
           LIBS.setPosition(E_MODEL_MATRIX_OBSTACLE,transformedObs[0], transformedObs[1], transformedObs[2]);
           // var transformedSpherePos = LIBS.transformPoint(MODEL_MATRIX, [1, -1, 0]);
           // LIBS.setPosition(MODEL_MATRIX5,transformedSpherePos[0], transformedSpherePos[1], transformedSpherePos[2]);
+        //============================END SETPOS RELATIVE ERICK==========================
+
+        //==============================SETPOS RELATIVE MISAEL===========================
+        //TRANSFORM POSITION : FIXED TO CUBE
+          var transformPosCube = LIBS.transformPoint(mMODEL_MATRIX,[0,0,0]);
+          LIBS.setPosition(mMODEL_MATRIX, transformPosCube[0], transformPosCube[1], transformPosCube[2]);
           
+          var transformPosDonut = LIBS.transformPoint(mMODEL_MATRIX,[0,0,1]);
+          LIBS.setPosition(mMODEL_MATRIX2, transformPosDonut[0], transformPosDonut[1], transformPosDonut[2]);
+          
+          var transformPosDonut_2= LIBS.transformPoint(mMODEL_MATRIX,[0,0,1.8]);
+          LIBS.setPosition(mMODEL_MATRIX3, transformPosDonut_2[0], transformPosDonut_2[1], transformPosDonut_2[2]);
+
+          var transformPosDonut_3= LIBS.transformPoint(mMODEL_MATRIX,[0,0,2.3]);
+          LIBS.setPosition(mMODEL_MATRIX4, transformPosDonut_3[0], transformPosDonut_3[1], transformPosDonut_3[2]);
+
+          var transformPosGlass= LIBS.transformPoint(mMODEL_MATRIX,[0,0,0.4]);
+          LIBS.setPosition(mMODEL_MATRIX5, transformPosGlass[0], transformPosGlass[1], transformPosGlass[2]);
+
+          var transformPosDonut_4= LIBS.transformPoint(mMODEL_MATRIX,[0,0,4]);
+          LIBS.setPosition(mMODEL_MATRIX6, transformPosDonut_4[0], transformPosDonut_4[1], transformPosDonut_4[2]);
+          
+          var transformPosDonut_5= LIBS.transformPoint(mMODEL_MATRIX,[0,0,5]);
+          LIBS.setPosition(mMODEL_MATRIX7, transformPosDonut_5[0], transformPosDonut_5[1], transformPosDonut_5[2]);
+          
+          var transformPosCone= LIBS.transformPoint(mMODEL_MATRIX,[0,2,-2.2]);
+          LIBS.setPosition(mMODEL_MATRIX8, transformPosCone[0], transformPosCone[1], transformPosCone[2]);
+          
+          var transformPosSphere= LIBS.transformPoint(mMODEL_MATRIX,[0,2.55,-3.4]);
+          LIBS.setPosition(mMODEL_MATRIX9, transformPosSphere[0], transformPosSphere[1], transformPosSphere[2]);
+          
+          var transformPosConeLeft= LIBS.transformPoint(mMODEL_MATRIX,[0,-2,-2,24]);
+          LIBS.setPosition(mMODEL_MATRIX10, transformPosConeLeft[0], transformPosConeLeft[1], transformPosConeLeft[2]);
+          
+          var transformPosSphereRight= LIBS.transformPoint(mMODEL_MATRIX,[0,-2.7,-3.39]);
+          LIBS.setPosition(mMODEL_MATRIX11, transformPosSphereRight[0], transformPosSphereRight[1], transformPosSphereRight[2]);
+        //=================================END SETPOS MISAEL=====================================
+
+        //==========================================MOVESET TRANSLATE ERICK============================================
           if(now > 10){
             t_obsE = -0.01
         transformedObs = LIBS.transformPoint(E_MODEL_MATRIX_OBSTACLE,[0,0,0]);
@@ -1140,9 +1324,22 @@ function generateCircle(x,y,rad){
           // LIBS.rotateX(temp,THETA);
           
           // MODEL_MATRIX2= LIBS.multiply(MODEL_MATRIX2,temp)
+         
+        //==========================================END MOVESET TRANSLATE ERICK============================================
+        
+        //==========================================MOVESET TRANSLATE MISAEL============================================
+          //TRANSLATE SMOKE TRAIL
+          LIBS.translateY(mMODEL_MATRIX6, i*10);
+          LIBS.translateY(mMODEL_MATRIX7, i*10);
+          if (i > 0.08){
+              x = -0.01;
+          } 
+          else if (i < -0.25){
+              x = 0.01;
+          }
+        //==========================================END MOVESET TRANSLATE MISAEL============================================
           
-
-
+        //==========================================RENDER ERICK================================================
           Eobject.MODEL_MATRIX=E_MODEL_MATRIX;
           Eobject.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
@@ -1151,7 +1348,7 @@ function generateCircle(x,y,rad){
           EobjTailPesawat.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
 
           EobjMancungPesawat.MODEL_MATRIX = E_MODEL_MATRIX3;
-          EobjMancungPesawat.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+          EobjMancungPesawat.render(VIEW_MATRIX, PROJECTION_MATRIX, 6);
 
 
           EobjSayap.MODEL_MATRIX = E_MODEL_MATRIX4;
@@ -1167,16 +1364,54 @@ function generateCircle(x,y,rad){
           // objTrapesium.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
 
           EobjObs.MODEL_MATRIX = E_MODEL_MATRIX_OBSTACLE;
-          EobjObs.render(VIEW_MATRIX,PROJECTION_MATRIX,1)
+          EobjObs.render(VIEW_MATRIX,PROJECTION_MATRIX, 1)
           
           // objLantai.MODEL_MATRIX = MODEL_MATRIX_LANTAI;
           // objLantai.render(VIEW_MATRIX,PROJECTION_MATRIX,2)
           
           // obj4.MODEL_MATRIX = MODEL_MATRIX4;
-          // obj4.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+          // obj4.render(VIEW_MATRIX, PROJECTION_MATRIX, 5);
 
           // obj5.MODEL_MATRIX = MODEL_MATRIX5;
-          // obj5.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+          // obj5.render(VIEW_MATRIX, PROJECTION_MATRIX, 5);
+        //===================================================END RENDER ERICK============================================
+
+        mobject.MODEL_MATRIX=mMODEL_MATRIX;
+        mobject.render(VIEW_MATRIX, PROJECTION_MATRIX, 1);
+
+        objectm2.MODEL_MATRIX = mMODEL_MATRIX2;
+        objectm2.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+        
+        objectm3.MODEL_MATRIX = mMODEL_MATRIX3;
+        objectm3.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+        
+        objectm4.MODEL_MATRIX = mMODEL_MATRIX4;
+        objectm4.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+    
+        objectm5.MODEL_MATRIX = mMODEL_MATRIX5;
+        objectm5.render(VIEW_MATRIX, PROJECTION_MATRIX, 2);
+      
+        objectm6.MODEL_MATRIX = mMODEL_MATRIX6;
+        objectm6.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+        
+        objectm7.MODEL_MATRIX = mMODEL_MATRIX7;
+        objectm7.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+        
+        objectm8.MODEL_MATRIX = mMODEL_MATRIX8;
+        objectm8.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+
+        objectm9.MODEL_MATRIX = mMODEL_MATRIX9;
+        objectm9.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+        
+        objectm10.MODEL_MATRIX = mMODEL_MATRIX10;
+        objectm10.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+    
+        objectm11.MODEL_MATRIX = mMODEL_MATRIX11;
+        objectm11.render(VIEW_MATRIX, PROJECTION_MATRIX, 3);
+        //=============================================RENDER MISAEL=====================================================
+        
+          // GL.drawArrays(GL.LINE_STRIP, 0, mouth.vertices.length / 6);
+        //===============================================END RENDER MISAEL===============================================
 
 
           window.requestAnimationFrame(animate);
