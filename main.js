@@ -750,6 +750,7 @@ function generateCone(baseRadius, height, sectorCount, stackCount,r,g,b) {
       10,1,-10,     1,1,0, 1,1,
       -10,1,-10,    1,1,0, 0,1,
 
+
       //depan
       -10,-1,10,    0,0,1, 0,0,
       10,-1,10,     0,0,1, 1,0,
